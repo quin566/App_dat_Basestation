@@ -1,0 +1,39 @@
+{
+  "name": "az-photo-command-center",
+  "productName": "AZ Photo Command Center",
+  "version": "1.0.0",
+  "description": "AZ Photographer LLC Command Center",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "author": "AZ Photo LLC",
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-forge/cli": "^7.3.0",
+    "@electron-forge/maker-dmg": "^7.3.0",
+    "@electron-forge/maker-zip": "^7.3.0",
+    "electron": "^29.0.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "asar": true
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {
+            "format": "ULFO"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": ["darwin"]
+        }
+      ]
+    }
+  }
+}

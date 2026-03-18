@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ Photographer LLC Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .card { background: white; border-radius: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .nav-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .resource-link { @apply text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1 transition-colors; }
+        .canon-gradient { background: linear-gradient(135deg, #cc0000 0%, #8b0000 100%); }
+        .tax-tooltip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 1.125rem; height: 1.125rem; background: #e2e8f0; border-radius: 9999px; color: #64748b; font-weight: bold; font-size: 0.7rem; cursor: help; margin-left: 0.5rem; transition: background 0.2s; }
+        .tax-tooltip:hover { background: #cbd5e1; color: #0f172a; }
+        .tax-tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 140%; left: 50%; width: 220px; padding: 0.75rem; background: #1e293b; color: white; border-radius: 0.75rem; font-size: 0.75rem; line-height: 1.5; transform: translateX(-50%); z-index: 50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); pointer-events: none; text-transform: none; font-weight: normal; }
+        .tax-tooltip:hover::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: #1e293b transparent transparent transparent; pointer-events: none; z-index: 50; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Setup Wizard -->
+    <div id="setup-wizard" class="fixed inset-0 bg-slate-100 z-50 flex items-center justify-center p-6 hidden">
+        <div class="bg-white rounded-3xl shadow-xl max-w-md w-full p-10">
+            <h1 class="text-3xl font-black mb-2 text-slate-900 tracking-tight">Welcome to Command Center</h1>
+            <p class="text-slate-500 mb-8 text-sm">Let's initialize your LLC profile.</p>
+            
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">LLC Name</label>
+                    <input type="text" id="wizard-name" placeholder="Focus Photography LLC" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Date Formed</label>
+                    <input type="date" id="wizard-date" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Trailing 12m Revenue ($)</label>
+                    <input type="number" id="wizard-rev" placeholder="50000" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold">
+                </div>
+                <button onclick="finishSetup()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl mt-4 hover:bg-slate-800 transition">Initialize Center</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="app-content" class="min-h-screen flex flex-col md:flex-row hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-80 bg-slate-950 text-white p-8 flex-shrink-0 flex flex-col border-r border-slate-800">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 p-2.5 rounded-xl shadow-lg shadow-blue-900/20">
+                    <i data-lucide="camera" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-xl tracking-tight leading-none">AZ Photo LLC</h1>
+                    <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mt-1">Management Suite</p>
+                </div>
+            </div>
+
+            <nav class="space-y-1.5 flex-grow">
+                <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-dashboard">
+                    <i data-lucide="layout-grid" class="w-5 h-5"></i> <span class="font-semibold text-sm">Dashboard</span>
+                </button>
+                <button onclick="switchTab('taxes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-taxes">
+                    <i data-lucide="calculator" class="w-5 h-5"></i> <span class="font-semibold text-sm">Tax Planner</span>
+                </button>
+                <button onclick="switchTab('analyzer')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-analyzer">
+                    <i data-lucide="scan" class="w-5 h-5"></i> <span class="font-semibold text-sm">Analyzer</span>
+                </button>
+                <button onclick="switchTab('taxguide')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-taxguide">
+                    <i data-lucide="book-open" class="w-5 h-5"></i> <span class="font-semibold text-sm">Write-Off Guide</span>
+                </button>
+                <button onclick="switchTab('discounts')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-discounts">
+                    <i data-lucide="badge-percent" class="w-5 h-5"></i> <span class="font-semibold text-sm">Vendor Perks</span>
+                </button>
+                <button onclick="switchTab('legal')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-legal">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i> <span class="font-semibold text-sm">Legal Health</span>
+                </button>
+            </nav>
+
+            <div class="mt-8 space-y-4">
+                <div class="bg-red-600/10 border border-red-500/20 p-5 rounded-2xl">
+                    <div class="flex items-center gap-2 text-red-400 mb-2">
+                        <i data-lucide="focus" class="w-4 h-4"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-wider">Canon CPS Tracker</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Platinum Tier: <strong>2-day repair</strong> & $100 service credit.
+                    </p>
+                </div>
+                <div class="bg-blue-600/10 border border-blue-500/20 p-5 rounded-2xl">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">AZ TPT Savings</p>
+                    <p class="text-xs text-blue-400 font-bold" id="sidebar-savings">$0 Saved</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow p-6 md:p-12 lg:p-16 overflow-y-auto">
+            
+            <!-- Tab: Dashboard -->
+            <div id="dashboard" class="tab-content active space-y-10">
+                <header class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <h2 class="text-4xl font-black text-slate-900 tracking-tight">Executive Overview</h2>
+                        <p class="text-slate-500 mt-2">LLC Status: <strong>Operating</strong> • Canon Ecosystem: <strong>Active</strong></p>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card p-8 border-t-4 border-blue-600">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Annual Take-Home (Est)</p>
+                        <h3 id="dash-takehome" class="text-4xl font-black text-slate-900">$0</h3>
+                    </div>
+                    <div class="card p-8 border-t-4 border-indigo-600">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Telco/Phone Savings</p>
+                        <h3 class="text-4xl font-black text-indigo-600">Up to $800</h3>
+                        <p class="text-xs text-slate-500 mt-3">Via Business Unlimited credits</p>
+                    </div>
+                    <div class="card p-8 border-t-4 border-emerald-600">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Veil Strength</p>
+                        <h3 id="dash-protection" class="text-4xl font-black text-emerald-600">25%</h3>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <section class="card p-8">
+                        <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
+                            <i data-lucide="zap" class="w-5 h-5 text-amber-500 fill-amber-500"></i> Canon & Phone Priorities
+                        </h4>
+                        <div class="space-y-4">
+                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
+                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
+                                <span class="text-sm font-semibold">Enroll in Canon CPS (Gold or Platinum)</span>
+                            </label>
+                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
+                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
+                                <span class="text-sm font-semibold">Switch to T-Mobile/Verizon Business (Unlimited)</span>
+                            </label>
+                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
+                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
+                                <span class="text-sm font-semibold">Separate Phone Bill Deductions for Tax Year</span>
+                            </label>
+                        </div>
+                    </section>
+                    <section class="card p-8 canon-gradient text-white flex flex-col justify-center">
+                         <div class="flex justify-between items-end mb-4">
+                            <div>
+                                <h4 class="text-xl font-bold">Canon Pro Status</h4>
+                                <p class="text-sm text-red-100 mt-1">Target: Platinum Membership</p>
+                            </div>
+                            <span class="text-red-200 font-black text-2xl"><i data-lucide="award" class="w-8 h-8"></i></span>
+                         </div>
+                         <p class="text-sm leading-relaxed mb-4">Get a $100 service voucher and 2-day turnaround on all EOS R bodies and RF glass repairs with your EIN-verified CPS account.</p>
+                         <a href="https://www.usa.canon.com/pro/canon-professional-services" target="_blank" class="bg-white text-red-700 text-center py-2 rounded-xl font-bold text-sm">Access CPS Portal</a>
+                    </section>
+                </div>
+
+                <!-- Growth Tracking -->
+                <section class="card p-8">
+                    <div class="flex justify-between items-end mb-4">
+                        <div>
+                            <h4 class="text-xl font-bold">Annual Profit Milestone</h4>
+                            <p class="text-sm text-slate-500 mt-1">Tracking toward $100,000 net profit</p>
+                        </div>
+                        <span id="profit-target-percent" class="text-blue-600 font-black text-2xl">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden mb-2">
+                        <div id="profit-progress" class="bg-blue-600 h-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab: Write-Off Analyzer -->
+            <div id="analyzer" class="tab-content space-y-10">
+                <header>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Write-Off Analyzer</h2>
+                    <p class="text-slate-500 mt-2">Deductibility and True Cost calculated via your live Marginal Rate.</p>
+                </header>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card p-8">
+                        <h4 class="font-bold text-lg mb-6">Theoretical Expense</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Item Name</label>
+                                <input type="text" id="analyze-name" placeholder="e.g., Canon RF 70-200mm" class="w-full px-4 py-3 bg-slate-50 border rounded-xl" oninput="calculateROI()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Cost ($)</label>
+                                <input type="number" id="analyze-cost" value="" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calculateROI()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">IRS Category</label>
+                                <select id="analyze-cat" class="w-full px-4 py-3 bg-slate-50 border rounded-xl" onchange="calculateROI()">
+                                    <option value="1">Gear & Equipment (100% Deductible)</option>
+                                    <option value="1">Travel & Lodging (100% Deductible)</option>
+                                    <option value="0.5">Business Meals (50% Deductible)</option>
+                                    <option value="0">Entertainment (0% Deductible)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-8 bg-slate-900 text-white flex flex-col justify-center">
+                        <div class="mb-6 pb-6 border-b border-slate-700">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Estimated Tax Savings</p>
+                            <h3 id="analyze-savings" class="text-3xl font-black text-emerald-400">+$0</h3>
+                            <p id="analyze-warning" class="text-xs text-rose-400 mt-2 hidden">⚠️ This category is not deductible.</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">True Out-of-Pocket Cost</p>
+                            <h3 id="analyze-true-cost" class="text-4xl font-black min-h-[40px]">$0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Tax Planner -->
+            <div id="taxes" class="tab-content space-y-10">
+                <header>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Arizona Tax Engine</h2>
+                    <p class="text-slate-500 mt-2">Personalized for Single-Member LLCs (2024/25 Rules).</p>
+                </header>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div class="xl:col-span-1 space-y-6">
+                        <div class="card p-8">
+                            <h4 class="font-bold text-lg mb-6">Financial Inputs</h4>
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 text-blue-600">Annual Gross Revenue</label>
+                                    <input type="number" id="gross-income" value="95000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition font-bold text-lg" oninput="calcTaxes()">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 text-blue-600">Total Biz Expenses</label>
+                                    <input type="number" id="expenses" value="25000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition font-bold text-lg" oninput="calcTaxes()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 text-white rounded-[2rem] p-8">
+                            <p class="text-slate-400 text-[11px] font-black uppercase tracking-widest mb-1">Net Take-Home / Month</p>
+                            <h3 id="monthly-takehome" class="text-4xl font-black text-emerald-400">$0</h3>
+                        </div>
+                    </div>
+
+                    <div class="xl:col-span-2 card p-10">
+                        <h4 class="text-2xl font-black mb-8">Liability Breakdown</h4>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center pb-4 border-b">
+                                <span class="text-slate-600 flex items-center">Federal Self-Employment Tax <span class="tax-tooltip" data-tip="A 15.3% tax combining Social Security (12.4%) and Medicare (2.9%) on your net earnings.">?</span></span>
+                                <span id="tax-se" class="font-black text-rose-600">$0</span>
+                            </div>
+                            <div class="flex justify-between items-center pb-4 border-b">
+                                <span class="text-slate-600 flex items-center">Federal Income Tax (Est) <span class="tax-tooltip" data-tip="Ordinary income tax based on progressive IRS brackets after your standard deduction.">?</span></span>
+                                <span id="tax-fed" class="font-black text-rose-600">$0</span>
+                            </div>
+                            <div class="flex justify-between items-center pb-4 border-b">
+                                <span class="text-slate-600 flex items-center">AZ State Flat Tax (2.5%) <span class="tax-tooltip" data-tip="Arizona taxes all individual income at a flat 2.5% rate as of 2024.">?</span></span>
+                                <span id="tax-az" class="font-black text-rose-600">$0</span>
+                            </div>
+                            <div class="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl flex justify-between items-center">
+                                <div>
+                                    <p class="font-bold text-emerald-800 flex items-center">QBI Deduction (The LLC Perk) <span class="tax-tooltip" style="background:#d1fae5; color:#065f46;" data-tip="The Qualified Business Income deduction allows eligible LLCs to deduct up to 20% of net income before taxes.">?</span></p>
+                                    <p class="text-xs text-emerald-600 mt-1">Slashes 20% off taxable profit</p>
+                                </div>
+                                <span id="tax-qbi" class="text-xl font-black text-emerald-700">-$0</span>
+                            </div>
+                        </div>
+                        <div class="mt-8 grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-slate-50 rounded-xl">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Pre-Tax Profit</p>
+                                <p id="net-profit-display" class="font-black">$0</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Effective Rate</p>
+                                <p id="effective-rate" class="font-black">0%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Write-Off Guide -->
+            <div id="taxguide" class="tab-content space-y-10">
+                <header>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Photography Write-Off Guide</h2>
+                    <p class="text-slate-500 mt-2">Deductible expenses vs. non-deductible personal costs based on IRS standards.</p>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- What IS a Write-Off? -->
+                    <section class="card p-8 border-l-8 border-emerald-500">
+                        <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
+                            <i data-lucide="check-circle" class="text-emerald-500"></i> What You CAN Deduct
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-slate-50 rounded-xl">
+                                <p class="font-bold text-sm">Professional Gear (Canon focus)</p>
+                                <p class="text-xs text-slate-600 mt-1">Cameras, RF Lenses, CPS Platinum membership, repair fees, lighting, and batteries. (IRS Pub 535)</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl">
+                                <p class="font-bold text-sm">Subscriptions & Software</p>
+                                <p class="text-xs text-slate-600 mt-1">Adobe Creative Cloud, CRM (Honeybook/Dubsado), Gallery hosting (Pixieset/Pic-Time).</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl">
+                                <p class="font-bold text-sm">Business Phone & Internet</p>
+                                <p class="text-xs text-slate-600 mt-1">100% of the phone bill if on an LLC Business Plan. Proportionate % of home internet for editing. (IRS Pub 463)</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl">
+                                <p class="font-bold text-sm">Marketing & SEO</p>
+                                <p class="text-xs text-slate-600 mt-1">Google Ads, Social Media advertising, website hosting, and business cards.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl">
+                                <p class="font-bold text-sm">Professional Services</p>
+                                <p class="text-xs text-slate-600 mt-1">CPA fees, legal templates for contracts, and PPA membership.</p>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <a href="https://www.irs.gov/publications/p535" target="_blank" class="resource-link text-[10px] uppercase tracking-wider">IRS Publication 535: Business Expenses →</a>
+                        </div>
+                    </section>
+
+                    <!-- What IS NOT a Write-Off? -->
+                    <section class="card p-8 border-l-8 border-rose-500">
+                        <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
+                            <i data-lucide="x-circle" class="text-rose-500"></i> What You CANNOT Deduct
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-rose-50 rounded-xl">
+                                <p class="font-bold text-sm">Commuting Miles</p>
+                                <p class="text-xs text-slate-600 mt-1">Driving from home to a "regular place of business" (like a fixed studio) is not deductible. Driving home to a wedding venue is.</p>
+                            </div>
+                            <div class="p-4 bg-rose-50 rounded-xl">
+                                <p class="font-bold text-sm">Personal Clothing</p>
+                                <p class="text-xs text-slate-600 mt-1">You cannot deduct "wedding attire" or nice clothes just because you wear them to shoots. Only uniforms or safety gear qualify.</p>
+                            </div>
+                            <div class="p-4 bg-rose-50 rounded-xl">
+                                <p class="font-bold text-sm">Personal Grooming</p>
+                                <p class="text-xs text-slate-600 mt-1">Haircuts, makeup for yourself, or dry cleaning for personal clothes are strictly non-deductible.</p>
+                            </div>
+                            <div class="p-4 bg-rose-50 rounded-xl">
+                                <p class="font-bold text-sm">Entertainment</p>
+                                <p class="text-xs text-slate-600 mt-1">Under current tax laws, you generally cannot deduct "entertainment" like taking a client to a sports game or a movie. (IRS Pub 463)</p>
+                            </div>
+                            <div class="p-4 bg-rose-50 rounded-xl">
+                                <p class="font-bold text-sm">Family Meals</p>
+                                <p class="text-xs text-slate-600 mt-1">Meals with family members are not deductible unless they are employees and you are discussing legitimate business during travel.</p>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <a href="https://www.irs.gov/publications/p463" target="_blank" class="resource-link text-[10px] uppercase tracking-wider">IRS Publication 463: Travel & Meals →</a>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Best Practice Checklist -->
+                <section class="card p-8 bg-slate-900 text-white">
+                    <h4 class="text-2xl font-black mb-8">Write-Off Best Practices (Audit Proofing)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <ul class="space-y-4">
+                            <li class="flex gap-4">
+                                <i data-lucide="check" class="text-emerald-400"></i>
+                                <div>
+                                    <p class="font-bold text-sm">The "Receipt Rule"</p>
+                                    <p class="text-xs text-slate-400">IRS requires records for any expense >$75. Digital copies are valid. Pro tip: Photograph your receipts immediately.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <i data-lucide="check" class="text-emerald-400"></i>
+                                <div>
+                                    <p class="font-bold text-sm">Business Meals (50%)</p>
+                                    <p class="text-xs text-slate-400">Deductible only if you, the owner, are present and business is discussed. (Current rule: 50% limit).</p>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="space-y-4">
+                            <li class="flex gap-4">
+                                <i data-lucide="check" class="text-emerald-400"></i>
+                                <div>
+                                    <p class="font-bold text-sm">Mileage Tracking (Essential)</p>
+                                    <p class="text-xs text-slate-400">Use MileIQ or Stride. Arizona photographers often find mileage is their largest "silent" deduction ($0.67/mile in 2024).</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <i data-lucide="check" class="text-emerald-400"></i>
+                                <div>
+                                    <p class="font-bold text-sm">The Home Office (Pub 587)</p>
+                                    <p class="text-xs text-slate-400">Space must be used *exclusively* for business. "Mixed use" rooms are a red flag for the IRS.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab: Vendor Perks -->
+            <div id="discounts" class="tab-content space-y-10">
+                <header>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Canon Pro Ecosystem</h2>
+                    <p class="text-slate-500 mt-2">Maximum utility for Canon-based Arizona businesses.</p>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="perks-container">
+                    <div class="card p-6 border-l-4 border-red-600">
+                        <h4 class="font-black text-lg">Canon CPS Platinum</h4>
+                        <p class="text-xs text-slate-500 mt-2">The essential tool. 2-day repair turnaround, free return shipping, and 15 free sensor cleanings/checks per year.</p>
+                        <a href="https://www.usa.canon.com/pro/canon-professional-services" target="_blank" class="mt-6 block text-center py-2.5 bg-red-600 text-white rounded-xl text-xs font-bold">Access CPS</a>
+                    </div>
+                    <div class="card p-6 border-l-4 border-slate-900">
+                        <h4 class="font-black text-lg">B&H B2B Portal</h4>
+                        <p class="text-xs text-slate-500 mt-2">Link your EIN and AZ Form 5000A. Tax-free checkout on RF lenses and bodies automatically.</p>
+                        <a href="https://www.bhphotovideo.com/b2b" target="_blank" class="mt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold">Setup B2B Account</a>
+                    </div>
+                    <div class="card p-6 border-l-4 border-blue-600">
+                        <h4 class="font-black text-lg">PPA Insurance</h4>
+                        <p class="text-xs text-slate-500 mt-2">Covers Canon gear against theft or damage (up to $15k) for around $30/mo membership fee.</p>
+                        <a href="https://www.ppa.com/" target="_blank" class="mt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold">Join PPA</a>
+                    </div>
+                </div>
+
+                <div class="card p-6 mt-8 bg-slate-50 border-dashed">
+                    <h4 class="font-bold text-sm mb-4">Add Custom Vendor Perk</h4>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <input type="text" id="new-perk-title" placeholder="Perk Name (e.g., Hertz Gold)" class="px-4 py-2 border rounded-xl flex-grow">
+                        <input type="text" id="new-perk-desc" placeholder="Details or link" class="px-4 py-2 border rounded-xl flex-grow">
+                        <button onclick="addCustomPerk()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700">Add Perk</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Legal Health -->
+            <div id="legal" class="tab-content space-y-10">
+                <header>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Legal Veil Health</h2>
+                    <p class="text-slate-500 mt-2">Protecting your personal assets via Arizona LLC law.</p>
+                </header>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <section class="xl:col-span-2 card p-10">
+                        <h4 class="text-2xl font-black mb-8">Veil Compliance Tracker</h4>
+                        <div class="space-y-6" id="legal-checklist">
+                            <label class="flex items-start gap-5 p-6 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition group static-check">
+                                <input type="checkbox" checked class="mt-1 w-6 h-6 text-emerald-600 rounded-lg border-slate-300">
+                                <div>
+                                    <p class="font-bold text-slate-900">Separate Phone Account</p>
+                                    <p class="text-xs text-slate-500 mt-1">If the bill is in the LLC name, the deduction is ironclad.</p>
+                                </div>
+                            </label>
+                            <label class="flex items-start gap-5 p-6 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition group static-check">
+                                <input type="checkbox" class="mt-1 w-6 h-6 text-emerald-600 rounded-lg border-slate-300">
+                                <div>
+                                    <p class="font-bold text-slate-900">Signed as "Manager"</p>
+                                    <p class="text-xs text-slate-500 mt-1">Signature block: [Name], Manager of [Business Name] LLC.</p>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="mt-8 border-t pt-8">
+                            <h5 class="font-bold text-sm mb-4">Add Custom Compliance Task</h5>
+                            <div class="flex gap-4">
+                                <input type="text" id="new-check-title" placeholder="Requirement (e.g., Annual Report)" class="px-4 py-2 border rounded-xl flex-grow">
+                                <button onclick="addCustomCheck()" class="bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-emerald-700">Add</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="xl:col-span-1 card p-10 bg-slate-900 text-white">
+                        <h4 class="text-xl font-black mb-6 flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-5 h-5 text-emerald-400"></i> Compliance Calendar
+                        </h4>
+                        <div class="space-y-6" id="compliance-calendar">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="state.js"></script>
+    <script>
+        function initApp() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                setTimeout(initApp, 100);
+                return;
+            }
+            
+            const profile = window.StateStore.state.profile;
+            if (profile && profile.name) {
+                // Rehydrate inputs from local state
+                const grossInput = document.getElementById('gross-income');
+                const expensesInput = document.getElementById('expenses');
+                if (grossInput) grossInput.value = window.StateStore.state.grossRevenue || profile.rev || 95000;
+                if (expensesInput) expensesInput.value = window.StateStore.state.bizExpenses || 25000;
+                
+                document.getElementById('setup-wizard').classList.add('hidden');
+                document.getElementById('app-content').classList.remove('hidden');
+            } else {
+                document.getElementById('setup-wizard').classList.remove('hidden');
+                document.getElementById('app-content').classList.add('hidden');
+            }
+
+            renderCustomPerks();
+            renderCustomChecks();
+            renderComplianceCalendar();
+
+            switchTab('dashboard');
+            calcTaxes();
+            document.querySelectorAll('#legal-checklist input').forEach(c => {
+                c.addEventListener('change', updateVeilScore);
+            });
+            updateVeilScore();
+        }
+
+        function finishSetup() {
+            const name = document.getElementById('wizard-name').value.trim();
+            const date = document.getElementById('wizard-date').value;
+            const rev = document.getElementById('wizard-rev').value || 50000;
+            
+            if(!name || !date) return alert("LLC Name and Date Formed are required.");
+
+            window.StateStore.update('profile', { name, date, rev });
+            window.StateStore.update('grossRevenue', rev);
+
+            document.getElementById('setup-wizard').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('hidden');
+            
+            const grossInput = document.getElementById('gross-income');
+            if (grossInput) grossInput.value = rev;
+            calcTaxes();
+        }
+
+        window.addEventListener('StateStoreReady', initApp);
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-white/10', 'text-white');
+                btn.classList.add('text-slate-400');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) activeBtn.classList.add('bg-white/10', 'text-white');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function calcTaxes() {
+            const grossInput = document.getElementById('gross-income');
+            const expensesInput = document.getElementById('expenses');
+            if (!grossInput || !expensesInput) return;
+
+            const gross = parseFloat(grossInput.value) || 0;
+            const expenses = parseFloat(expensesInput.value) || 0;
+            
+            // Sync to State
+            window.StateStore.state.grossRevenue = gross;
+            window.StateStore.state.bizExpenses = expenses;
+
+            const netProfit = Math.max(0, gross - expenses);
+
+            const seTax = (netProfit * 0.9235) * 0.153;
+            const qbiDeduction = netProfit * 0.20;
+            const halfSE = seTax / 2;
+            const taxableFed = Math.max(0, netProfit - halfSE - 14600 - qbiDeduction);
+            
+            let fedTax = 0;
+            let marginalRate = 0; // Federal marginal bracket
+            if (taxableFed > 0) {
+                if (taxableFed <= 11600) { fedTax = taxableFed * 0.10; marginalRate = 0.10; }
+                else if (taxableFed <= 47150) { fedTax = 1160 + (taxableFed - 11600) * 0.12; marginalRate = 0.12; }
+                else { fedTax = 5426 + (taxableFed - 47150) * 0.22; marginalRate = 0.22; }
+            }
+
+            const azTax = Math.max(0, netProfit - halfSE - 14600) * 0.025;
+            const totalTax = seTax + fedTax + azTax;
+            const takeHome = netProfit - totalTax;
+            
+            // Calculate total marginal rate: Fed Bracket + AZ Flat + SE Tax adjusted
+            // This will be exposed to the Write-Off Analyzer later
+            const totalMarginalRate = marginalRate + 0.025 + 0.1413;
+            window.StateStore.state.marginalRate = totalMarginalRate;
+
+            // Safe DOM updates
+            const updateText = (id, text) => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = text;
+            };
+
+            updateText('tax-se', `$${Math.round(seTax).toLocaleString()}`);
+            updateText('tax-fed', `$${Math.round(fedTax).toLocaleString()}`);
+            updateText('tax-az', `$${Math.round(azTax).toLocaleString()}`);
+            updateText('tax-qbi', `-$${Math.round(qbiDeduction * 0.12).toLocaleString()}*`);
+            updateText('monthly-takehome', `$${Math.round(takeHome / 12).toLocaleString()}`);
+            updateText('dash-takehome', `$${Math.round(takeHome).toLocaleString()}`);
+            updateText('sidebar-savings', `$${Math.round(expenses * 0.081).toLocaleString()} Saved`);
+            updateText('net-profit-display', `$${Math.round(netProfit).toLocaleString()}`);
+            
+            const effectiveRate = netProfit > 0 ? (totalTax / netProfit) * 100 : 0;
+            updateText('effective-rate', `${effectiveRate.toFixed(1)}%`);
+            
+            // Progress Bar safe updates
+            const target = 100000;
+            const percentage = Math.min(100, (netProfit / target) * 100);
+            const progressEl = document.getElementById('profit-progress');
+            if (progressEl) progressEl.style.width = percentage + '%';
+            updateText('profit-target-percent', Math.round(percentage) + '%');
+        }
+
+        function updateVeilScore() {
+            const checks = document.querySelectorAll('#legal-checklist input');
+            if (checks.length === 0) return;
+            const score = Math.round((Array.from(checks).filter(c => c.checked).length / checks.length) * 100);
+            const protEl = document.getElementById('dash-protection');
+            if (protEl) {
+                protEl.innerText = score + '%';
+                protEl.className = score < 50 ? "text-4xl font-black text-rose-600" : score < 100 ? "text-4xl font-black text-amber-500" : "text-4xl font-black text-emerald-600";
+            }
+        }
+        
+        function addCustomPerk() {
+            const title = document.getElementById('new-perk-title').value.trim();
+            const desc = document.getElementById('new-perk-desc').value.trim();
+            if(!title) return;
+            const perks = window.StateStore.state.customPerks || [];
+            perks.push({ title, desc });
+            window.StateStore.update('customPerks', perks);
+            document.getElementById('new-perk-title').value = '';
+            document.getElementById('new-perk-desc').value = '';
+            renderCustomPerks();
+        }
+
+        function renderCustomPerks() {
+            const container = document.getElementById('perks-container');
+            if(!container) return;
+            document.querySelectorAll('.custom-perk-card').forEach(e => e.remove());
+            const perks = window.StateStore.state.customPerks || [];
+            perks.forEach((p, idx) => {
+                const div = document.createElement('div');
+                div.className = 'card p-6 border-l-4 border-amber-500 custom-perk-card';
+                div.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h4 class="font-black text-lg">${p.title}</h4>
+                        <button onclick="removePerk(${idx})" class="text-rose-500 hover:text-rose-700 font-bold text-xs uppercase">Remove</button>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">${p.desc}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function removePerk(idx) {
+            window.StateStore.state.customPerks.splice(idx, 1);
+            window.StateStore.update('customPerks', window.StateStore.state.customPerks);
+            renderCustomPerks();
+        }
+
+        function addCustomCheck() {
+            const title = document.getElementById('new-check-title').value.trim();
+            if(!title) return;
+            const checks = window.StateStore.state.customChecks || [];
+            checks.push({ title, checked: false });
+            window.StateStore.update('customChecks', checks);
+            document.getElementById('new-check-title').value = '';
+            renderCustomChecks();
+        }
+
+        function toggleCustomCheck(idx, isChecked) {
+            window.StateStore.state.customChecks[idx].checked = isChecked;
+            window.StateStore.update('customChecks', window.StateStore.state.customChecks);
+            updateVeilScore();
+        }
+
+        function removeCheck(idx) {
+            window.StateStore.state.customChecks.splice(idx, 1);
+            window.StateStore.update('customChecks', window.StateStore.state.customChecks);
+            renderCustomChecks();
+            updateVeilScore();
+        }
+
+        function renderCustomChecks() {
+            const container = document.getElementById('legal-checklist');
+            if(!container) return;
+            document.querySelectorAll('.custom-check-item').forEach(e => e.remove());
+            const checks = window.StateStore.state.customChecks || [];
+            checks.forEach((c, idx) => {
+                const label = document.createElement('label');
+                label.className = 'flex items-start gap-5 p-6 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition group custom-check-item relative';
+                label.innerHTML = `
+                    <input type="checkbox" onchange="toggleCustomCheck(${idx}, this.checked)" ${c.checked ? 'checked' : ''} class="mt-1 w-6 h-6 text-emerald-600 rounded-lg border-slate-300">
+                    <div>
+                        <p class="font-bold text-slate-900">${c.title}</p>
+                    </div>
+                    <button onclick="removeCheck(${idx})" class="absolute top-4 right-4 text-xs text-slate-400 hover:text-rose-500 font-bold uppercase">Remove</button>
+                `;
+                container.appendChild(label);
+            });
+            document.querySelectorAll('#legal-checklist .static-check input').forEach(c => {
+                c.removeEventListener('change', updateVeilScore);
+                c.addEventListener('change', updateVeilScore);
+            });
+            updateVeilScore();
+        }
+
+        function calculateROI() {
+            const cost = parseFloat(document.getElementById('analyze-cost').value) || 0;
+            const catLimit = parseFloat(document.getElementById('analyze-cat').value);
+            
+            // Read the dynamic marginal rate set by calcTaxes() in Batch 3
+            const marginalRate = window.StateStore?.state?.marginalRate || 0.15; 
+            
+            const deductibleAmount = cost * catLimit;
+            const taxSavings = deductibleAmount * marginalRate;
+            const trueCost = cost - taxSavings;
+            
+            document.getElementById('analyze-savings').innerText = `+$${Math.round(taxSavings).toLocaleString()}`;
+            document.getElementById('analyze-true-cost').innerText = `$${Math.round(trueCost).toLocaleString()}`;
+            
+            const warningEl = document.getElementById('analyze-warning');
+            if (catLimit === 0 && cost > 0) {
+                warningEl.classList.remove('hidden');
+            } else {
+                warningEl.classList.add('hidden');
+            }
+        }
+
+        function renderComplianceCalendar() {
+            const container = document.getElementById('compliance-calendar');
+            if(!container) return;
+            
+            const profile = window.StateStore.state.profile;
+            if(!profile || !profile.date) {
+                container.innerHTML = `<p class="text-sm text-slate-500">Awaiting profile initialization...</p>`;
+                return;
+            }
+
+            // Split the date string manually to avoid timezone shift bugs (e.g., "2024-03-18")
+            const parts = profile.date.split('-');
+            if(parts.length < 3) return;
+            const formedDate = new Date(parts[0], parts[1] - 1, parts[2]);
+            
+            const nextAnniversary = new Date(formedDate);
+            nextAnniversary.setFullYear(new Date().getFullYear());
+            if (nextAnniversary < new Date()) nextAnniversary.setFullYear(new Date().getFullYear() + 1);
+
+            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+
+            container.innerHTML = `
+                <div class="p-5 bg-slate-800 rounded-2xl border border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">State Compliance Review</p>
+                    <h5 class="font-bold text-lg text-emerald-400 mb-1">Due: ${nextAnniversary.toLocaleDateString('en-US', options)}</h5>
+                    <p class="text-xs text-slate-300">Annual entity review and state fee checks (Anniversary of formation).</p>
+                </div>
+                <div class="p-5 bg-slate-800 rounded-2xl border border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Q1 Estimated Taxes</p>
+                    <h5 class="font-bold text-lg text-rose-400 mb-1">Due: Apr 15, ${new Date().getFullYear()}</h5>
+                    <p class="text-xs text-slate-300">IRS Form 1040-ES due if you expect to owe >$1,000 this year.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
