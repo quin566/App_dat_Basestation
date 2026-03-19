@@ -207,8 +207,8 @@
                     <i data-lucide="camera" class="w-6 h-6 text-white"></i>
                 </div>
                 <div>
-                    <h1 style="font-family: 'Cormorant Garamond', serif; font-size:1.4rem; font-style:italic; font-weight:600; line-height:1.1;">The Love Lens</h1>
-                    <p class="text-[10px] uppercase font-black tracking-widest mt-1" style="color: #94B5A3; letter-spacing: 0.15em;">Command Center</p>
+                    <h1 style="font-family: 'Cormorant Garamond', serif; font-size:1.4rem; font-style:italic; font-weight:600; line-height:1.1; color:#F4EEE4;">The Love Lens</h1>
+                    <p class="text-[10px] uppercase font-black tracking-widest mt-1" style="color: #B8CCBF; letter-spacing: 0.15em;">Command Center</p>
                 </div>
             </div>
 
@@ -2368,73 +2368,85 @@
                 tab: 'dashboard',
                 title: '🐰 Welcome to Your Command Center!',
                 body: "This is the <strong>Dashboard</strong> — your daily home base. It shows your upcoming shoot dates, quarterly tax deadlines, and AZ tax savings at a glance. Everything updates automatically as you use the app.",
-                icon: 'layout-grid'
+                icon: 'layout-grid',
+                scrollTo: null
             },
             {
                 tab: 'taxes',
                 title: '📊 Tax Planner',
                 body: "Enter your annual revenue and expenses here for a fully calculated tax breakdown. Includes: SE tax, AZ flat tax, QBI deduction, SEP-IRA and health insurance deductions, and your marginal bracket. Click any <strong>ⓘ</strong> badge for the exact IRS source.",
-                icon: 'calculator'
+                icon: 'calculator',
+                scrollTo: 'gross-income'
             },
             {
                 tab: 'taxes',
                 title: '📅 Quarterly Estimated Tax Tracker',
-                body: "Scroll down in the Tax Planner to see your quarterly payment amounts and exact 2025 due dates for both Federal (1040-ES) and Arizona (Form 140ES). Check each quarter off as you pay it — it's saved permanently.",
-                icon: 'calendar'
+                body: "Your quarterly payment amounts and exact 2025 due dates for both Federal (1040-ES) and Arizona (Form 140ES) are right below. Check each quarter off as you pay it — it's saved permanently.",
+                icon: 'calendar',
+                scrollTo: 'quarterly-tracker'
             },
             {
                 tab: 'taxes',
                 title: '✅ Annual Compliance Checklist',
-                body: "The compliance checklist at the bottom of Tax Planner walks you through every important action across Q1–Q4 and annually — from 1099s to bank reconciliation to SEP-IRA deadlines. Check things off as you go.",
-                icon: 'shield-check'
+                body: "The compliance checklist walks you through every important action across Q1–Q4 and annually — from 1099s to bank reconciliation to SEP-IRA deadlines. Check things off as you go.",
+                icon: 'shield-check',
+                scrollTo: 'compliance-checklist'
             },
             {
                 tab: 'taxguide',
                 title: '📚 Write-Off Guide',
                 body: "Every deduction category shows its deductibility %, exact IRS authority, and what records you must keep to survive an audit. The Gray Zone section covers commonly misunderstood mixed-use expenses.",
-                icon: 'book-open'
+                icon: 'book-open',
+                scrollTo: null
             },
             {
                 tab: 'pricing',
                 title: '💰 Pricing & Margins',
                 body: "Enter your income goals and operating data to calculate your <strong>Minimum Viable Price</strong> — the floor you must charge per shoot to hit your take-home income target. Also includes the Destination Elopement ROI calculator.",
-                icon: 'tags'
+                icon: 'tags',
+                scrollTo: null
             },
             {
                 tab: 'analyzer',
                 title: '🔬 Write-Off Analyzer',
                 body: "Enter any hypothetical expense to instantly see your true after-tax cost based on your actual marginal rate. Great for deciding whether to buy gear, renew software, or evaluate any business expense.",
-                icon: 'scan'
+                icon: 'scan',
+                scrollTo: null
             },
             {
                 tab: 'emails',
                 title: '✉️ Email Templates',
                 body: "Your pre-loaded templates (Gallery Delivery, Booking Reminder, Pre-Wedding Touch Base) are ready to use. Connect your Gmail in Settings to read active client inquiry threads and send replies directly from the app.",
-                icon: 'mail'
+                icon: 'mail',
+                scrollTo: null
             },
             {
                 tab: 'social',
                 title: '📱 Social Planner',
                 body: "Plan your Instagram Reels and TikTok posts on a Kanban board — Drafts, Needs Audio, Ready to Post, and Published. Keep your content pipeline moving so you stay consistent on social.",
-                icon: 'film'
+                icon: 'film',
+                scrollTo: null
             },
             {
                 tab: 'discounts',
                 title: '🏦 Vendor Perks',
                 body: "Curated accounts, cards, and tools specifically for photographers: Novo or Relay for zero-fee business banking, Amex BBP for 2x points on all purchases, B&H B2B for tax-free gear purchases, and more.",
-                icon: 'badge-percent'
+                icon: 'badge-percent',
+                scrollTo: null
             },
             {
                 tab: 'legal',
                 title: '🛡️ Legal Veil Health',
                 body: "Track your LLC compliance: separate bank account, signing correctly as Manager, statutory agent, TPT license, and operating agreement. Your veil score reflects how protected you are from personal liability.",
-                icon: 'shield'
+                icon: 'shield',
+                scrollTo: null
             },
             {
                 tab: 'settings',
                 title: '⚙️ Settings',
                 body: "This is where you are now! Update your business profile, connect Gmail, export your data, or take this tour again anytime. Your app auto-updates from GitHub every 3 minutes — you never need to do anything to get new features.",
-                icon: 'settings'
+                icon: 'settings',
+                scrollTo: null
             },
         ];
 
@@ -2452,6 +2464,22 @@
             if (!step) { document.getElementById('tour-modal')?.remove(); return; }
 
             switchTab(step.tab);
+
+            // Scroll to the relevant element after a short delay for tab transition
+            if (step.scrollTo) {
+                setTimeout(() => {
+                    const el = document.getElementById(step.scrollTo);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 120);
+            } else {
+                // Scroll main content area to top for steps without a specific target
+                setTimeout(() => {
+                    const main = document.querySelector('main');
+                    if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 120);
+            }
 
             const modal = document.createElement('div');
             modal.id = 'tour-modal';
