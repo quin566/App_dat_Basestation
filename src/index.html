@@ -144,15 +144,16 @@
         .tax-tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 140%; left: 50%; width: 220px; padding: 0.75rem; background: var(--olive); color: white; border-radius: 0.75rem; font-size: 0.75rem; line-height: 1.5; transform: translateX(-50%); z-index: 50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15); pointer-events: none; text-transform: none; font-weight: normal; }
         .tax-tooltip:hover::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: var(--olive) transparent transparent transparent; pointer-events: none; z-index: 50; }
 
-        /* <i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i> Info Badge Popover System */
+        /* ⓘ Info Badge Popover System */
         .info-badge {
             display: inline-flex; align-items: center; justify-content: center;
-            width: 1.25rem; height: 1.25rem; border-radius: 9999px;
+            width: 1rem; height: 1rem; border-radius: 9999px;
             background: var(--sage-pale); color: var(--sage-deep);
-            cursor: pointer;
-            margin-left: 0.5rem; vertical-align: middle;
-            border: 1.5px solid var(--sage-light); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            flex-shrink: 0; position: relative; top: -1.5px;
+            font-size: 0.6rem; font-weight: 800; cursor: pointer;
+            margin-left: 0.375rem; vertical-align: middle;
+            border: 1.5px solid var(--sage-light); transition: all 0.15s;
+            flex-shrink: 0; position: relative; top: -1px;
+            font-family: 'Jost', sans-serif;
         }
         .info-badge:hover { background: var(--sage); color: white; border-color: var(--sage); }
         .info-popover-overlay { position: fixed; inset: 0; z-index: 999; }
@@ -245,12 +246,14 @@
                 <div class="p-2.5 rounded-xl" style="background: linear-gradient(135deg, #6B8C7A 0%, #4A6657 100%); box-shadow: 0 4px 12px rgba(74,102,87,0.4);">
                     
                 <div class="p-2.5 rounded-xl flex items-center justify-center" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                    <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#D4E4DC;"><path d="M10 5c0-3 1.5-3 2-3s2 0 2 3c0 2.5-2 2.5-2 5" />
-<path d="M14 5c0-3-1.5-3-2-3s-2 0-2 3c0 2.5 2 2.5 2 5" />
-<path d="M12 10v4" />
-<circle cx="12" cy="17" r="3" />
-<path d="M9 19c-1 1-2 1-3 0s-1-2 0-3" />
-<path d="M15 19c1 1 2 1 3 0s1-2 0-3" /></svg>
+                    <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#D4E4DC;">
+                        <path d="M10 5a2 2 0 1 1 4 0c0 2.5-2 2.5-2 5"/>
+                        <path d="M12 10v4"/>
+                        <path d="M14 14a2 2 0 1 1-4 0c0-2.5 2-2.5 2-5"/>
+                        <circle cx="12" cy="17" r="3"/>
+                        <path d="M9 19c-1 1-2 1-3 0s-1-2 0-3"/>
+                        <path d="M15 19c1 1 2 1 3 0s1-2 0-3"/>
+                    </svg>
                 </div>
                 </div>
                 <div>
@@ -316,76 +319,67 @@
                         <h2 class="text-5xl font-black text-[#2C2511] tracking-tight mb-2">Executive Dashboard</h2>
                         <p class="text-[#8A7A6A] mt-2">LLC Status: <strong>Operating (Arizona)</strong> • Tax Year: <strong>2026</strong></p>
                     <div class="absolute top-0 right-0 opacity-[0.03] pointer-events-none hidden lg:block" style="transform: translate(20%, -20%);">
-                        <svg width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sage);"><path d="M10 5c0-3 1.5-3 2-3s2 0 2 3c0 2.5-2 2.5-2 5" />
-<path d="M14 5c0-3-1.5-3-2-3s-2 0-2 3c0 2.5 2 2.5 2 5" />
-<path d="M12 10v4" />
-<circle cx="12" cy="17" r="3" />
-<path d="M9 19c-1 1-2 1-3 0s-1-2 0-3" />
-<path d="M15 19c1 1 2 1 3 0s1-2 0-3" /></svg>
+                        <svg width="400" height="400" viewBox="0 0 24 24" fill="var(--sage)">
+                            <path d="M10 5a2 2 0 1 1 4 0c0 2.5-2 2.5-2 5m0 0v4m2 0a2 2 0 1 1-4 0c0-2.5 2-2.5 2-5m-3 10c-1 1-2 1-3 0s-1-2 0-3m9 3c1 1 2 1 3 0s1-2 0-3"/>
+                        </svg>
                     </div>
                     </div>
                 </header>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Primary Financials -->
-                    <div class="card p-10 text-white flex flex-col justify-between" style="background: linear-gradient(135deg, var(--sage-deep), var(--ocean-deep)); border: none; box-shadow: 0 20px 40px -10px rgba(61,112,128,0.25);">
+                    <div class="card p-8 text-white xl:col-span-1 h-full flex flex-col justify-between" style="background: linear-gradient(135deg, var(--sage-deep), var(--ocean-deep)); border: none; box-shadow: 0 20px 40px -10px rgba(61,112,128,0.25);">
                         <div>
-                            <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Annual Take-Home (Est)</p>
-                            <h3 id="dash-takehome" class="text-5xl font-black text-[var(--sage-pale)]">$0</h3>
-                            <p class="text-xs text-white/50 mt-6 leading-relaxed">Tracking toward your $100,000 net profit goal. Optimized for Section 199A QBI maximization.</p>
+                            <p class="text-[11px] font-black text-[#9C8A7A] uppercase tracking-widest mb-1">Annual Take-Home (Est)</p>
+                            <h3 id="dash-takehome" class="text-4xl font-black text-[#6B8C7A]">$0</h3>
+                            <p class="text-xs text-[#9C8A7A] mt-4 leading-relaxed">Tracking toward your $100,000 net profit baseline for Section 199A QBI maximization.</p>
                         </div>
-                        <div class="mt-10">
-                            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2"><span class="text-white/40">Profit Target</span><span id="profit-target-percent" class="text-[var(--sage-pale)]">0%</span></div>
-                            <div class="w-full bg-black/20 h-2 rounded-full overflow-hidden">
-                                <div id="profit-progress" class="bg-[var(--sage-pale)] h-full transition-all duration-1000" style="width: 0%"></div>
+                        <div class="mt-6">
+                            <div class="flex justify-between text-xs mb-1"><span class="text-[#9C8A7A]">Profit Target</span><span id="profit-target-percent" class="font-bold text-[#6B8C7A]">0%</span></div>
+                            <div class="w-full bg-[#3A3830] h-2 rounded-full overflow-hidden">
+                                <div id="profit-progress" class="bg-[var(--sage)] h-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Compliance / Tax Deadlines -->
-                    <div class="card p-10 flex flex-col justify-between cursor-pointer hover:shadow-2xl transition-all group" onclick="switchTab('taxes')">
+                    <div class="card p-8 border-t-4 border-[var(--ocean)] xl:col-span-1 shadow-md h-full flex flex-col justify-between">
                         <div>
-                            <div class="flex justify-between items-start mb-6">
-                                <p class="text-[10px] font-black text-[var(--text-soft)] uppercase tracking-widest">Next Tax Milestone</p>
-                                <div class="w-10 h-10 rounded-full bg-[var(--ocean-soft)]/20 flex items-center justify-center text-[var(--ocean)] group-hover:bg-[var(--ocean)] group-hover:text-white transition-colors">
-                                    <i data-lucide="calendar-check" class="w-5 h-5"></i>
-                                </div>
+                            <div class="flex justify-between items-start mb-4">
+                                <p class="text-[11px] font-black text-[var(--text-soft)] uppercase tracking-widest">Next Tax Milestone</p>
+                                <i data-lucide="calendar-alert" class="w-5 h-5 text-[var(--ocean)]"></i>
                             </div>
-                            <h3 id="dash-milestone-date" class="text-4xl font-black text-[var(--charcoal)] mb-1">...</h3>
-                            <p id="dash-milestone-label" class="text-sm font-bold text-[var(--text-mid)]">Calculating...</p>
+                            <h3 class="text-3xl font-black text-[#2C2511] mb-1">April 15th</h3>
+                            <p class="text-sm font-bold text-[#5C4A3A]">Q1 Estimated Tax Payment</p>
                         </div>
-                        <div class="mt-8 p-5 rounded-2xl bg-[var(--linen)] border border-[var(--border-soft)]">
-                            <p class="text-[10px] font-bold text-[var(--ocean-deep)] uppercase tracking-widest mb-2">Quarterly Action</p>
-                            <p id="dash-milestone-action" class="text-xs font-medium text-[var(--text-mid)] leading-relaxed">Select to view your compliance checklist and estimated payments.</p>
-                        </div>
+                        <ul class="text-[11px] font-bold text-[#8A7A6A] mt-6 space-y-3">
+                            <li class="flex gap-3 items-center"><i data-lucide="circle-check" class="w-4 h-4 text-[#4A6657]"></i> Annual Report Filed (AZCC)</li>
+                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-[#C0B0A0]"></i> Prepare CPA Profit/Loss</li>
+                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-[#C0B0A0]"></i> Audit Equipment Depreciation</li>
+                        </ul>
                     </div>
 
-                    <!-- Operational Health -->
-                    <div class="card p-10 flex flex-col justify-between">
+                    <!-- CRM / Active Pipeline -->
+                    <div class="card p-8 border-t-4 border-[#4A6657] shadow-md xl:col-span-1 h-full flex flex-col justify-between">
                         <div>
-                            <div class="flex justify-between items-start mb-6">
-                                <p class="text-[10px] font-black text-[var(--text-soft)] uppercase tracking-widest">Legal Veil Status</p>
-                                <div class="w-10 h-10 rounded-full bg-[var(--sage-pale)] flex items-center justify-center text-[var(--sage-deep)]">
-                                    <i data-lucide="shield-check" class="w-5 h-5"></i>
-                                </div>
+                            <div class="flex justify-between items-start mb-4">
+                                <p class="text-[11px] font-black text-[#6B8C7A]/70 uppercase tracking-widest">Active Pipeline</p>
+                                <i data-lucide="users" class="w-5 h-5 text-blue-500"></i>
                             </div>
-                            <div class="flex items-baseline gap-2">
-                                <h3 id="dash-protection" class="text-5xl font-black text-[var(--sage-deep)] tracking-tighter">0%</h3>
-                                <p class="text-xs font-bold text-[var(--text-soft)] uppercase tracking-widest">Protected</p>
+                            <div class="flex items-end gap-3 mb-2">
+                                <h3 class="text-4xl font-black text-[#2C2511]">4</h3>
+                                <p class="text-sm text-[#8A7A6A] font-bold mb-1">Open Inquiries</p>
                             </div>
                         </div>
-                        <div class="mt-8">
-                            <p class="text-xs font-medium text-[var(--text-mid)] mb-4">Complete your <span class="font-bold underline cursor-pointer" onclick="switchTab('taxes')">Compliance Checklist</span> to strengthen your corporate veil.</p>
-                            <div class="flex -space-x-2">
-                                <div class="w-8 h-8 rounded-full bg-[var(--sage-pale)] border-2 border-white flex items-center justify-center text-[8px] font-bold">AZ</div>
-                                <div class="w-8 h-8 rounded-full bg-[var(--ocean-soft)] border-2 border-white flex items-center justify-center text-[8px] font-bold">IRS</div>
-                                <div class="w-8 h-8 rounded-full bg-[var(--parchment)] border-2 border-white flex items-center justify-center text-[8px] font-bold opacity-50">+</div>
-                            </div>
+                        <div class="space-y-3 mt-4">
+                            <div class="flex justify-between text-xs p-2.5 bg-[#FAF8F3] rounded-lg"><span class="font-bold text-[#4A4030]">Retainers Pending</span><span class="text-[#8A7A6A] font-bold">2</span></div>
+                            <div class="flex justify-between text-xs p-2.5 bg-[#FAF8F3] rounded-lg"><span class="font-bold text-[#4A4030]">Contract Signatures</span><span class="text-[#8A7A6A] font-bold">1</span></div>
+                            <div class="flex justify-between text-xs p-2.5 bg-[#FAF8F3] rounded-lg"><span class="font-bold text-[#4A4030]">Upcoming Shoots</span><span class="text-[#8A7A6A] font-bold">3</span></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <section class="card p-8">
                         <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
                             <i data-lucide="zap" class="w-5 h-5 text-amber-500 fill-amber-500"></i> Operational Priorities
@@ -408,8 +402,130 @@
                 </div>
             </div>
 
+            <!-- Tab: Taxes (Three-Pillar Redesign) -->
+            <div id="taxes" class="tab-content space-y-10">
+                <header class="flex justify-between items-end">
+                    <div>
+                        <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Tax Strategy Center</h2>
+                        <p class="text-[#8A7A6A] mt-2">2026 Projections • Arizona Sole Proprietorship (Schedule C)</p>
+                    </div>
+                </div>
 
-            <div id="analyzer" class="tab-content space-y-10">
+                <div class="grid grid-cols-1 xl:grid-cols-12 gap-10">
+                    <!-- Pillar 1: Revenue & Expenses -->
+                    <div class="xl:col-span-4 space-y-8">
+                        <div class="card p-8 border-l-4 border-[var(--sage)]">
+                            <h4 class="text-xs font-black text-[#9C8A7A] uppercase tracking-widest mb-6">Pillar 1: Business Core</h4>
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Annual Gross Revenue ($)</label>
+                                    <div class="relative">
+                                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-[#5C4A3A]">$</span>
+                                        <input type="number" id="tax-revenue" value="95000" class="w-full pl-8 pr-4 py-3 bg-[#FAF8F3] border rounded-xl font-black text-lg focus:ring-2 focus:ring-[var(--sage)]" oninput="calcTaxes()">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Direct Business Expenses ($)</label>
+                                    <div class="relative">
+                                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-[#5C4A3A]">$</span>
+                                        <input type="number" id="tax-expenses" value="25000" class="w-full pl-8 pr-4 py-3 bg-[#FAF8F3] border rounded-xl font-black text-lg focus:ring-2 focus:ring-[var(--sage)]" oninput="calcTaxes()">
+                                    </div>
+                                    <p class="text-[10px] text-[#9C8A7A] mt-2 italic">Excluding health insurance & retirement.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 2: Strategy & Deductions -->
+                    <div class="xl:col-span-4 space-y-8">
+                        <div class="card p-8 border-l-4 border-[var(--ocean)]">
+                            <h4 class="text-xs font-black text-[#9C8A7A] uppercase tracking-widest mb-6">Pillar 2: Tax Strategy</h4>
+                            <div class="space-y-5">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="block text-xs font-bold text-[#8A7A6A] uppercase">Annual Health Insurance ($)</label>
+                                        <div class="w-4 h-4 rounded-full border border-[#C0B0A0] text-[#C0B0A0] flex items-center justify-center text-[10px] cursor-help group relative">? <span class="hidden group-hover:block absolute bottom-6 right-0 w-48 p-2 bg-[#2C2A22] text-white text-[9px] rounded-lg shadow-xl z-10 leading-relaxed italic">100% deductible for self-employed individuals (not an itemized deduction).</span></div>
+                                    </div>
+                                    <input type="number" id="tax-health" value="0" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcTaxes()">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="block text-xs font-bold text-[#8A7A6A] uppercase">SEP-IRA / Solo 401k ($)</label>
+                                        <div class="w-4 h-4 rounded-full border border-[#C0B0A0] text-[#C0B0A0] flex items-center justify-center text-[10px] cursor-help group relative">? <span class="hidden group-hover:block absolute bottom-6 right-0 w-48 p-2 bg-[#2C2A22] text-white text-[9px] rounded-lg shadow-xl z-10 leading-relaxed italic">Max: ~20% of net profit up to $69,000 for 2026.</span></div>
+                                    </div>
+                                    <input type="number" id="tax-sep-ira" value="0" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcTaxes()">
+                                    <p id="sep-cap-warning" class="text-[9px] text-rose-500 font-bold mt-1 hidden"></p>
+                                </div>
+                                <div class="pt-4 border-t border-slate-100">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <p class="text-[10px] font-black uppercase tracking-widest text-[#9C8A7A]">Quick Calculators</p>
+                                        <span class="text-[9px] font-bold text-[var(--sage)] bg-[var(--sage-pale)] px-2 py-0.5 rounded uppercase">Verified IRS 2026</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="p-3 bg-[#FAF8F3] rounded-xl border border-dotted border-[#D8D0C0] cursor-pointer hover:bg-[#F4F0E6] transition" onclick="switchTab('analyzer')">
+                                            <p class="text-[9px] font-bold text-[#8A7A6A] uppercase mb-1">🚗 Mileage</p>
+                                            <p id="tax-mileage-val" class="font-bold text-sm">$0</p>
+                                        </div>
+                                        <div class="p-3 bg-[#FAF8F3] rounded-xl border border-dotted border-[#D8D0C0] cursor-pointer hover:bg-[#F4F0E6] transition" onclick="switchTab('analyzer')">
+                                            <p class="text-[9px] font-bold text-[#8A7A6A] uppercase mb-1">🏠 Home Office</p>
+                                            <p id="tax-office-val" class="font-bold text-sm">$0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 3: Results -->
+                    <div class="xl:col-span-4">
+                        <div class="card p-8 bg-[#2C2A22] text-white shadow-2xl relative overflow-hidden h-full">
+                            <!-- Background Accent -->
+                            <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-[var(--sage)] rounded-full blur-[80px] opacity-20"></div>
+                            
+                            <h4 class="text-xs font-black text-[#9C8A7A] uppercase tracking-widest mb-8">Pillar 3: The Bottom Line</h4>
+                            
+                            <div class="space-y-8 relative z-10">
+                                <div class="pb-6 border-b border-white/10">
+                                    <p class="text-[10px] font-black text-[#9C8A7A] uppercase mb-2">Net Estimated Profit</p>
+                                    <h3 id="tax-result-profit" class="text-5xl font-black text-white">$0</h3>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-y-6">
+                                    <div>
+                                        <p class="text-[9px] font-black text-[#9C8A7A] uppercase mb-1">Total Tax Owed</p>
+                                        <h5 id="tax-result-total" class="text-xl font-black text-rose-400">$0</h5>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-black text-[#9C8A7A] uppercase mb-1">Effective Rate</p>
+                                        <h5 id="tax-result-rate" class="text-xl font-black text-amber-400">0%</h5>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-black text-[#9C8A7A] uppercase mb-1">Tax Cash Saved</p>
+                                        <h5 id="tax-result-saved" class="text-xl font-black text-[#6B8C7A]">+$0</h5>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-black text-[#9C8A7A] uppercase mb-1">Fed Bracket</p>
+                                        <h5 id="tax-result-fed-bracket" class="text-xl font-black">0%</h5>
+                                    </div>
+                                </div>
+
+                                <div class="mt-8 pt-6 border-t border-white/10 space-y-4">
+                                    <div class="flex justify-between items-center text-[11px] font-bold">
+                                        <span class="text-[#9C8A7A]">Self-Employment Tax (15.3%)</span>
+                                        <span id="tax-result-se">$0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[11px] font-bold">
+                                        <span class="text-[#9C8A7A] flex items-center gap-1">QBI Deduction (20%) <div class="w-3 h-3 rounded-full border border-[#9C8A7A] text-[8px] flex items-center justify-center cursor-help group relative">? <span class="hidden group-hover:block absolute bottom-4 right-0 w-32 p-2 bg-white text-[#2C2A22] rounded shadow-lg">Section 199A deduction for qualified business income.</span></div></span>
+                                        <span id="tax-result-qbi" class="text-[#6B8C7A]">-$0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
                 <header>
                     <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Write-Off Analyzer</h2>
                     <p class="text-[#8A7A6A] mt-2">Deductibility and True Cost calculated via your live Marginal Rate.</p>
@@ -440,7 +556,7 @@
                     </div>
                     
                     <div class="card p-8 bg-[#2C2A22] text-white flex flex-col justify-center">
-                        <div class="mb-6 pb-6 border-b border-var(--border)">
+                        <div class="mb-6 pb-6 border-b border-slate-700">
                             <p class="text-[10px] text-[#9C8A7A] font-bold uppercase mb-1">Estimated Tax Savings</p>
                             <h3 id="analyze-savings" class="text-3xl font-black text-[#6B8C7A]">+$0</h3>
                             <p id="analyze-warning" class="text-xs text-rose-400 mt-2 hidden">⚠️ This category is not deductible.</p>
@@ -546,7 +662,7 @@
                                 <h3 id="pkg-mvp" class="text-5xl font-black text-indigo-400">$0</h3>
                                 <p class="text-xs text-[#9C8A7A] mt-2">The floor you must charge to hit your income goal after all overhead.</p>
                             </div>
-                            <div class="border-t border-var(--border) pt-5 grid grid-cols-2 gap-4">
+                            <div class="border-t border-slate-700 pt-5 grid grid-cols-2 gap-4">
                                 <div>
                                     <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Effective Hourly Rate</p>
                                     <h4 id="pkg-hourly" class="text-2xl font-black text-amber-400">$0/hr</h4>
@@ -556,7 +672,7 @@
                                     <h4 id="pkg-overhead-per-shoot" class="text-2xl font-black text-rose-400">$0</h4>
                                 </div>
                             </div>
-                            <div id="pkg-eval-section" class="border-t border-var(--border) pt-5 hidden">
+                            <div id="pkg-eval-section" class="border-t border-slate-700 pt-5 hidden">
                                 <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-3">Package Evaluation</p>
                                 <div class="grid grid-cols-2 gap-3">
                                     <div class="bg-[#3A3830] rounded-xl p-3">
@@ -615,12 +731,12 @@
                                 <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Total Travel Cost</p>
                                 <h4 id="dest-total-cost" class="text-3xl font-black text-rose-400">$0</h4>
                             </div>
-                            <div class="border-t border-var(--border) pt-6">
+                            <div class="border-t border-slate-700 pt-6">
                                 <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Travel Write-Off Value (Est.)</p>
                                 <h4 id="dest-writeoff" class="text-2xl font-black text-amber-400">$0</h4>
                                 <p class="text-xs text-[#9C8A7A] mt-1">Flights, hotel &amp; car: 100% deductible. Meals: 50%.</p>
                             </div>
-                            <div class="border-t border-var(--border) pt-6">
+                            <div class="border-t border-slate-700 pt-6">
                                 <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">True Take-Home Margin</p>
                                 <h4 id="dest-net-margin" class="text-4xl font-black text-[#6B8C7A]">$0</h4>
                                 <p id="dest-margin-pct" class="text-xs text-[#9C8A7A] mt-1">&mdash;</p>
@@ -654,13 +770,13 @@
                                 </div>
                                 <div>
                                     <label class="block text-[11px] font-black uppercase tracking-widest mb-2 flex items-center" style="color:var(--sage)">SE Health Insurance Premium
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Self-Employed Health Insurance Deduction" data-body="If you pay for your own health, dental, or vision insurance and are not eligible for employer-sponsored coverage, you can deduct 100% of those premiums above-the-line — directly reducing your AGI." data-ref="IRC §162(l) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Self-Employed Health Insurance Deduction" data-body="If you pay for your own health, dental, or vision insurance and are not eligible for employer-sponsored coverage, you can deduct 100% of those premiums above-the-line — directly reducing your AGI." data-ref="IRC §162(l) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
                                     </label>
                                     <input type="number" id="health-insurance" value="0" placeholder="e.g. 4800" class="w-full px-4 py-3 border rounded-xl font-bold" oninput="calcTaxes()">
                                 </div>
                                 <div>
                                     <label class="block text-[11px] font-black uppercase tracking-widest mb-2 flex items-center" style="color:var(--sage)">SEP-IRA / Solo 401(k) Contribution
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Self-Employed Retirement Deduction" data-body="Contributions to a SEP-IRA or Solo 401(k) are deductible above-the-line. SEP-IRA limit: 25% of net self-employment income, max $69,000 in 2024. This is one of the most powerful tax reduction tools for self-employed photographers." data-ref="IRC §404(a)(3) | IRS Pub 560" data-az="" data-link="https://www.irs.gov/publications/p560"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Self-Employed Retirement Deduction" data-body="Contributions to a SEP-IRA or Solo 401(k) are deductible above-the-line. SEP-IRA limit: 25% of net self-employment income, max $69,000 in 2024. This is one of the most powerful tax reduction tools for self-employed photographers." data-ref="IRC §404(a)(3) | IRS Pub 560" data-az="" data-link="https://www.irs.gov/publications/p560">ⓘ</span>
                                     </label>
                                     <input type="number" id="retirement" value="0" placeholder="e.g. 10000" class="w-full px-4 py-3 border rounded-xl font-bold" oninput="calcTaxes()">
                                     <p id="sep-max-hint" class="text-[10px] mt-1 font-bold" style="color:var(--sage)"></p>
@@ -677,7 +793,7 @@
                         <!-- AZ TPT Toggle -->
                         <div class="card p-6 border-l-4" style="border-color:var(--ocean)">
                             <h4 class="font-bold text-sm mb-3 flex items-center">AZ Transaction Privilege Tax (TPT)
-                                <span class="info-badge" onclick="showInfo(this)" data-title="Arizona Transaction Privilege Tax (TPT)" data-body="Arizona's version of sales tax is called TPT and is imposed on the seller, not the buyer. Photography services in AZ may be subject to TPT under the retail classification (ARS §42-5061) if you sell physical prints or albums. Digital-only delivery is generally NOT subject to TPT, but you should confirm with AZDOR for your specific situation." data-ref="ARS §42-5061 | AZ DOR TPT Guide" data-az="Check your TPT license status at azdor.gov. Filing is monthly or quarterly depending on annual volume." data-link="https://azdor.gov/transaction-privilege-tax"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Arizona Transaction Privilege Tax (TPT)" data-body="Arizona's version of sales tax is called TPT and is imposed on the seller, not the buyer. Photography services in AZ may be subject to TPT under the retail classification (ARS §42-5061) if you sell physical prints or albums. Digital-only delivery is generally NOT subject to TPT, but you should confirm with AZDOR for your specific situation." data-ref="ARS §42-5061 | AZ DOR TPT Guide" data-az="Check your TPT license status at azdor.gov. Filing is monthly or quarterly depending on annual volume." data-link="https://azdor.gov/transaction-privilege-tax">ⓘ</span>
                             </h4>
                             <label class="flex items-center gap-3 cursor-pointer">
                                 <input type="checkbox" id="tpt-toggle" onchange="calcTaxes()" class="w-4 h-4" style="accent-color:var(--ocean)">
@@ -700,7 +816,7 @@
                                 <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
                                     <span class="flex items-center font-medium text-sm" style="color:var(--text-mid)">
                                         Self-Employment Tax (15.3%)
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Federal Self-Employment Tax" data-body="SE tax covers Social Security (12.4%) and Medicare (2.9%) on your net self-employment earnings. You pay both the employee and employer share. However, you can deduct half of this tax above-the-line on Schedule 1 of your 1040." data-ref="IRC §1401 | IRC §164(f) | IRS Pub 334" data-az="" data-link="https://www.irs.gov/publications/p334"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Federal Self-Employment Tax" data-body="SE tax covers Social Security (12.4%) and Medicare (2.9%) on your net self-employment earnings. You pay both the employee and employer share. However, you can deduct half of this tax above-the-line on Schedule 1 of your 1040." data-ref="IRC §1401 | IRC §164(f) | IRS Pub 334" data-az="" data-link="https://www.irs.gov/publications/p334">ⓘ</span>
                                     </span>
                                     <span id="tax-se" class="font-black text-base" style="color:#b45309">$0</span>
                                 </div>
@@ -708,7 +824,7 @@
                                 <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
                                     <span class="flex items-center font-medium text-sm" style="color:var(--sage-deep)">
                                         ↳ SE Tax Deduction (Half)
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Deductible Half of SE Tax" data-body="The IRS allows you to deduct 50% of your SE tax as an above-the-line deduction on Schedule 1, Line 15. This reduces your adjusted gross income (AGI) and therefore your federal income tax — even if you don't itemize." data-ref="IRC §164(f) | Schedule 1, Line 15" data-az="" data-link="https://www.irs.gov/instructions/i1040s1"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Deductible Half of SE Tax" data-body="The IRS allows you to deduct 50% of your SE tax as an above-the-line deduction on Schedule 1, Line 15. This reduces your adjusted gross income (AGI) and therefore your federal income tax — even if you don't itemize." data-ref="IRC §164(f) | Schedule 1, Line 15" data-az="" data-link="https://www.irs.gov/instructions/i1040s1">ⓘ</span>
                                     </span>
                                     <span id="tax-se-ded" class="font-black text-sm" style="color:var(--sage)">-$0</span>
                                 </div>
@@ -716,7 +832,7 @@
                                 <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
                                     <span class="flex items-center font-medium text-sm" style="color:var(--sage-deep)">
                                         ↳ Health Insurance Deduction
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="SE Health Insurance Deduction" data-body="100% of your health, dental, and vision premiums are deductible above-the-line if you are not eligible for employer-sponsored coverage. This deduction cannot exceed your net profit from self-employment." data-ref="IRC §162(l) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="SE Health Insurance Deduction" data-body="100% of your health, dental, and vision premiums are deductible above-the-line if you are not eligible for employer-sponsored coverage. This deduction cannot exceed your net profit from self-employment." data-ref="IRC §162(l) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
                                     </span>
                                     <span id="tax-health-ded" class="font-black text-sm" style="color:var(--sage)">-$0</span>
                                 </div>
@@ -724,7 +840,7 @@
                                 <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
                                     <span class="flex items-center font-medium text-sm" style="color:var(--sage-deep)">
                                         ↳ Retirement Contribution Deduction
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="SEP-IRA / Solo 401(k) Deduction" data-body="Contributions to your SEP-IRA or Solo 401(k) are fully deductible, capped at the lesser of 25% of net SE income or $69,000 (2024). This is an above-the-line deduction — no itemizing required." data-ref="IRC §404(a) | IRS Pub 560" data-az="" data-link="https://www.irs.gov/publications/p560"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="SEP-IRA / Solo 401(k) Deduction" data-body="Contributions to your SEP-IRA or Solo 401(k) are fully deductible, capped at the lesser of 25% of net SE income or $69,000 (2024). This is an above-the-line deduction — no itemizing required." data-ref="IRC §404(a) | IRS Pub 560" data-az="" data-link="https://www.irs.gov/publications/p560">ⓘ</span>
                                     </span>
                                     <span id="tax-retire-ded" class="font-black text-sm" style="color:var(--sage)">-$0</span>
                                 </div>
@@ -732,7 +848,7 @@
                                 <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
                                     <span class="flex items-center font-medium text-sm" style="color:var(--text-mid)">
                                         Federal Income Tax (Est.)
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Federal Income Tax" data-body="Calculated using 2024 single-filer progressive brackets after the $14,600 standard deduction, SE deduction, health insurance deduction, and retirement deduction. Marginal rate shown is your top bracket." data-ref="IRC §1 | Rev. Proc. 2023-34 | IRS Pub 505" data-az="" data-link="https://www.irs.gov/publications/p505"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Federal Income Tax" data-body="Calculated using 2024 single-filer progressive brackets after the $14,600 standard deduction, SE deduction, health insurance deduction, and retirement deduction. Marginal rate shown is your top bracket." data-ref="IRC §1 | Rev. Proc. 2023-34 | IRS Pub 505" data-az="" data-link="https://www.irs.gov/publications/p505">ⓘ</span>
                                         <span id="marginal-bracket" class="ml-2 text-[10px] font-black px-2 py-0.5 rounded-full" style="background:var(--sage-pale);color:var(--sage-deep)"></span>
                                     </span>
                                     <span id="tax-fed" class="font-black text-base" style="color:#b45309">$0</span>
@@ -741,7 +857,7 @@
                                 <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
                                     <span class="flex items-center font-medium text-sm" style="color:var(--text-mid)">
                                         AZ State Income Tax (2.5% flat)
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Arizona State Income Tax" data-body="Arizona taxes all individual income at a flat 2.5% rate as of January 1, 2023 — the result of Prop 132 (2022). This replaced the former graduated bracket system. File Form 140 annually." data-ref="ARS §43-1011 | AZ Prop 132 (2022)" data-az="Arizona has no graduated brackets. Every dollar of income is taxed at exactly 2.5%." data-link="https://azdor.gov/individual-income-tax"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Arizona State Income Tax" data-body="Arizona taxes all individual income at a flat 2.5% rate as of January 1, 2023 — the result of Prop 132 (2022). This replaced the former graduated bracket system. File Form 140 annually." data-ref="ARS §43-1011 | AZ Prop 132 (2022)" data-az="Arizona has no graduated brackets. Every dollar of income is taxed at exactly 2.5%." data-link="https://azdor.gov/individual-income-tax">ⓘ</span>
                                     </span>
                                     <span id="tax-az" class="font-black text-base" style="color:#b45309">$0</span>
                                 </div>
@@ -750,7 +866,7 @@
                                     <div>
                                         <p class="font-bold text-sm flex items-center" style="color:#166534">
                                             QBI Deduction (20% of Net Income)
-                                            <span class="info-badge" onclick="showInfo(this)" data-title="Qualified Business Income (QBI) Deduction" data-body="Under IRC §199A, pass-through businesses (including single-member LLCs) can deduct up to 20% of qualified business income. For 2024, the income phaseout begins at $191,950 (single filers). Photography is NOT a specified service trade, so you are not excluded." data-ref="IRC §199A | IRS Pub 535, Ch. 12 | Rev. Proc. 2019-38" data-az="" data-link="https://www.irs.gov/newsroom/tax-cuts-and-jobs-act-provision-11011-section-199a-qualified-business-income-deduction-faqs"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                            <span class="info-badge" onclick="showInfo(this)" data-title="Qualified Business Income (QBI) Deduction" data-body="Under IRC §199A, pass-through businesses (including single-member LLCs) can deduct up to 20% of qualified business income. For 2024, the income phaseout begins at $191,950 (single filers). Photography is NOT a specified service trade, so you are not excluded." data-ref="IRC §199A | IRS Pub 535, Ch. 12 | Rev. Proc. 2019-38" data-az="" data-link="https://www.irs.gov/newsroom/tax-cuts-and-jobs-act-provision-11011-section-199a-qualified-business-income-deduction-faqs">ⓘ</span>
                                         </p>
                                         <p class="text-xs mt-1" style="color:#166534">Slashes 20% off your taxable business profit</p>
                                     </div>
@@ -777,7 +893,7 @@
                         <!-- Quarterly Estimated Tax Tracker -->
                         <div class="card p-8">
                             <h4 class="text-xl font-bold mb-2 flex items-center">Quarterly Estimated Tax Tracker
-                                <span class="info-badge" onclick="showInfo(this)" data-title="Quarterly Estimated Taxes" data-body="As a self-employed person, you must pay estimated taxes 4 times per year or face an underpayment penalty. The safe harbor rule: pay at least 90% of this year's tax OR 100% of last year's liability (110% if last year's AGI exceeded $150,000)." data-ref="IRC §6654 | IRS Form 1040-ES | IRS Pub 505" data-az="AZ estimated taxes are due on the same federal dates. Use AZ Form 140ES." data-link="https://www.irs.gov/businesses/small-businesses-self-employed/estimated-taxes"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Quarterly Estimated Taxes" data-body="As a self-employed person, you must pay estimated taxes 4 times per year or face an underpayment penalty. The safe harbor rule: pay at least 90% of this year's tax OR 100% of last year's liability (110% if last year's AGI exceeded $150,000)." data-ref="IRC §6654 | IRS Form 1040-ES | IRS Pub 505" data-az="AZ estimated taxes are due on the same federal dates. Use AZ Form 140ES." data-link="https://www.irs.gov/businesses/small-businesses-self-employed/estimated-taxes">ⓘ</span>
                             </h4>
                             <p class="text-xs mb-6" style="color:var(--text-soft)">Recommended payment = Total annual liability ÷ 4. Pay both federal (1040-ES) and AZ (Form 140ES).</p>
                             <div id="quarterly-tracker" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
@@ -790,7 +906,7 @@
                     <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
                         <i data-lucide="shield-check" class="w-5 h-5" style="color:var(--sage)"></i>
                         Annual Tax Compliance Checklist
-                        <span class="info-badge" onclick="showInfo(this)" data-title="Why Track Compliance?" data-body="Staying compliant throughout the year prevents penalties, keeps your LLC in good standing, and makes tax filing dramatically easier. Check off each item as you complete it — your progress is saved automatically." data-ref="IRS Pub 583 | AZ ACC | AZ DOR" data-az="Arizona LLCs do NOT require an annual report (unlike most states). However, you must maintain your registered agent and renew your TPT license annually." data-link="https://azsos.gov/business"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                        <span class="info-badge" onclick="showInfo(this)" data-title="Why Track Compliance?" data-body="Staying compliant throughout the year prevents penalties, keeps your LLC in good standing, and makes tax filing dramatically easier. Check off each item as you complete it — your progress is saved automatically." data-ref="IRS Pub 583 | AZ ACC | AZ DOR" data-az="Arizona LLCs do NOT require an annual report (unlike most states). However, you must maintain your registered agent and renew your TPT license annually." data-link="https://azsos.gov/business">ⓘ</span>
                     </h4>
                     <div id="compliance-checklist" class="space-y-8"></div>
                 </div>
@@ -811,7 +927,7 @@
                         <div class="card p-6">
                             <div class="flex items-start justify-between mb-3">
                                 <h4 class="font-bold text-sm flex items-center">Camera Bodies, Lenses &amp; Gear
-                                    <span class="info-badge" onclick="showInfo(this)" data-title="Camera Gear — Section 179 or Depreciation" data-body="Equipment used for business is deductible either immediately via Section 179 expensing (up to $1,220,000 in 2024) or via bonus depreciation (60% first-year in 2024) or MACRS depreciation over 5 years. Using Section 179 is almost always better — you deduct the full cost in the year you buy and place the item in service." data-ref="IRC §179 | IRC §168 | IRS Pub 946" data-az="" data-link="https://www.irs.gov/publications/p946"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Camera Gear — Section 179 or Depreciation" data-body="Equipment used for business is deductible either immediately via Section 179 expensing (up to $1,220,000 in 2024) or via bonus depreciation (60% first-year in 2024) or MACRS depreciation over 5 years. Using Section 179 is almost always better — you deduct the full cost in the year you buy and place the item in service." data-ref="IRC §179 | IRC §168 | IRS Pub 946" data-az="" data-link="https://www.irs.gov/publications/p946">ⓘ</span>
                                 </h4>
                                 <span class="deduct-badge deduct-100">100%</span>
                             </div>
@@ -825,7 +941,7 @@
                         <div class="card p-6">
                             <div class="flex items-start justify-between mb-3">
                                 <h4 class="font-bold text-sm flex items-center">Software Subscriptions
-                                    <span class="info-badge" onclick="showInfo(this)" data-title="Business Software Deduction" data-body="Software used in your business is either deducted in full in the year you buy it (Section 179) or expensed monthly as it is paid. Subscription software like Adobe CC is deducted as a current business expense each month/year — 100% in the year paid." data-ref="IRC §162 | IRC §197 | IRS Pub 535, Ch. 2" data-az="" data-link="https://www.irs.gov/publications/p535"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Business Software Deduction" data-body="Software used in your business is either deducted in full in the year you buy it (Section 179) or expensed monthly as it is paid. Subscription software like Adobe CC is deducted as a current business expense each month/year — 100% in the year paid." data-ref="IRC §162 | IRC §197 | IRS Pub 535, Ch. 2" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
                                 </h4>
                                 <span class="deduct-badge deduct-100">100%</span>
                             </div>
@@ -839,7 +955,7 @@
                         <div class="card p-6">
                             <div class="flex items-start justify-between mb-3">
                                 <h4 class="font-bold text-sm flex items-center">Business Mileage
-                                    <span class="info-badge" onclick="showInfo(this)" data-title="Standard Mileage Rate" data-body="For 2024, the IRS standard mileage rate is 67 cents per mile for business use. You may only deduct miles driven for business purposes — driving to shoots, client meetings, equipment stores, and editing sessions at external locations. Commuting from home to a regular fixed office is NOT deductible. Working from home means most drives are business drives." data-ref="IRS Rev. Proc. 2023-34 | IRS Pub 463, Ch. 4" data-az="Arizona photographers shooting across the valley rack up significant mileage. Even 5,000 annual business miles = $3,350 deduction." data-link="https://www.irs.gov/tax-professionals/standard-mileage-rates"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Standard Mileage Rate" data-body="For 2024, the IRS standard mileage rate is 67 cents per mile for business use. You may only deduct miles driven for business purposes — driving to shoots, client meetings, equipment stores, and editing sessions at external locations. Commuting from home to a regular fixed office is NOT deductible. Working from home means most drives are business drives." data-ref="IRS Rev. Proc. 2023-34 | IRS Pub 463, Ch. 4" data-az="Arizona photographers shooting across the valley rack up significant mileage. Even 5,000 annual business miles = $3,350 deduction." data-link="https://www.irs.gov/tax-professionals/standard-mileage-rates">ⓘ</span>
                                 </h4>
                                 <span class="deduct-badge deduct-100">67¢/mi</span>
                             </div>
@@ -853,7 +969,7 @@
                         <div class="card p-6">
                             <div class="flex items-start justify-between mb-3">
                                 <h4 class="font-bold text-sm flex items-center">Home Office
-                                    <span class="info-badge" onclick="showInfo(this)" data-title="Home Office Deduction" data-body="You can deduct $5 per square foot of space used regularly and exclusively for business, up to 300 sq ft ($1,500 max). Alternatively, use the regular method (Form 8829) for potentially larger deductions based on actual home expenses. The space MUST be used exclusively for business — a spare room with a desk and a bed doesn't qualify." data-ref="IRC §280A | IRS Pub 587 | Rev. Proc. 2013-13" data-az="" data-link="https://www.irs.gov/publications/p587"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Home Office Deduction" data-body="You can deduct $5 per square foot of space used regularly and exclusively for business, up to 300 sq ft ($1,500 max). Alternatively, use the regular method (Form 8829) for potentially larger deductions based on actual home expenses. The space MUST be used exclusively for business — a spare room with a desk and a bed doesn't qualify." data-ref="IRC §280A | IRS Pub 587 | Rev. Proc. 2013-13" data-az="" data-link="https://www.irs.gov/publications/p587">ⓘ</span>
                                 </h4>
                                 <span class="deduct-badge deduct-100">$5/sq ft</span>
                             </div>
@@ -867,7 +983,7 @@
                         <div class="card p-6">
                             <div class="flex items-start justify-between mb-3">
                                 <h4 class="font-bold text-sm flex items-center">Business Meals (with clients)
-                                    <span class="info-badge" onclick="showInfo(this)" data-title="Business Meal Deduction" data-body="You can deduct 50% of meal costs when (1) you or an employee is present, (2) the meal is with a client or business associate, and (3) business is discussed before, during, or after the meal. The meal must not be lavish or extravagant. Entertainment (concerts, sports games) is 0% deductible since the TCJA 2017." data-ref="IRC §274(n)(1) | IRS Pub 463, Ch. 2" data-az="" data-link="https://www.irs.gov/publications/p463"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Business Meal Deduction" data-body="You can deduct 50% of meal costs when (1) you or an employee is present, (2) the meal is with a client or business associate, and (3) business is discussed before, during, or after the meal. The meal must not be lavish or extravagant. Entertainment (concerts, sports games) is 0% deductible since the TCJA 2017." data-ref="IRC §274(n)(1) | IRS Pub 463, Ch. 2" data-az="" data-link="https://www.irs.gov/publications/p463">ⓘ</span>
                                 </h4>
                                 <span class="deduct-badge deduct-50">50%</span>
                             </div>
@@ -881,7 +997,7 @@
                         <div class="card p-6">
                             <div class="flex items-start justify-between mb-3">
                                 <h4 class="font-bold text-sm flex items-center">Education &amp; Workshops
-                                    <span class="info-badge" onclick="showInfo(this)" data-title="Education Expense Deduction" data-body="Education expenses are deductible if they maintain or improve skills required in your current business. Photography workshops, editing tutorials, business coaching for photographers, and similar courses qualify. Education that qualifies you for a new career does not qualify — but since you're already a photographer, most photography-related learning is deductible." data-ref="IRC §162 | Reg. §1.162-5 | IRS Pub 970" data-az="" data-link="https://www.irs.gov/publications/p970"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Education Expense Deduction" data-body="Education expenses are deductible if they maintain or improve skills required in your current business. Photography workshops, editing tutorials, business coaching for photographers, and similar courses qualify. Education that qualifies you for a new career does not qualify — but since you're already a photographer, most photography-related learning is deductible." data-ref="IRC §162 | Reg. §1.162-5 | IRS Pub 970" data-az="" data-link="https://www.irs.gov/publications/p970">ⓘ</span>
                                 </h4>
                                 <span class="deduct-badge deduct-100">100%</span>
                             </div>
@@ -895,7 +1011,7 @@
                         <div class="card p-6">
                             <div class="flex items-start justify-between mb-3">
                                 <h4 class="font-bold text-sm flex items-center">Insurance Premiums
-                                    <span class="info-badge" onclick="showInfo(this)" data-title="Business Insurance Deduction" data-body="Premiums paid for business insurance are fully deductible as ordinary business expenses. This includes general liability insurance, professional liability (errors &amp; omissions), and equipment insurance (like PPA's equipment coverage)." data-ref="IRC §162(a) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Business Insurance Deduction" data-body="Premiums paid for business insurance are fully deductible as ordinary business expenses. This includes general liability insurance, professional liability (errors &amp; omissions), and equipment insurance (like PPA's equipment coverage)." data-ref="IRC §162(a) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
                                 </h4>
                                 <span class="deduct-badge deduct-100">100%</span>
                             </div>
@@ -909,7 +1025,7 @@
                         <div class="card p-6">
                             <div class="flex items-start justify-between mb-3">
                                 <h4 class="font-bold text-sm flex items-center">Marketing &amp; Website
-                                    <span class="info-badge" onclick="showInfo(this)" data-title="Marketing &amp; Advertising Deduction" data-body="All ordinary and necessary marketing expenses are 100% deductible. This includes social media ads, Google Ads, your website hosting and domain, business cards, styled shoot costs for portfolio building, and your photography business account management tools." data-ref="IRC §162(a) | IRS Pub 535, Ch. 8" data-az="" data-link="https://www.irs.gov/publications/p535"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Marketing &amp; Advertising Deduction" data-body="All ordinary and necessary marketing expenses are 100% deductible. This includes social media ads, Google Ads, your website hosting and domain, business cards, styled shoot costs for portfolio building, and your photography business account management tools." data-ref="IRC §162(a) | IRS Pub 535, Ch. 8" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
                                 </h4>
                                 <span class="deduct-badge deduct-100">100%</span>
                             </div>
@@ -959,21 +1075,21 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div>
                             <h4 class="font-bold text-sm flex items-center mb-2">Personal Phone (Mixed Use)
-                                <span class="info-badge" onclick="showInfo(this)" data-title="Personal Phone Business Use Percentage" data-body="If your phone is in your personal name (not the LLC), you can still deduct the business-use percentage. Common approach: if you use your phone ~70% for business, deduct 70% of the monthly bill. Alternatively, put a dedicated line in the LLC's name for a 100% clean deduction." data-ref="IRC §280F | IRS Pub 535" data-az="" data-link="https://www.irs.gov/publications/p535"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Personal Phone Business Use Percentage" data-body="If your phone is in your personal name (not the LLC), you can still deduct the business-use percentage. Common approach: if you use your phone ~70% for business, deduct 70% of the monthly bill. Alternatively, put a dedicated line in the LLC's name for a 100% clean deduction." data-ref="IRC §280F | IRS Pub 535" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
                             </h4>
                             <span class="deduct-badge deduct-prop">Business % only</span>
                             <p class="text-xs mt-2" style="color:var(--text-soft)">Track your usage split. A dedicated LLC business line gives you 100% with zero documentation burden.</p>
                         </div>
                         <div>
                             <h4 class="font-bold text-sm flex items-center mb-2">Mixed Personal/Business Travel
-                                <span class="info-badge" onclick="showInfo(this)" data-title="Mixed Business-Personal Travel" data-body="If a trip is primarily for business (more than 50% of days are business days), flights and lodging are fully deductible. Meals are 50% deductible on all days. Personal days' pro-rated costs are not deductible. Keep a daily log showing business vs. personal activities." data-ref="IRC §162 | IRS Pub 463, Ch. 1" data-az="Arizona elopement photographers shooting in Hawaii or Utah: document every shoot day. A 3-day trip with 2 shoot days = 100% flight deductible." data-link="https://www.irs.gov/publications/p463"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Mixed Business-Personal Travel" data-body="If a trip is primarily for business (more than 50% of days are business days), flights and lodging are fully deductible. Meals are 50% deductible on all days. Personal days' pro-rated costs are not deductible. Keep a daily log showing business vs. personal activities." data-ref="IRC §162 | IRS Pub 463, Ch. 1" data-az="Arizona elopement photographers shooting in Hawaii or Utah: document every shoot day. A 3-day trip with 2 shoot days = 100% flight deductible." data-link="https://www.irs.gov/publications/p463">ⓘ</span>
                             </h4>
                             <span class="deduct-badge deduct-prop">Business days only</span>
                             <p class="text-xs mt-2" style="color:var(--text-soft)">Flight is 100% deductible if the primary purpose is business. Hotel for personal days is not deductible.</p>
                         </div>
                         <div>
                             <h4 class="font-bold text-sm flex items-center mb-2">Home Internet (Mixed Use)
-                                <span class="info-badge" onclick="showInfo(this)" data-title="Home Internet Deduction" data-body="If you use your home internet for both personal and business use, you can deduct the business-use percentage. A common approach: if you estimate 60% of internet use is for work (editing, uploading galleries, client communication), deduct 60% of the monthly bill. Document your reasoning." data-ref="IRC §162 | IRS Pub 529" data-az="" data-link="https://www.irs.gov/publications/p529"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Home Internet Deduction" data-body="If you use your home internet for both personal and business use, you can deduct the business-use percentage. A common approach: if you estimate 60% of internet use is for work (editing, uploading galleries, client communication), deduct 60% of the monthly bill. Document your reasoning." data-ref="IRC §162 | IRS Pub 529" data-az="" data-link="https://www.irs.gov/publications/p529">ⓘ</span>
                             </h4>
                             <span class="deduct-badge deduct-prop">Business % only</span>
                             <p class="text-xs mt-2" style="color:var(--text-soft)">Estimate your business-use percentage. Many photographers can reasonably claim 60-80%.</p>
@@ -1044,7 +1160,7 @@
 
                 <h3 class="text-xl font-black text-[#3C3520] border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="credit-card" class="w-5 h-5 text-[#4A6657]"></i> Tax-Optimized Credit Lines</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div class="card p-6 border-l-4 border-var(--charcoal) bg-[#2C2A22] text-white flex flex-col shadow-md">
+                    <div class="card p-6 border-l-4 border-slate-900 bg-[#2C2A22] text-white flex flex-col shadow-md">
                         <h4 class="font-black text-lg flex items-center justify-between">Amex Blue Business Plus <i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i></h4>
                         <p class="text-sm text-[#9C8A7A] mt-2 leading-relaxed">The holy grail of photography cards. An un-capped 2X points on every single purchase up to $50k/yr, perfectly subsidizing your destination travel.</p>
                         <a href="https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/american-express-blue-business-plus-credit-card-amex/" target="_blank" class="mt-auto mt-6 block text-center py-3 bg-[#6B8C7A] text-white rounded-xl text-xs font-bold hover:bg-[#4A6657] transition">Apply for BBP</a>
@@ -1256,9 +1372,9 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Drafting -->
-                    <div class="bg-[#FAF8F3] rounded-2xl p-6 border border-var(--border-soft)">
+                    <div class="bg-[#FAF8F3] rounded-2xl p-6 border border-slate-100">
                         <h4 class="text-[11px] font-black uppercase tracking-widest text-[#8A7A6A] mb-4 flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-var(--text-soft) inline-block"></span> Drafting / Concept
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span> Drafting / Concept
                         </h4>
                         <div id="social-col-draft" class="space-y-3 min-h-[200px]"></div>
                     </div>
@@ -1381,12 +1497,27 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">Gmail Address</label>
-                                <input type="email" id="settings-gmail" placeholder="you@gmail.com" class="w-full px-4 py-3 border rounded-xl">
+                                <input type="email" id="gmail-address" placeholder="you@gmail.com" class="w-full px-4 py-3 border rounded-xl" oninput="saveGmailSettings()">
                             </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="block text-[11px] font-black uppercase tracking-widest" style="color:var(--sage)">App Password</label>
+                                    <button onclick="openGmailPasswords()" class="text-[10px] font-bold text-[#6B8C7A] hover:underline flex items-center gap-1">
+                                        <i data-lucide="external-link" class="w-3 h-3"></i> Get Password
+                                    </button>
+                                </div>
+                                <input type="password" id="gmail-app-pass" placeholder="16-character app password" class="w-full px-4 py-3 border rounded-xl font-mono" oninput="saveGmailSettings()">
+                                <p class="text-[10px] text-[#9C8A7A] mt-2 leading-relaxed italic">
+                                    Required for secure IMAP access. Click "Get Password" to create a 16-character code in your Google Security settings.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                             <div>
                                 <label class="block text-[11px] font-black uppercase tracking-widest mb-2 flex items-center" style="color:var(--sage)">
                                     App Password
-                                    <span class="info-badge" onclick="showInfo(this)" data-title="Gmail App Password" data-body="A Gmail App Password is a 16-digit code that lets this app access your email securely. Generate it here: https://myaccount.google.com/apppasswords (Requires 2-Factor Authentication)." data-ref="Google Account Security" data-az="" data-link="https://myaccount.google.com/apppasswords"><i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i></span>
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Gmail App Password" data-body="A Gmail App Password is a 16-digit code generated at myaccount.google.com that lets this app access your email securely without using your real password. You must have 2-Factor Authentication enabled." data-ref="Google Account Security" data-az="" data-link="https://myaccount.google.com/apppasswords">ⓘ</span>
                                 </label>
                                 <input type="password" id="settings-gmail-pw" placeholder="16-character app password" class="w-full px-4 py-3 border rounded-xl font-mono">
                             </div>
@@ -1561,14 +1692,10 @@
             const profile = window.StateStore.state.profile;
             if (profile && profile.name) {
                 // Rehydrate inputs from local state
-                const grossInput = document.getElementById('tax-revenue');
-                const expensesInput = document.getElementById('tax-expenses');
-                if (grossInput) grossInput.value = window.StateStore.state.grossRevenue || profile.rev || 95000;
-            const healthInput = document.getElementById('tax-health');
-            const retireInput = document.getElementById('tax-sep-ira');
-            if (healthInput) healthInput.value = window.StateStore.state.healthInsurance || 0;
-            if (retireInput) retireInput.value = window.StateStore.state.retirementContrib || 0;
-                if (expensesInput) expensesInput.value = window.StateStore.state.bizExpenses || 25000;
+                const revInput = document.getElementById('tax-revenue');
+                const expInput = document.getElementById('tax-expenses');
+                if (revInput) revInput.value = window.StateStore.state.grossRevenue || profile.rev || 95000;
+                if (expInput) expInput.value = window.StateStore.state.bizExpenses || 25000;
                 
                 document.getElementById('setup-wizard').classList.add('hidden');
                 document.getElementById('app-content').classList.remove('hidden');
@@ -1610,10 +1737,10 @@
         }
 
         function saveComplianceInfo() {
-            const tptLicense = document.getElementById('tpt-license').value.trim();
-            const tptFilingFrequency = document.getElementById('tpt-freq').value;
-            const statutoryAgentName = document.getElementById('stat-agent').value.trim();
-            const agentRenewalDate = document.getElementById('agent-renewal').value;
+            const tptLicense = document.getElementById('tpt-license')?.value?.trim() || '';
+            const tptFilingFrequency = document.getElementById('tpt-freq')?.value || '';
+            const statutoryAgentName = document.getElementById('stat-agent')?.value?.trim() || '';
+            const agentRenewalDate = document.getElementById('agent-renewal')?.value || '';
 
             window.StateStore.update('compliance', {
                 tptLicense,
@@ -1623,6 +1750,14 @@
             });
 
             renderComplianceCalendar();
+        }
+
+        function openGmailPasswords() {
+            if (window.electronAPI && window.electronAPI.openExternal) {
+                window.electronAPI.openExternal('https://myaccount.google.com/apppasswords');
+            } else {
+                window.open('https://myaccount.google.com/apppasswords', '_blank');
+            }
         }
 
         function finishSetup() {
@@ -1671,7 +1806,7 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-                function renderDynamicDashboard() {
+        function renderDynamicDashboard() {
             const now = new Date();
             const year = now.getFullYear();
             const milestones = [
@@ -1701,13 +1836,6 @@
             const expenses   = parseFloat(document.getElementById('tax-expenses')?.value) || 0;
             const health     = parseFloat(document.getElementById('tax-health')?.value) || 0;
             const retire     = parseFloat(document.getElementById('tax-sep-ira')?.value) || 0;
-
-            // Update main state so other tabs/sidebar sync
-            if (window.StateStore) {
-                window.StateStore.state.grossRevenue = gross;
-                window.StateStore.state.bizExpenses = expenses;
-                // We'll save these specifically in a financial object soon, but for now sync globals
-            }
 
             const netProfit = Math.max(0, gross - expenses);
             const seTaxBase = netProfit * 0.9235;
@@ -1765,9 +1893,9 @@
             set('tax-result-qbi',    fmt(qbiDeduct));
             set('tax-result-fed-bracket', Math.round(marginalRate * 100) + '%');
 
-            // Global/Sidebar sync
-            set('sidebar-savings', fmt(totalSaved) + ' Saved');
+            // Dashboard & Sidebar sync
             set('dash-takehome', fmt(takehome));
+            set('sidebar-savings', fmt(totalSaved) + ' Saved');
             
             const targetIncome = 100000;
             const progress = Math.min(100, (netProfit / targetIncome) * 100);
@@ -1776,9 +1904,11 @@
             if (progBar) progBar.style.width = `${progress}%`;
             if (progPct) progPct.textContent = `${Math.round(progress)}%`;
 
-            window._marginalRate = marginalRate;
+            window.StateStore.state.marginalRate = marginalRate + 0.025;
             renderDynamicDashboard();
+            updateVeilScore();
         }
+
         function updateVeilScore() {
             const checks = document.querySelectorAll('#legal-checklist input');
             if (checks.length === 0) return;
@@ -1977,7 +2107,7 @@
                     <h5 class="font-bold text-lg ${comp.tptLicense ? 'text-[#6B8C7A]' : 'text-rose-400'} mb-1">Due: ${tptDueStr}</h5>
                     ${tptNote}
                 </div>
-                <div class="p-5 bg-[#3A3830] rounded-2xl border border-var(--border)">
+                <div class="p-5 bg-[#3A3830] rounded-2xl border border-slate-700">
                     <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Q1 Estimated Taxes</p>
                     <h5 class="font-bold text-lg text-rose-400 mb-1">Due: Apr 15, ${new Date().getFullYear()}</h5>
                     <p class="text-xs text-[#C0B0A0]">IRS Form 1040-ES due if you expect to owe >$1,000 this year.</p>
@@ -2328,7 +2458,7 @@
 
             workflows.forEach(t => {
                 const label = document.createElement('label');
-                label.className = `flex justify-between items-start gap-3 p-4 bg-[#FAF8F3] border border-var(--border-soft) rounded-xl cursor-pointer hover:bg-[#F4F0E6] transition group ${t.completed ? 'opacity-50' : ''}`;
+                label.className = `flex justify-between items-start gap-3 p-4 bg-[#FAF8F3] border border-slate-100 rounded-xl cursor-pointer hover:bg-[#F4F0E6] transition group ${t.completed ? 'opacity-50' : ''}`;
                 label.innerHTML = `
                     <div class="flex items-start gap-4 flex-grow">
                         <input type="checkbox" onchange="toggleWorkflowTask('${t.id}', this.checked)" ${t.completed ? 'checked' : ''} class="mt-1 w-5 h-5 text-indigo-600 rounded border-[#D8D0C0]">
@@ -2416,7 +2546,7 @@
                 const isUrgent = remaining <= 12;
                 
                 leadsList.innerHTML += `
-                    <div class="flex flex-col p-4 bg-[#FAF8F3] border ${isUrgent ? 'border-rose-300' : 'border-var(--border-soft)'} rounded-xl relative group">
+                    <div class="flex flex-col p-4 bg-[#FAF8F3] border ${isUrgent ? 'border-rose-300' : 'border-slate-100'} rounded-xl relative group">
                         <button onclick="deleteCRMLead('${l.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-[#8C5353] transition"><i data-lucide="x" class="w-4 h-4"></i></button>
                         <div class="flex justify-between items-start mb-2 pr-6">
                             <span class="font-bold text-sm text-[#3C3520]">${l.name}</span>
@@ -2435,21 +2565,21 @@
                 const retainer = c.pkgPrice * 0.5;
                 const balance = c.pkgPrice - retainer;
                 bookedList.innerHTML += `
-                    <div class="p-5 border border-var(--border) bg-[#3A3830] rounded-xl relative group">
+                    <div class="p-5 border border-slate-700 bg-[#3A3830] rounded-xl relative group">
                         <button onclick="deleteBooking('${c.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-[#8C5353] transition"><i data-lucide="trash" class="w-4 h-4"></i></button>
                         <div class="flex justify-between items-center mb-4 pr-6">
                             <h5 class="font-bold text-sm text-white">${c.name}</h5>
-                            <span class="text-[10px] font-black tracking-widest uppercase text-[#9C8A7A] bg-[#2C2A22] px-2 py-1 rounded shadow-sm border border-var(--border)">${c.shootDate}</span>
+                            <span class="text-[10px] font-black tracking-widest uppercase text-[#9C8A7A] bg-[#2C2A22] px-2 py-1 rounded shadow-sm border border-slate-700">${c.shootDate}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <button onclick="toggleRetainer('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.retainerPaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-var(--border) hover:border-var(--text-soft)'}">
+                            <button onclick="toggleRetainer('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.retainerPaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-slate-700 hover:border-slate-500'}">
                                 <div class="flex justify-between w-full items-center mb-1">
                                     <span class="text-[9px] font-bold uppercase tracking-widest text-[#9C8A7A]">50% Retainer</span>
                                     <i data-lucide="check-circle" class="w-3 h-3 ${c.retainerPaid ? 'text-[#6B8C7A]' : 'text-[#5C4A3A]'}"></i>
                                 </div>
                                 <span class="font-black text-sm ${c.retainerPaid ? 'text-[#6B8C7A]' : 'text-[#C0B0A0]'}">$${retainer.toLocaleString()}</span>
                             </button>
-                            <button onclick="toggleBalance('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.balancePaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-var(--border) hover:border-var(--text-soft)'}">
+                            <button onclick="toggleBalance('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.balancePaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-slate-700 hover:border-slate-500'}">
                                 <div class="flex justify-between w-full items-center mb-1">
                                     <span class="text-[9px] font-bold uppercase tracking-widest text-[#9C8A7A]">Final Balance</span>
                                     <i data-lucide="check-circle" class="w-3 h-3 ${c.balancePaid ? 'text-[#6B8C7A]' : 'text-[#5C4A3A]'}"></i>
@@ -2485,9 +2615,9 @@
             {
                 tab: 'taxes',
                 title: '📊 Tax Planner',
-                body: "Enter your annual revenue and expenses here for a fully calculated tax breakdown. Includes: SE tax, AZ flat tax, QBI deduction, SEP-IRA and health insurance deductions, and your marginal bracket. Click any <strong><i data-lucide='info' class='w-3.5 h-3.5 inline-block'></i></strong> badge for the exact IRS source.",
+                body: "Enter your annual revenue and expenses here for a fully calculated tax breakdown. Includes: SE tax, AZ flat tax, QBI deduction, SEP-IRA and health insurance deductions, and your marginal bracket. Click any <strong>ⓘ</strong> badge for the exact IRS source.",
                 icon: 'calculator',
-                scrollTo: 'tax-revenue'
+                scrollTo: 'gross-income'
             },
             {
                 tab: 'taxes',
@@ -2732,7 +2862,7 @@
             }
         }
 
-        // ─── <i data-lucide="info" class="w-3.5 h-3.5 inline-block"></i> INFO POPOVER SYSTEM ───────────────────────────────────────────────
+        // ─── ⓘ INFO POPOVER SYSTEM ───────────────────────────────────────────────
         function showInfo(badge) {
             document.querySelectorAll('.info-popover').forEach(p => p.remove());
             document.querySelectorAll('.info-popover-overlay').forEach(p => p.remove());
@@ -2770,112 +2900,93 @@
             });
         }
 
-        // ─── UPDATED calcTaxes ───────────────────────────────────────────────────
-                function renderDynamicDashboard() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const milestones = [
-                { date: new Date(year, 3, 15), label: 'Q1 Estimated Tax Payment', action: 'IRS Form 1040-ES & AZ 140ES due today.' },
-                { date: new Date(year, 5, 15), label: 'Q2 Estimated Tax Payment', action: 'Pay 25% of your projected 2026 liability.' },
-                { date: new Date(year, 8, 15), label: 'Q3 Estimated Tax Payment', action: 'Keep your safe harbor status - pay today.' },
-                { date: new Date(year+1, 0, 15), label: 'Q4 Estimated Tax Payment', action: 'Final payment for the 2026 tax year.' }
-            ];
+        // ─── END OF TAX & COMPLIANCE CORE ───
 
-            let next = milestones[0];
-            for (const m of milestones) {
-                if (m.date > now) {
-                    next = m;
-                    break;
-                }
-            }
+        // ─── DESTINATION ELOPEMENT ROI --- //
 
-            const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
-            const options = { month: 'long', day: 'numeric' };
-            set('dash-milestone-date', next.date.toLocaleDateString('en-US', options));
-            set('dash-milestone-label', next.label);
-            set('dash-milestone-action', next.action);
+        function calcDestinationROI() {
+            const revenue = parseFloat(document.getElementById('dest-revenue').value) || 0;
+            const flights = parseFloat(document.getElementById('dest-flights').value) || 0;
+            const hotel = parseFloat(document.getElementById('dest-hotel').value) || 0;
+            const car = parseFloat(document.getElementById('dest-car').value) || 0;
+            const meals = parseFloat(document.getElementById('dest-meals').value) || 0;
+
+            const totalCost = flights + hotel + car + meals;
+            const fullyDeductible = flights + hotel + car;
+            const mealDeduct = meals * 0.5;
+            const marginalRate = window.StateStore.state.marginalRate || 0.30;
+            const writeoffValue = (fullyDeductible + mealDeduct) * marginalRate;
+            const netMargin = revenue - totalCost;
+            const marginPct = revenue > 0 ? ((netMargin / revenue) * 100).toFixed(1) : 0;
+
+            const upd = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
+            upd('dest-total-cost', `$${Math.round(totalCost).toLocaleString()}`);
+            upd('dest-writeoff', `+$${Math.round(writeoffValue).toLocaleString()}`);
+            upd('dest-net-margin', `$${Math.round(netMargin).toLocaleString()}`);
+            upd('dest-margin-pct', `${marginPct}% profit margin on this package`);
         }
 
-        function calcTaxes() {
-            const gross      = parseFloat(document.getElementById('tax-revenue')?.value) || 0;
-            const expenses   = parseFloat(document.getElementById('tax-expenses')?.value) || 0;
-            const health     = parseFloat(document.getElementById('tax-health')?.value) || 0;
-            const retire     = parseFloat(document.getElementById('tax-sep-ira')?.value) || 0;
+        // --- 72-HR SNEAK PEEK ENGINE --- //
 
-            // Update main state so other tabs/sidebar sync
-            if (window.StateStore) {
-                window.StateStore.state.grossRevenue = gross;
-                window.StateStore.state.bizExpenses = expenses;
-                // We'll save these specifically in a financial object soon, but for now sync globals
-            }
+        // --- SOCIAL MEDIA KANBAN --- //
+        function addSocialCard() {
+            const title = document.getElementById('new-social-title').value.trim();
+            const platform = document.getElementById('new-social-platform').value;
+            if(!title) return;
+            const cards = window.StateStore.state.socialCards || [];
+            cards.push({ id: Date.now().toString(), title, platform, status: 'draft' });
+            window.StateStore.update('socialCards', cards);
+            document.getElementById('new-social-title').value = '';
+            renderSocial();
+        }
 
-            const netProfit = Math.max(0, gross - expenses);
-            const seTaxBase = netProfit * 0.9235;
-            const seTax     = seTaxBase * 0.153;
-            const seDeduct  = seTax / 2;
+        function advanceSocialCard(id) {
+            const cards = window.StateStore.state.socialCards || [];
+            const card = cards.find(c => c.id === id);
+            if(!card) return;
+            const flow = ['draft', 'audio', 'ready'];
+            const next = flow.indexOf(card.status) + 1;
+            if(next < flow.length) { card.status = flow[next]; window.StateStore.update('socialCards', cards); renderSocial(); }
+        }
 
-            const sepMax = Math.min(netProfit * 0.25, 69000);
-            const retireActual = Math.min(retire, sepMax);
-            const healthAct = Math.min(health, netProfit);
+        function deleteSocialCard(id) {
+            let cards = window.StateStore.state.socialCards || [];
+            cards = cards.filter(c => c.id !== id);
+            window.StateStore.update('socialCards', cards);
+            renderSocial();
+        }
 
-            const warn = document.getElementById('sep-cap-warning');
-            if (warn) {
-                if (retire > sepMax) {
-                    warn.classList.remove('hidden');
-                    warn.textContent = `⚠️ Max SEP-IRA contribution: $${Math.round(sepMax).toLocaleString()}`;
-                } else {
-                    warn.classList.add('hidden');
-                }
-            }
+        function renderSocial() {
+            const cards = window.StateStore.state.socialCards || [];
+            const cols = { draft: document.getElementById('social-col-draft'), audio: document.getElementById('social-col-audio'), ready: document.getElementById('social-col-ready') };
+            if(!cols.draft) return;
+            Object.values(cols).forEach(c => { if(c) c.innerHTML = ''; });
 
-            const agi = Math.max(0, netProfit - seDeduct - healthAct - retireActual);
-            const qbiBase = agi;
-            const qbiDeduct = qbiBase <= 191950 ? qbiBase * 0.20 : 0;
-            const fedTaxable = Math.max(0, agi - 14600 - qbiDeduct);
+            const platformLabel = { instagram: 'Instagram', tiktok: 'TikTok', both: 'Both' };
+            const platformColor = { instagram: 'text-[#b07070]', tiktok: 'text-[#4A4030]', both: 'text-[#6B8C7A]' };
+            const nextLabel = { draft: 'Needs Audio', audio: 'Ready', ready: null };
+            const nextBg = { draft: 'bg-amber-400 hover:bg-amber-500 text-[#2C2511]', audio: 'bg-emerald-500 hover:bg-emerald-600 text-white', ready: '' };
 
-            const brackets = [
-                { max: 11600,  rate: 0.10 }, { max: 47150,  rate: 0.12 },
-                { max: 100525, rate: 0.22 }, { max: 191950, rate: 0.24 },
-                { max: 243725, rate: 0.32 }, { max: 609350, rate: 0.35 },
-                { max: Infinity, rate: 0.37 },
-            ];
+            cards.forEach(card => {
+                const col = cols[card.status];
+                if(!col) return;
+                const html = `
+                    <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-4 relative group">
+                        <button onclick="deleteSocialCard('${card.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-[#C0B0A0] hover:text-[#b07070] transition"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                        <p class="font-bold text-sm text-[#3C3520] leading-snug mb-2 pr-4">${card.title}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-widest ${platformColor[card.platform]} mb-3">${platformLabel[card.platform]}</p>
+                        ${nextLabel[card.status] ? `<button onclick="advanceSocialCard('${card.id}')" class="w-full text-center text-[10px] font-bold py-1.5 rounded-lg transition ${nextBg[card.status]}">${nextLabel[card.status]} &rarr;</button>` : '<span class="w-full text-center text-[10px] font-bold text-[#4A6657] block">Published!</span>'}
+                    </div>
+                `;
+                col.innerHTML += html;
+            });
 
-            let fedTax = 0, prev = 0, marginalRate = 0;
-            for (const b of brackets) {
-                if (fedTaxable <= 0) break;
-                const taxable = Math.min(fedTaxable, b.max) - prev;
-                if (taxable > 0) { fedTax += taxable * b.rate; marginalRate = b.rate; }
-                prev = b.max;
-            }
+            Object.entries(cols).forEach(([key, el]) => {
+                if(el && el.innerHTML === '') el.innerHTML = '<p class="text-xs text-center text-[#9C8A7A] italic pt-6">Empty</p>';
+            });
 
-            const azTax = agi * 0.025;
-            const totalTax = seTax + fedTax + azTax;
-            const takehome = gross - expenses - totalTax;
-            const effectiveRate = netProfit > 0 ? (totalTax / netProfit * 100).toFixed(1) : '0.0';
-            const totalSaved = (seDeduct + qbiDeduct + healthAct + retireActual) * (marginalRate + 0.025);
-
-            const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
-            const fmt = (n) => '$' + Math.round(n).toLocaleString();
-
-            set('tax-result-profit', fmt(netProfit));
-            set('tax-result-total',  fmt(totalTax));
-            set('tax-result-rate',   effectiveRate + '%');
-            set('tax-result-saved',  fmt(totalSaved));
-            set('tax-result-se',     fmt(seTax));
-            set('tax-result-qbi',    fmt(qbiDeduct));
-            set('tax-result-fed-bracket', Math.round(marginalRate * 100) + '%');
-
-            // Global/Sidebar sync
-            set('sidebar-savings', fmt(totalSaved) + ' Saved');
-            set('dash-takehome', fmt(takehome));
-            
-            const targetIncome = 100000;
-            const progress = Math.min(100, (netProfit / targetIncome) * 100);
-            const progBar = document.getElementById('profit-progress');
-            const progPct = document.getElementById('profit-target-percent');
-            if (progBar) progBar.style.width = `${progress}%`;
-            if (progPct) progPct.textContent = `${Math.round(progress)}%`;
-
-            window._marginalRate = marginalRate;
-            renderDynamicDashboard();
-        }` : `Your SEP-IRA max: $${Math.round(sepMax).toLocaleString()}`;
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
