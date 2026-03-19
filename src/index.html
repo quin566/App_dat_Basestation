@@ -112,6 +112,45 @@
         .tax-tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 140%; left: 50%; width: 220px; padding: 0.75rem; background: var(--olive); color: white; border-radius: 0.75rem; font-size: 0.75rem; line-height: 1.5; transform: translateX(-50%); z-index: 50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15); pointer-events: none; text-transform: none; font-weight: normal; }
         .tax-tooltip:hover::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: var(--olive) transparent transparent transparent; pointer-events: none; z-index: 50; }
 
+        /* ⓘ Info Badge Popover System */
+        .info-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 1rem; height: 1rem; border-radius: 9999px;
+            background: var(--sage-pale); color: var(--sage-deep);
+            font-size: 0.6rem; font-weight: 800; cursor: pointer;
+            margin-left: 0.375rem; vertical-align: middle;
+            border: 1.5px solid var(--sage-light); transition: all 0.15s;
+            flex-shrink: 0; position: relative; top: -1px;
+            font-family: 'Jost', sans-serif;
+        }
+        .info-badge:hover { background: var(--sage); color: white; border-color: var(--sage); }
+        .info-popover-overlay { position: fixed; inset: 0; z-index: 999; }
+        .info-popover {
+            position: fixed; z-index: 1000; width: 320px;
+            background: white; border-radius: 1rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px -10px rgba(74,82,64,0.18);
+            padding: 1.25rem; animation: popIn 0.15s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes popIn { from { opacity:0; transform:scale(0.92) translateY(4px); } to { opacity:1; transform:scale(1) translateY(0); } }
+        .info-popover h5 { font-family:'Cormorant Garamond',serif; font-size:1rem; font-weight:600; color:var(--charcoal); margin-bottom:0.5rem; }
+        .info-popover p { font-size:0.78rem; line-height:1.6; color:var(--text-mid); margin-bottom:0.5rem; }
+        .info-popover .irs-ref { display:inline-flex; align-items:center; gap:0.3rem; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--sage-deep); background:var(--sage-pale); padding:0.2rem 0.5rem; border-radius:9999px; margin-top:0.25rem; }
+        .info-popover .az-note { font-size:0.7rem; color:var(--ocean-deep); background:#f0f7fa; border-radius:0.5rem; padding:0.4rem 0.6rem; margin-top:0.5rem; }
+        .info-popover a.popover-link { display:block; margin-top:0.75rem; font-size:0.7rem; font-weight:700; color:var(--sage-deep); text-decoration:underline; }
+        .deduct-badge { display:inline-flex; align-items:center; font-size:0.6rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; padding:0.15rem 0.5rem; border-radius:9999px; margin-left:0.5rem; }
+        .deduct-100 { background:#d4ead8; color:#2d6a38; }
+        .deduct-50  { background:#fef3c7; color:#92400e; }
+        .deduct-0   { background:#fee2e2; color:#991b1b; }
+        .deduct-prop { background:#e0e7ff; color:#3730a3; }
+        .compliance-item { display:flex; align-items:flex-start; gap:0.875rem; padding:0.875rem 1rem; border-radius:0.875rem; background:var(--parchment); border:1px solid var(--border-soft); transition:background 0.2s; }
+        .compliance-item:hover { background:#fff; }
+        .compliance-item input[type=checkbox] { margin-top:0.15rem; width:1.1rem; height:1.1rem; accent-color:var(--sage); flex-shrink:0; }
+        .compliance-item.done { opacity:0.55; }
+        .q-badge { display:inline-block; font-size:0.55rem; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; padding:0.15rem 0.5rem; border-radius:9999px; background:var(--sage-pale); color:var(--sage-deep); margin-bottom:0.75rem; }
+        .overdue { border-left:3px solid #ef4444 !important; }
+        .due-soon { border-left:3px solid #f59e0b !important; }
+
         /* Canon gradient — keep as muted sage for any remaining uses */
         .canon-gradient { background: linear-gradient(135deg, var(--sage) 0%, var(--sage-deep) 100%); }
 
@@ -573,182 +612,389 @@
             <!-- Tab: Tax Planner -->
             <div id="taxes" class="tab-content space-y-10">
                 <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Arizona Tax Engine</h2>
-                    <p class="text-slate-500 mt-2">Personalized for Single-Member LLCs (2024/25 Rules).</p>
+                    <h2 class="text-4xl font-black tracking-tight">Arizona Tax Engine</h2>
+                    <p style="color:var(--text-soft)" class="mt-2">Personalized for Single-Member LLCs — 2024/25 IRS &amp; AZ rules. All figures are sourced and verifiable.</p>
                 </header>
 
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                    <div class="xl:col-span-1 space-y-6">
+                    <!-- Inputs Column -->
+                    <div class="xl:col-span-1 space-y-5">
+                        <div class="card p-7">
+                            <h4 class="font-bold text-base mb-5">Financial Inputs</h4>
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">Annual Gross Revenue</label>
+                                    <input type="number" id="gross-income" value="95000" class="w-full px-4 py-3 border rounded-xl font-bold text-lg" oninput="calcTaxes()">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">Total Business Expenses</label>
+                                    <input type="number" id="expenses" value="25000" class="w-full px-4 py-3 border rounded-xl font-bold text-lg" oninput="calcTaxes()">
+                                    <p class="text-[10px] mt-1" style="color:var(--text-soft)">Camera gear, software, travel, marketing, etc.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-black uppercase tracking-widest mb-2 flex items-center" style="color:var(--sage)">SE Health Insurance Premium
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Self-Employed Health Insurance Deduction" data-body="If you pay for your own health, dental, or vision insurance and are not eligible for employer-sponsored coverage, you can deduct 100% of those premiums above-the-line — directly reducing your AGI." data-ref="IRC §162(l) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
+                                    </label>
+                                    <input type="number" id="health-insurance" value="0" placeholder="e.g. 4800" class="w-full px-4 py-3 border rounded-xl font-bold" oninput="calcTaxes()">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-black uppercase tracking-widest mb-2 flex items-center" style="color:var(--sage)">SEP-IRA / Solo 401(k) Contribution
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Self-Employed Retirement Deduction" data-body="Contributions to a SEP-IRA or Solo 401(k) are deductible above-the-line. SEP-IRA limit: 25% of net self-employment income, max $69,000 in 2024. This is one of the most powerful tax reduction tools for self-employed photographers." data-ref="IRC §404(a)(3) | IRS Pub 560" data-az="" data-link="https://www.irs.gov/publications/p560">ⓘ</span>
+                                    </label>
+                                    <input type="number" id="retirement" value="0" placeholder="e.g. 10000" class="w-full px-4 py-3 border rounded-xl font-bold" oninput="calcTaxes()">
+                                    <p id="sep-max-hint" class="text-[10px] mt-1 font-bold" style="color:var(--sage)"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rounded-2xl p-7 text-white" style="background:linear-gradient(135deg,var(--sage-deep),var(--ocean-deep))">
+                            <p class="text-[11px] font-black uppercase tracking-widest mb-1" style="color:rgba(255,255,255,0.6)">Est. Net Take-Home / Month</p>
+                            <h3 id="monthly-takehome" class="text-4xl font-black" style="color:#a8f0d0">$0</h3>
+                            <p class="text-[10px] mt-3" style="color:rgba(255,255,255,0.5)">After all federal, AZ, and SE taxes</p>
+                        </div>
+
+                        <!-- AZ TPT Toggle -->
+                        <div class="card p-6 border-l-4" style="border-color:var(--ocean)">
+                            <h4 class="font-bold text-sm mb-3 flex items-center">AZ Transaction Privilege Tax (TPT)
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Arizona Transaction Privilege Tax (TPT)" data-body="Arizona's version of sales tax is called TPT and is imposed on the seller, not the buyer. Photography services in AZ may be subject to TPT under the retail classification (ARS §42-5061) if you sell physical prints or albums. Digital-only delivery is generally NOT subject to TPT, but you should confirm with AZDOR for your specific situation." data-ref="ARS §42-5061 | AZ DOR TPT Guide" data-az="Check your TPT license status at azdor.gov. Filing is monthly or quarterly depending on annual volume." data-link="https://azdor.gov/transaction-privilege-tax">ⓘ</span>
+                            </h4>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" id="tpt-toggle" onchange="calcTaxes()" class="w-4 h-4" style="accent-color:var(--ocean)">
+                                <span class="text-sm font-medium">I sell physical prints / albums</span>
+                            </label>
+                            <div id="tpt-detail" class="hidden mt-4 space-y-2 text-xs" style="color:var(--text-mid)">
+                                <p>State TPT rate: <strong>5.6%</strong> + local surcharge (varies by city, typically 1.5–2.5%)</p>
+                                <p>Common AZ city totals: Phoenix ~8.6%, Scottsdale ~8.05%, Tempe ~8.1%</p>
+                                <a href="https://azdor.gov/transaction-privilege-tax/tpt-license" target="_blank" class="resource-link text-[10px] uppercase tracking-wider mt-2 block">Manage TPT License →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Column -->
+                    <div class="xl:col-span-2 space-y-6">
                         <div class="card p-8">
-                            <h4 class="font-bold text-lg mb-6">Financial Inputs</h4>
-                            <div class="space-y-6">
-                                <div>
-                                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 text-blue-600">Annual Gross Revenue</label>
-                                    <input type="number" id="gross-income" value="95000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition font-bold text-lg" oninput="calcTaxes()">
+                            <h4 class="text-xl font-bold mb-6">Liability Breakdown</h4>
+                            <div class="space-y-3">
+                                <!-- SE Tax -->
+                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
+                                    <span class="flex items-center font-medium text-sm" style="color:var(--text-mid)">
+                                        Self-Employment Tax (15.3%)
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Federal Self-Employment Tax" data-body="SE tax covers Social Security (12.4%) and Medicare (2.9%) on your net self-employment earnings. You pay both the employee and employer share. However, you can deduct half of this tax above-the-line on Schedule 1 of your 1040." data-ref="IRC §1401 | IRC §164(f) | IRS Pub 334" data-az="" data-link="https://www.irs.gov/publications/p334">ⓘ</span>
+                                    </span>
+                                    <span id="tax-se" class="font-black text-base" style="color:#b45309">$0</span>
                                 </div>
-                                <div>
-                                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 text-blue-600">Total Biz Expenses</label>
-                                    <input type="number" id="expenses" value="25000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition font-bold text-lg" oninput="calcTaxes()">
+                                <!-- SE Deduction -->
+                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
+                                    <span class="flex items-center font-medium text-sm" style="color:var(--sage-deep)">
+                                        ↳ SE Tax Deduction (Half)
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Deductible Half of SE Tax" data-body="The IRS allows you to deduct 50% of your SE tax as an above-the-line deduction on Schedule 1, Line 15. This reduces your adjusted gross income (AGI) and therefore your federal income tax — even if you don't itemize." data-ref="IRC §164(f) | Schedule 1, Line 15" data-az="" data-link="https://www.irs.gov/instructions/i1040s1">ⓘ</span>
+                                    </span>
+                                    <span id="tax-se-ded" class="font-black text-sm" style="color:var(--sage)">-$0</span>
+                                </div>
+                                <!-- Health -->
+                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
+                                    <span class="flex items-center font-medium text-sm" style="color:var(--sage-deep)">
+                                        ↳ Health Insurance Deduction
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="SE Health Insurance Deduction" data-body="100% of your health, dental, and vision premiums are deductible above-the-line if you are not eligible for employer-sponsored coverage. This deduction cannot exceed your net profit from self-employment." data-ref="IRC §162(l) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
+                                    </span>
+                                    <span id="tax-health-ded" class="font-black text-sm" style="color:var(--sage)">-$0</span>
+                                </div>
+                                <!-- Retirement -->
+                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
+                                    <span class="flex items-center font-medium text-sm" style="color:var(--sage-deep)">
+                                        ↳ Retirement Contribution Deduction
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="SEP-IRA / Solo 401(k) Deduction" data-body="Contributions to your SEP-IRA or Solo 401(k) are fully deductible, capped at the lesser of 25% of net SE income or $69,000 (2024). This is an above-the-line deduction — no itemizing required." data-ref="IRC §404(a) | IRS Pub 560" data-az="" data-link="https://www.irs.gov/publications/p560">ⓘ</span>
+                                    </span>
+                                    <span id="tax-retire-ded" class="font-black text-sm" style="color:var(--sage)">-$0</span>
+                                </div>
+                                <!-- Federal Income -->
+                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
+                                    <span class="flex items-center font-medium text-sm" style="color:var(--text-mid)">
+                                        Federal Income Tax (Est.)
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Federal Income Tax" data-body="Calculated using 2024 single-filer progressive brackets after the $14,600 standard deduction, SE deduction, health insurance deduction, and retirement deduction. Marginal rate shown is your top bracket." data-ref="IRC §1 | Rev. Proc. 2023-34 | IRS Pub 505" data-az="" data-link="https://www.irs.gov/publications/p505">ⓘ</span>
+                                        <span id="marginal-bracket" class="ml-2 text-[10px] font-black px-2 py-0.5 rounded-full" style="background:var(--sage-pale);color:var(--sage-deep)"></span>
+                                    </span>
+                                    <span id="tax-fed" class="font-black text-base" style="color:#b45309">$0</span>
+                                </div>
+                                <!-- AZ State -->
+                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
+                                    <span class="flex items-center font-medium text-sm" style="color:var(--text-mid)">
+                                        AZ State Income Tax (2.5% flat)
+                                        <span class="info-badge" onclick="showInfo(this)" data-title="Arizona State Income Tax" data-body="Arizona taxes all individual income at a flat 2.5% rate as of January 1, 2023 — the result of Prop 132 (2022). This replaced the former graduated bracket system. File Form 140 annually." data-ref="ARS §43-1011 | AZ Prop 132 (2022)" data-az="Arizona has no graduated brackets. Every dollar of income is taxed at exactly 2.5%." data-link="https://azdor.gov/individual-income-tax">ⓘ</span>
+                                    </span>
+                                    <span id="tax-az" class="font-black text-base" style="color:#b45309">$0</span>
+                                </div>
+                                <!-- QBI -->
+                                <div class="p-5 rounded-2xl flex justify-between items-center" style="background:#f0faf4;border:1px solid #c6e8d2">
+                                    <div>
+                                        <p class="font-bold text-sm flex items-center" style="color:#166534">
+                                            QBI Deduction (20% of Net Income)
+                                            <span class="info-badge" onclick="showInfo(this)" data-title="Qualified Business Income (QBI) Deduction" data-body="Under IRC §199A, pass-through businesses (including single-member LLCs) can deduct up to 20% of qualified business income. For 2024, the income phaseout begins at $191,950 (single filers). Photography is NOT a specified service trade, so you are not excluded." data-ref="IRC §199A | IRS Pub 535, Ch. 12 | Rev. Proc. 2019-38" data-az="" data-link="https://www.irs.gov/newsroom/tax-cuts-and-jobs-act-provision-11011-section-199a-qualified-business-income-deduction-faqs">ⓘ</span>
+                                        </p>
+                                        <p class="text-xs mt-1" style="color:#166534">Slashes 20% off your taxable business profit</p>
+                                    </div>
+                                    <span id="tax-qbi" class="text-xl font-black" style="color:#166534">-$0</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 grid grid-cols-3 gap-3">
+                                <div class="p-4 rounded-xl text-center" style="background:var(--parchment);border:1px solid var(--border-soft)">
+                                    <p class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--text-soft)">Net Profit</p>
+                                    <p id="net-profit-display" class="font-black text-lg mt-1">$0</p>
+                                </div>
+                                <div class="p-4 rounded-xl text-center" style="background:var(--parchment);border:1px solid var(--border-soft)">
+                                    <p class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--text-soft)">Effective Rate</p>
+                                    <p id="effective-rate" class="font-black text-lg mt-1">0%</p>
+                                </div>
+                                <div class="p-4 rounded-xl text-center" style="background:var(--parchment);border:1px solid var(--border-soft)">
+                                    <p class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--text-soft)">Total Tax Saved</p>
+                                    <p id="total-tax-saved" class="font-black text-lg mt-1" style="color:var(--sage)">$0</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 text-white rounded-[2rem] p-8">
-                            <p class="text-slate-400 text-[11px] font-black uppercase tracking-widest mb-1">Net Take-Home / Month</p>
-                            <h3 id="monthly-takehome" class="text-4xl font-black text-emerald-400">$0</h3>
+                        <!-- Quarterly Estimated Tax Tracker -->
+                        <div class="card p-8">
+                            <h4 class="text-xl font-bold mb-2 flex items-center">Quarterly Estimated Tax Tracker
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Quarterly Estimated Taxes" data-body="As a self-employed person, you must pay estimated taxes 4 times per year or face an underpayment penalty. The safe harbor rule: pay at least 90% of this year's tax OR 100% of last year's liability (110% if last year's AGI exceeded $150,000)." data-ref="IRC §6654 | IRS Form 1040-ES | IRS Pub 505" data-az="AZ estimated taxes are due on the same federal dates. Use AZ Form 140ES." data-link="https://www.irs.gov/businesses/small-businesses-self-employed/estimated-taxes">ⓘ</span>
+                            </h4>
+                            <p class="text-xs mb-6" style="color:var(--text-soft)">Recommended payment = Total annual liability ÷ 4. Pay both federal (1040-ES) and AZ (Form 140ES).</p>
+                            <div id="quarterly-tracker" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="xl:col-span-2 card p-10">
-                        <h4 class="text-2xl font-black mb-8">Liability Breakdown</h4>
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center pb-4 border-b">
-                                <span class="text-slate-600 flex items-center">Federal Self-Employment Tax <span class="tax-tooltip" data-tip="A 15.3% tax combining Social Security (12.4%) and Medicare (2.9%) on your net earnings.">?</span></span>
-                                <span id="tax-se" class="font-black text-rose-600">$0</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-4 border-b">
-                                <span class="text-slate-600 flex items-center">Federal Income Tax (Est) <span class="tax-tooltip" data-tip="Ordinary income tax based on progressive IRS brackets after your standard deduction.">?</span></span>
-                                <span id="tax-fed" class="font-black text-rose-600">$0</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-4 border-b">
-                                <span class="text-slate-600 flex items-center">AZ State Flat Tax (2.5%) <span class="tax-tooltip" data-tip="Arizona taxes all individual income at a flat 2.5% rate as of 2024.">?</span></span>
-                                <span id="tax-az" class="font-black text-rose-600">$0</span>
-                            </div>
-                            <div class="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl flex justify-between items-center">
-                                <div>
-                                    <p class="font-bold text-emerald-800 flex items-center">QBI Deduction (The LLC Perk) <span class="tax-tooltip" style="background:#d1fae5; color:#065f46;" data-tip="The Qualified Business Income deduction allows eligible LLCs to deduct up to 20% of net income before taxes.">?</span></p>
-                                    <p class="text-xs text-emerald-600 mt-1">Slashes 20% off taxable profit</p>
-                                </div>
-                                <span id="tax-qbi" class="text-xl font-black text-emerald-700">-$0</span>
-                            </div>
-                        </div>
-                        <div class="mt-8 grid grid-cols-2 gap-4">
-                            <div class="p-4 bg-slate-50 rounded-xl">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase">Pre-Tax Profit</p>
-                                <p id="net-profit-display" class="font-black">$0</p>
-                            </div>
-                            <div class="p-4 bg-slate-50 rounded-xl">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase">Effective Rate</p>
-                                <p id="effective-rate" class="font-black">0%</p>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Annual Compliance Checklist -->
+                <div class="card p-8">
+                    <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-5 h-5" style="color:var(--sage)"></i>
+                        Annual Tax Compliance Checklist
+                        <span class="info-badge" onclick="showInfo(this)" data-title="Why Track Compliance?" data-body="Staying compliant throughout the year prevents penalties, keeps your LLC in good standing, and makes tax filing dramatically easier. Check off each item as you complete it — your progress is saved automatically." data-ref="IRS Pub 583 | AZ ACC | AZ DOR" data-az="Arizona LLCs do NOT require an annual report (unlike most states). However, you must maintain your registered agent and renew your TPT license annually." data-link="https://azsos.gov/business">ⓘ</span>
+                    </h4>
+                    <div id="compliance-checklist" class="space-y-8"></div>
                 </div>
             </div>
 
             <!-- Tab: Write-Off Guide -->
             <div id="taxguide" class="tab-content space-y-10">
                 <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Photography Write-Off Guide</h2>
-                    <p class="text-slate-500 mt-2">Deductible expenses vs. non-deductible personal costs based on IRS standards.</p>
+                    <h2 class="text-4xl font-black tracking-tight">Photography Write-Off Guide</h2>
+                    <p class="mt-2" style="color:var(--text-soft)">100% sourced to IRS publications and IRC sections. Every deduction includes what records you must keep.</p>
                 </header>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- What IS a Write-Off? -->
-                    <section class="card p-8 border-l-8 border-emerald-500">
-                        <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
-                            <i data-lucide="check-circle" class="text-emerald-500"></i> What You CAN Deduct
-                        </h4>
-                        <div class="space-y-4">
-                            <div class="p-4 bg-slate-50 rounded-xl">
-                                <p class="font-bold text-sm">Professional Gear (Canon focus)</p>
-                                <p class="text-xs text-slate-600 mt-1">Cameras, RF Lenses, CPS Platinum membership, repair fees, lighting, and batteries. (IRS Pub 535)</p>
-                            </div>
-                            <div class="p-4 bg-slate-50 rounded-xl">
-                                <p class="font-bold text-sm">Subscriptions & Software</p>
-                                <p class="text-xs text-slate-600 mt-1">Adobe Creative Cloud, CRM (Honeybook/Dubsado), Gallery hosting (Pixieset/Pic-Time).</p>
-                            </div>
-                            <div class="p-4 bg-slate-50 rounded-xl">
-                                <p class="font-bold text-sm">Business Phone & Internet</p>
-                                <p class="text-xs text-slate-600 mt-1">100% of the phone bill if on an LLC Business Plan. Proportionate % of home internet for editing. (IRS Pub 463)</p>
-                            </div>
-                            <div class="p-4 bg-slate-50 rounded-xl">
-                                <p class="font-bold text-sm">Marketing & SEO</p>
-                                <p class="text-xs text-slate-600 mt-1">Google Ads, Social Media advertising, website hosting, and business cards.</p>
-                            </div>
-                            <div class="p-4 bg-slate-50 rounded-xl">
-                                <p class="font-bold text-sm">Professional Services</p>
-                                <p class="text-xs text-slate-600 mt-1">CPA fees, legal templates for contracts, and PPA membership.</p>
-                            </div>
-                        </div>
-                        <div class="mt-6">
-                            <a href="https://www.irs.gov/publications/p535" target="_blank" class="resource-link text-[10px] uppercase tracking-wider">IRS Publication 535: Business Expenses →</a>
-                        </div>
-                    </section>
+                <!-- Deductible Expenses -->
+                <section>
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5" style="color:var(--sage)"></i> What You Can Deduct</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-                    <!-- What IS NOT a Write-Off? -->
-                    <section class="card p-8 border-l-8 border-rose-500">
-                        <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
-                            <i data-lucide="x-circle" class="text-rose-500"></i> What You CANNOT Deduct
-                        </h4>
-                        <div class="space-y-4">
-                            <div class="p-4 bg-rose-50 rounded-xl">
-                                <p class="font-bold text-sm">Commuting Miles</p>
-                                <p class="text-xs text-slate-600 mt-1">Driving from home to a "regular place of business" (like a fixed studio) is not deductible. Driving home to a wedding venue is.</p>
+                        <div class="card p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-bold text-sm flex items-center">Camera Bodies, Lenses &amp; Gear
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Camera Gear — Section 179 or Depreciation" data-body="Equipment used for business is deductible either immediately via Section 179 expensing (up to $1,220,000 in 2024) or via bonus depreciation (60% first-year in 2024) or MACRS depreciation over 5 years. Using Section 179 is almost always better — you deduct the full cost in the year you buy and place the item in service." data-ref="IRC §179 | IRC §168 | IRS Pub 946" data-az="" data-link="https://www.irs.gov/publications/p946">ⓘ</span>
+                                </h4>
+                                <span class="deduct-badge deduct-100">100%</span>
                             </div>
-                            <div class="p-4 bg-rose-50 rounded-xl">
-                                <p class="font-bold text-sm">Personal Clothing</p>
-                                <p class="text-xs text-slate-600 mt-1">You cannot deduct "wedding attire" or nice clothes just because you wear them to shoots. Only uniforms or safety gear qualify.</p>
-                            </div>
-                            <div class="p-4 bg-rose-50 rounded-xl">
-                                <p class="font-bold text-sm">Personal Grooming</p>
-                                <p class="text-xs text-slate-600 mt-1">Haircuts, makeup for yourself, or dry cleaning for personal clothes are strictly non-deductible.</p>
-                            </div>
-                            <div class="p-4 bg-rose-50 rounded-xl">
-                                <p class="font-bold text-sm">Entertainment</p>
-                                <p class="text-xs text-slate-600 mt-1">Under current tax laws, you generally cannot deduct "entertainment" like taking a client to a sports game or a movie. (IRS Pub 463)</p>
-                            </div>
-                            <div class="p-4 bg-rose-50 rounded-xl">
-                                <p class="font-bold text-sm">Family Meals</p>
-                                <p class="text-xs text-slate-600 mt-1">Meals with family members are not deductible unless they are employees and you are discussing legitimate business during travel.</p>
+                            <p class="text-xs" style="color:var(--text-soft)">Camera bodies, RF lenses, flashes, tripods, bags, filters, batteries, memory cards.</p>
+                            <div class="mt-3 pt-3 border-t" style="border-color:var(--border-soft)">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:var(--sage-deep)">Records needed</p>
+                                <p class="text-[11px]" style="color:var(--text-mid)">Receipt + date placed in service (when you first used it for work)</p>
                             </div>
                         </div>
-                        <div class="mt-6">
-                            <a href="https://www.irs.gov/publications/p463" target="_blank" class="resource-link text-[10px] uppercase tracking-wider">IRS Publication 463: Travel & Meals →</a>
-                        </div>
-                    </section>
-                </div>
 
-                <!-- Best Practice Checklist -->
-                <section class="card p-8 bg-slate-900 text-white">
-                    <h4 class="text-2xl font-black mb-8">Write-Off Best Practices (Audit Proofing)</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="card p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-bold text-sm flex items-center">Software Subscriptions
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Business Software Deduction" data-body="Software used in your business is either deducted in full in the year you buy it (Section 179) or expensed monthly as it is paid. Subscription software like Adobe CC is deducted as a current business expense each month/year — 100% in the year paid." data-ref="IRC §162 | IRC §197 | IRS Pub 535, Ch. 2" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
+                                </h4>
+                                <span class="deduct-badge deduct-100">100%</span>
+                            </div>
+                            <p class="text-xs" style="color:var(--text-soft)">Adobe Creative Cloud, Lightroom presets, Pixieset, Pic-Time, HoneyBook, Dubsado, Canva Pro, This app.</p>
+                            <div class="mt-3 pt-3 border-t" style="border-color:var(--border-soft)">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:var(--sage-deep)">Records needed</p>
+                                <p class="text-[11px]" style="color:var(--text-mid)">Subscription invoices / bank statements</p>
+                            </div>
+                        </div>
+
+                        <div class="card p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-bold text-sm flex items-center">Business Mileage
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Standard Mileage Rate" data-body="For 2024, the IRS standard mileage rate is 67 cents per mile for business use. You may only deduct miles driven for business purposes — driving to shoots, client meetings, equipment stores, and editing sessions at external locations. Commuting from home to a regular fixed office is NOT deductible. Working from home means most drives are business drives." data-ref="IRS Rev. Proc. 2023-34 | IRS Pub 463, Ch. 4" data-az="Arizona photographers shooting across the valley rack up significant mileage. Even 5,000 annual business miles = $3,350 deduction." data-link="https://www.irs.gov/tax-professionals/standard-mileage-rates">ⓘ</span>
+                                </h4>
+                                <span class="deduct-badge deduct-100">67¢/mi</span>
+                            </div>
+                            <p class="text-xs" style="color:var(--text-soft)">Driving to photo shoots, client meetings, engagement sessions, equipment runs, second shooter meetups.</p>
+                            <div class="mt-3 pt-3 border-t" style="border-color:var(--border-soft)">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:var(--sage-deep)">Records needed</p>
+                                <p class="text-[11px]" style="color:var(--text-mid)">Mileage log: date, starting point, destination, purpose, miles. MileIQ or Stride app recommended.</p>
+                            </div>
+                        </div>
+
+                        <div class="card p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-bold text-sm flex items-center">Home Office
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Home Office Deduction" data-body="You can deduct $5 per square foot of space used regularly and exclusively for business, up to 300 sq ft ($1,500 max). Alternatively, use the regular method (Form 8829) for potentially larger deductions based on actual home expenses. The space MUST be used exclusively for business — a spare room with a desk and a bed doesn't qualify." data-ref="IRC §280A | IRS Pub 587 | Rev. Proc. 2013-13" data-az="" data-link="https://www.irs.gov/publications/p587">ⓘ</span>
+                                </h4>
+                                <span class="deduct-badge deduct-100">$5/sq ft</span>
+                            </div>
+                            <p class="text-xs" style="color:var(--text-soft)">Dedicated editing room or workspace used exclusively and regularly for business. Max 300 sq ft = $1,500/yr.</p>
+                            <div class="mt-3 pt-3 border-t" style="border-color:var(--border-soft)">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:var(--sage-deep)">Records needed</p>
+                                <p class="text-[11px]" style="color:var(--text-mid)">Floor plan or diagram showing room dimensions + photo of the exclusive-use workspace</p>
+                            </div>
+                        </div>
+
+                        <div class="card p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-bold text-sm flex items-center">Business Meals (with clients)
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Business Meal Deduction" data-body="You can deduct 50% of meal costs when (1) you or an employee is present, (2) the meal is with a client or business associate, and (3) business is discussed before, during, or after the meal. The meal must not be lavish or extravagant. Entertainment (concerts, sports games) is 0% deductible since the TCJA 2017." data-ref="IRC §274(n)(1) | IRS Pub 463, Ch. 2" data-az="" data-link="https://www.irs.gov/publications/p463">ⓘ</span>
+                                </h4>
+                                <span class="deduct-badge deduct-50">50%</span>
+                            </div>
+                            <p class="text-xs" style="color:var(--text-soft)">Consultation meals with couples, engagement shoot planning lunches, styled shoot coordination meals.</p>
+                            <div class="mt-3 pt-3 border-t" style="border-color:var(--border-soft)">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:var(--sage-deep)">Records needed</p>
+                                <p class="text-[11px]" style="color:var(--text-mid)">Receipt + note: who was present, what business was discussed</p>
+                            </div>
+                        </div>
+
+                        <div class="card p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-bold text-sm flex items-center">Education &amp; Workshops
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Education Expense Deduction" data-body="Education expenses are deductible if they maintain or improve skills required in your current business. Photography workshops, editing tutorials, business coaching for photographers, and similar courses qualify. Education that qualifies you for a new career does not qualify — but since you're already a photographer, most photography-related learning is deductible." data-ref="IRC §162 | Reg. §1.162-5 | IRS Pub 970" data-az="" data-link="https://www.irs.gov/publications/p970">ⓘ</span>
+                                </h4>
+                                <span class="deduct-badge deduct-100">100%</span>
+                            </div>
+                            <p class="text-xs" style="color:var(--text-soft)">Photography workshops, presets/posing courses, business coaching, editing tutorials, online education.</p>
+                            <div class="mt-3 pt-3 border-t" style="border-color:var(--border-soft)">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:var(--sage-deep)">Records needed</p>
+                                <p class="text-[11px]" style="color:var(--text-mid)">Receipt + syllabus or course description showing it relates to your photography business</p>
+                            </div>
+                        </div>
+
+                        <div class="card p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-bold text-sm flex items-center">Insurance Premiums
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Business Insurance Deduction" data-body="Premiums paid for business insurance are fully deductible as ordinary business expenses. This includes general liability insurance, professional liability (errors &amp; omissions), and equipment insurance (like PPA's equipment coverage)." data-ref="IRC §162(a) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
+                                </h4>
+                                <span class="deduct-badge deduct-100">100%</span>
+                            </div>
+                            <p class="text-xs" style="color:var(--text-soft)">General liability, professional liability (E&amp;O), PPA equipment coverage, drone insurance.</p>
+                            <div class="mt-3 pt-3 border-t" style="border-color:var(--border-soft)">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:var(--sage-deep)">Records needed</p>
+                                <p class="text-[11px]" style="color:var(--text-mid)">Annual policy invoice showing premium amount and coverage period</p>
+                            </div>
+                        </div>
+
+                        <div class="card p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-bold text-sm flex items-center">Marketing &amp; Website
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Marketing &amp; Advertising Deduction" data-body="All ordinary and necessary marketing expenses are 100% deductible. This includes social media ads, Google Ads, your website hosting and domain, business cards, styled shoot costs for portfolio building, and your photography business account management tools." data-ref="IRC §162(a) | IRS Pub 535, Ch. 8" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
+                                </h4>
+                                <span class="deduct-badge deduct-100">100%</span>
+                            </div>
+                            <p class="text-xs" style="color:var(--text-soft)">Instagram/TikTok ads, Google Ads, Squarespace/ShowIt hosting, domain, business cards, styled shoots.</p>
+                            <div class="mt-3 pt-3 border-t" style="border-color:var(--border-soft)">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:var(--sage-deep)">Records needed</p>
+                                <p class="text-[11px]" style="color:var(--text-mid)">Invoices, receipts, or bank/card statements showing the expense</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="https://www.irs.gov/publications/p535" target="_blank" class="resource-link text-[10px] uppercase tracking-wider">IRS Publication 535: Business Expenses (Full Guide) →</a>
+                    </div>
+                </section>
+
+                <!-- Cannot Deduct -->
+                <section>
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><i data-lucide="x-circle" class="w-5 h-5 text-rose-500"></i> What You Cannot Deduct</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <div class="card p-6" style="border-left:4px solid #fca5a5">
+                            <div class="flex items-start justify-between mb-2"><h4 class="font-bold text-sm">Personal Clothing &amp; Appearance</h4><span class="deduct-badge deduct-0">0%</span></div>
+                            <p class="text-xs" style="color:var(--text-soft)">Clothing you wear to shoots is NOT deductible unless it is a distinctive uniform that cannot be worn as everyday clothing. Haircuts, makeup for yourself, and dry cleaning personal clothes are strictly personal expenses.</p>
+                            <p class="text-[10px] mt-2 font-bold" style="color:#991b1b">Authority: Reg. §1.262-1(b)(8) | Pevsner v. Commissioner (5th Cir. 1980)</p>
+                        </div>
+                        <div class="card p-6" style="border-left:4px solid #fca5a5">
+                            <div class="flex items-start justify-between mb-2"><h4 class="font-bold text-sm">Entertainment (Post-2017)</h4><span class="deduct-badge deduct-0">0%</span></div>
+                            <p class="text-xs" style="color:var(--text-soft)">The Tax Cuts and Jobs Act (2017) eliminated the entertainment deduction. Taking a client to a concert, sports game, or similar event is no longer deductible — even if business is discussed.</p>
+                            <p class="text-[10px] mt-2 font-bold" style="color:#991b1b">Authority: IRC §274(a)(1) as amended by TCJA 2017</p>
+                        </div>
+                        <div class="card p-6" style="border-left:4px solid #fca5a5">
+                            <div class="flex items-start justify-between mb-2"><h4 class="font-bold text-sm">Family Meals</h4><span class="deduct-badge deduct-0">0%</span></div>
+                            <p class="text-xs" style="color:var(--text-soft)">Meals with family members are not deductible unless they are bona fide employees of your LLC and business is being conducted.</p>
+                            <p class="text-[10px] mt-2 font-bold" style="color:#991b1b">Authority: IRC §274(a) | IRS Pub 463</p>
+                        </div>
+                        <div class="card p-6" style="border-left:4px solid #fca5a5">
+                            <div class="flex items-start justify-between mb-2"><h4 class="font-bold text-sm">Commuting Miles</h4><span class="deduct-badge deduct-0">0%</span></div>
+                            <p class="text-xs" style="color:var(--text-soft)">Driving from home to a regular fixed place of business is commuting — not deductible. However, since most photographers work from home, driving from home to ANY shoot location is a business trip, not a commute.</p>
+                            <p class="text-[10px] mt-2 font-bold" style="color:#991b1b">Authority: IRC §162 | Rev. Rul. 99-7</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gray Zone -->
+                <section class="card p-8" style="border-left:4px solid var(--ocean)">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i data-lucide="alert-circle" class="w-5 h-5" style="color:var(--ocean)"></i> The Gray Zone — Commonly Misunderstood</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <h4 class="font-bold text-sm flex items-center mb-2">Personal Phone (Mixed Use)
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Personal Phone Business Use Percentage" data-body="If your phone is in your personal name (not the LLC), you can still deduct the business-use percentage. Common approach: if you use your phone ~70% for business, deduct 70% of the monthly bill. Alternatively, put a dedicated line in the LLC's name for a 100% clean deduction." data-ref="IRC §280F | IRS Pub 535" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
+                            </h4>
+                            <span class="deduct-badge deduct-prop">Business % only</span>
+                            <p class="text-xs mt-2" style="color:var(--text-soft)">Track your usage split. A dedicated LLC business line gives you 100% with zero documentation burden.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm flex items-center mb-2">Mixed Personal/Business Travel
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Mixed Business-Personal Travel" data-body="If a trip is primarily for business (more than 50% of days are business days), flights and lodging are fully deductible. Meals are 50% deductible on all days. Personal days' pro-rated costs are not deductible. Keep a daily log showing business vs. personal activities." data-ref="IRC §162 | IRS Pub 463, Ch. 1" data-az="Arizona elopement photographers shooting in Hawaii or Utah: document every shoot day. A 3-day trip with 2 shoot days = 100% flight deductible." data-link="https://www.irs.gov/publications/p463">ⓘ</span>
+                            </h4>
+                            <span class="deduct-badge deduct-prop">Business days only</span>
+                            <p class="text-xs mt-2" style="color:var(--text-soft)">Flight is 100% deductible if the primary purpose is business. Hotel for personal days is not deductible.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm flex items-center mb-2">Home Internet (Mixed Use)
+                                <span class="info-badge" onclick="showInfo(this)" data-title="Home Internet Deduction" data-body="If you use your home internet for both personal and business use, you can deduct the business-use percentage. A common approach: if you estimate 60% of internet use is for work (editing, uploading galleries, client communication), deduct 60% of the monthly bill. Document your reasoning." data-ref="IRC §162 | IRS Pub 529" data-az="" data-link="https://www.irs.gov/publications/p529">ⓘ</span>
+                            </h4>
+                            <span class="deduct-badge deduct-prop">Business % only</span>
+                            <p class="text-xs mt-2" style="color:var(--text-soft)">Estimate your business-use percentage. Many photographers can reasonably claim 60-80%.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Best Practices -->
+                <section class="rounded-2xl p-8 text-white" style="background:linear-gradient(135deg,var(--sage-deep),var(--ocean-deep))">
+                    <h4 class="text-2xl font-bold mb-6">Audit-Proofing Best Practices</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <ul class="space-y-4">
-                            <li class="flex gap-4">
-                                <i data-lucide="check" class="text-emerald-400"></i>
-                                <div>
-                                    <p class="font-bold text-sm">The "Receipt Rule"</p>
-                                    <p class="text-xs text-slate-400">IRS requires records for any expense >$75. Digital copies are valid. Pro tip: Photograph your receipts immediately.</p>
-                                </div>
+                            <li class="flex gap-3">
+                                <i data-lucide="check" class="w-4 h-4 mt-0.5 flex-shrink-0" style="color:#a8f0d0"></i>
+                                <div><p class="font-bold text-sm">The $75 Receipt Rule</p><p class="text-xs mt-1" style="color:rgba(255,255,255,0.65)">IRS requires written records for any expense over $75. Digital photos of receipts are valid. Photograph them immediately using your notes app or Expensify.</p></div>
                             </li>
-                            <li class="flex gap-4">
-                                <i data-lucide="check" class="text-emerald-400"></i>
-                                <div>
-                                    <p class="font-bold text-sm">Business Meals (50%)</p>
-                                    <p class="text-xs text-slate-400">Deductible only if you, the owner, are present and business is discussed. (Current rule: 50% limit).</p>
-                                </div>
+                            <li class="flex gap-3">
+                                <i data-lucide="check" class="w-4 h-4 mt-0.5 flex-shrink-0" style="color:#a8f0d0"></i>
+                                <div><p class="font-bold text-sm">Separate Bank Account (Required)</p><p class="text-xs mt-1" style="color:rgba(255,255,255,0.65)">Commingling personal and business funds is the #1 way to lose LLC liability protection and invite IRS scrutiny. All business income and expenses must flow through your LLC account.</p></div>
                             </li>
                         </ul>
                         <ul class="space-y-4">
-                            <li class="flex gap-4">
-                                <i data-lucide="check" class="text-emerald-400"></i>
-                                <div>
-                                    <p class="font-bold text-sm">Mileage Tracking (Essential)</p>
-                                    <p class="text-xs text-slate-400">Use MileIQ or Stride. Arizona photographers often find mileage is their largest "silent" deduction ($0.67/mile in 2024).</p>
-                                </div>
+                            <li class="flex gap-3">
+                                <i data-lucide="check" class="w-4 h-4 mt-0.5 flex-shrink-0" style="color:#a8f0d0"></i>
+                                <div><p class="font-bold text-sm">Mileage Log (Year-Round)</p><p class="text-xs mt-1" style="color:rgba(255,255,255,0.65)">The IRS requires a contemporaneous mileage log — meaning recorded at or near the time of each trip. Reconstructing from memory at year-end will not survive an audit. Use MileIQ or Stride.</p></div>
                             </li>
-                            <li class="flex gap-4">
-                                <i data-lucide="check" class="text-emerald-400"></i>
-                                <div>
-                                    <p class="font-bold text-sm">The Home Office (Pub 587)</p>
-                                    <p class="text-xs text-slate-400">Space must be used *exclusively* for business. "Mixed use" rooms are a red flag for the IRS.</p>
-                                </div>
+                            <li class="flex gap-3">
+                                <i data-lucide="check" class="w-4 h-4 mt-0.5 flex-shrink-0" style="color:#a8f0d0"></i>
+                                <div><p class="font-bold text-sm">7-Year Record Retention</p><p class="text-xs mt-1" style="color:rgba(255,255,255,0.65)">Keep all receipts, invoices, bank statements, and mileage logs for at least 3 years (6 years if you underreported income by 25%+). The IRS recommends 7 years to be safe.</p></div>
                             </li>
                         </ul>
+                    </div>
+                    <div class="flex flex-wrap gap-4 mt-6 pt-6" style="border-top:1px solid rgba(255,255,255,0.15)">
+                        <a href="https://www.irs.gov/publications/p535" target="_blank" class="text-[10px] font-bold uppercase tracking-wider" style="color:#a8f0d0">IRS Pub 535: Business Expenses →</a>
+                        <a href="https://www.irs.gov/publications/p463" target="_blank" class="text-[10px] font-bold uppercase tracking-wider" style="color:#a8f0d0">IRS Pub 463: Travel &amp; Meals →</a>
+                        <a href="https://www.irs.gov/publications/p587" target="_blank" class="text-[10px] font-bold uppercase tracking-wider" style="color:#a8f0d0">IRS Pub 587: Home Office →</a>
+                        <a href="https://www.irs.gov/publications/p946" target="_blank" class="text-[10px] font-bold uppercase tracking-wider" style="color:#a8f0d0">IRS Pub 946: Depreciation →</a>
                     </div>
                 </section>
             </div>
 
+            <!-- Tab: Vendor Perks -->
             <!-- Tab: Vendor Perks -->
             <div id="discounts" class="tab-content space-y-10">
                 <header>
@@ -1059,6 +1305,8 @@
             bookedClients: [],
             sneakPeeks: [],
             socialCards: [],
+            complianceChecks: {},
+            compliancePaid: {},
             workflows: [],
             emailTemplates: [
                 {
@@ -1187,6 +1435,7 @@
 
             switchTab('dashboard');
             calcTaxes();
+            renderComplianceChecklist();
             document.querySelectorAll('#legal-checklist input').forEach(c => {
                 c.addEventListener('change', updateVeilScore);
             });
@@ -2055,7 +2304,235 @@
             }
         }
 
-        // --- DESTINATION ELOPEMENT ROI --- //
+        // ─── ⓘ INFO POPOVER SYSTEM ───────────────────────────────────────────────
+        function showInfo(badge) {
+            document.querySelectorAll('.info-popover').forEach(p => p.remove());
+            document.querySelectorAll('.info-popover-overlay').forEach(p => p.remove());
+
+            const overlay = document.createElement('div');
+            overlay.className = 'info-popover-overlay';
+            overlay.onclick = () => { overlay.remove(); document.querySelectorAll('.info-popover').forEach(p => p.remove()); };
+            document.body.appendChild(overlay);
+
+            const pop = document.createElement('div');
+            pop.className = 'info-popover';
+
+            const azNote = badge.dataset.az ? `<div class="az-note"><strong>🌵 AZ Note:</strong> ${badge.dataset.az}</div>` : '';
+            const link   = badge.dataset.link ? `<a class="popover-link" href="${badge.dataset.link}" target="_blank">Read IRS source →</a>` : '';
+            pop.innerHTML = `
+                <h5>${badge.dataset.title}</h5>
+                <p>${badge.dataset.body}</p>
+                <span class="irs-ref">📋 ${badge.dataset.ref}</span>
+                ${azNote}${link}
+                <button onclick="this.closest('.info-popover').remove();document.querySelector('.info-popover-overlay')?.remove();" style="position:absolute;top:0.5rem;right:0.75rem;background:none;border:none;cursor:pointer;font-size:1rem;color:#999">×</button>
+            `;
+            document.body.appendChild(pop);
+
+            const rect = badge.getBoundingClientRect();
+            let top  = rect.bottom + 8;
+            let left = rect.left - 120;
+            if (left < 10) left = 10;
+            if (left + 325 > window.innerWidth) left = window.innerWidth - 335;
+            if (top + 300 > window.innerHeight) top = rect.top - 310;
+            pop.style.top  = top  + 'px';
+            pop.style.left = left + 'px';
+
+            document.addEventListener('keydown', function esc(e) {
+                if (e.key === 'Escape') { overlay.remove(); pop.remove(); document.removeEventListener('keydown', esc); }
+            });
+        }
+
+        // ─── UPDATED calcTaxes ───────────────────────────────────────────────────
+        function calcTaxes() {
+            const gross      = parseFloat(document.getElementById('gross-income').value) || 0;
+            const expenses   = parseFloat(document.getElementById('expenses').value)     || 0;
+            const health     = parseFloat(document.getElementById('health-insurance').value) || 0;
+            const retire     = parseFloat(document.getElementById('retirement').value)  || 0;
+
+            // Net profit before above-the-line deductions
+            const netProfit = Math.max(0, gross - expenses);
+
+            // SE Tax: 15.3% on 92.35% of net profit (IRS formula)
+            const seTaxBase  = netProfit * 0.9235;
+            const seTax      = seTaxBase * 0.153;
+            const seDeduct   = seTax / 2;  // IRC §164(f) — half of SE tax is deductible
+
+            // SEP-IRA limit check
+            const sepMax = Math.min(netProfit * 0.25, 69000);
+            const retireActual = Math.min(retire, sepMax);
+
+            const el = document.getElementById('sep-max-hint');
+            if (el) el.textContent = retireActual > 0 ? `Max SEP-IRA for your income: $${Math.round(sepMax).toLocaleString()}` : `Your SEP-IRA max: $${Math.round(sepMax).toLocaleString()}`;
+
+            // Health deduction capped at net profit
+            const healthAct  = Math.min(health, netProfit);
+
+            // Adjusted Gross Income
+            const agi = Math.max(0, netProfit - seDeduct - healthAct - retireActual);
+
+            // QBI: 20% of qualified business income (before standard deduction), phaseout at $191,950
+            const qbiBase   = Math.max(0, netProfit - seDeduct - healthAct - retireActual);
+            const qbiDeduct = qbiBase <= 191950 ? qbiBase * 0.20 : 0;
+
+            // Federal taxable income (2024: $14,600 standard deduction)
+            const fedTaxable = Math.max(0, agi - 14600 - qbiDeduct);
+
+            // 2024 Federal tax brackets (single filer)
+            const brackets = [
+                { max: 11600,  rate: 0.10 },
+                { max: 47150,  rate: 0.12 },
+                { max: 100525, rate: 0.22 },
+                { max: 191950, rate: 0.24 },
+                { max: 243725, rate: 0.32 },
+                { max: 609350, rate: 0.35 },
+                { max: Infinity, rate: 0.37 },
+            ];
+            let fedTax = 0, prev = 0, marginalRate = 0;
+            for (const b of brackets) {
+                if (fedTaxable <= 0) break;
+                const taxable = Math.min(fedTaxable, b.max) - prev;
+                if (taxable > 0) { fedTax += taxable * b.rate; marginalRate = b.rate; }
+                prev = b.max;
+            }
+
+            // AZ: 2.5% flat on AGI (ARS §43-1011)
+            const azTax = agi * 0.025;
+
+            const totalTax    = seTax + fedTax + azTax;
+            const takehome    = gross - expenses - totalTax - healthAct - retireActual;
+            const effectiveRate = netProfit > 0 ? (totalTax / netProfit * 100).toFixed(1) : '0.0';
+            const totalSaved  = seDeduct * (marginalRate + 0.025) + qbiDeduct * (marginalRate + 0.025) + healthAct * (marginalRate + 0.025) + retireActual * (marginalRate + 0.025);
+
+            const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+            const fmt = (n) => '$' + Math.round(Math.abs(n)).toLocaleString();
+
+            set('tax-se',         fmt(seTax));
+            set('tax-se-ded',     '-' + fmt(seDeduct));
+            set('tax-health-ded', '-' + fmt(healthAct));
+            set('tax-retire-ded', '-' + fmt(retireActual));
+            set('tax-fed',        fmt(fedTax));
+            set('tax-az',         fmt(azTax));
+            set('tax-qbi',        '-' + fmt(qbiDeduct));
+            set('net-profit-display', fmt(netProfit));
+            set('effective-rate', effectiveRate + '%');
+            set('total-tax-saved', fmt(totalSaved));
+            set('monthly-takehome', '$' + Math.round(Math.max(0, takehome) / 12).toLocaleString());
+
+            const bracket = document.getElementById('marginal-bracket');
+            if (bracket) bracket.textContent = Math.round(marginalRate * 100) + '% bracket';
+
+            // TPT toggle
+            const tptDetail = document.getElementById('tpt-detail');
+            const tptToggle = document.getElementById('tpt-toggle');
+            if (tptDetail && tptToggle) tptToggle.checked ? tptDetail.classList.remove('hidden') : tptDetail.classList.add('hidden');
+
+            // Quarterly tracker
+            renderQuarterlyTracker(totalTax);
+
+            // Store marginal rate for write-off analyzer
+            window._marginalRate = marginalRate;
+        }
+
+        // ─── QUARTERLY TRACKER ───────────────────────────────────────────────────
+        function renderQuarterlyTracker(annualTax) {
+            const qPay = Math.round(annualTax / 4);
+            const quarters = [
+                { q: 'Q1 2025', fed: 'April 15, 2025', az: 'April 15, 2025', period: '2026-04-15' },
+                { q: 'Q2 2025', fed: 'June 16, 2025',  az: 'June 16, 2025',  period: '2026-06-16' },
+                { q: 'Q3 2025', fed: 'Sept 15, 2025',  az: 'Sept 15, 2025',  period: '2026-09-15' },
+                { q: 'Q4 2025', fed: 'Jan 15, 2026',   az: 'Jan 15, 2026',   period: '2027-01-15' },
+            ];
+            const container = document.getElementById('quarterly-tracker');
+            if (!container) return;
+            const now = new Date();
+
+            container.innerHTML = quarters.map((q, i) => {
+                const due = new Date(q.period);
+                const isPast    = due < now;
+                const isSoon    = !isPast && (due - now) < 30 * 24 * 3600 * 1000;
+                const stateKey  = `q-paid-${i}`;
+                const paid      = (window.StateStore?.state?.compliancePaid || {})[stateKey];
+                const urgency   = !paid && isPast ? 'overdue' : !paid && isSoon ? 'due-soon' : '';
+                return `<div class="card p-5 ${urgency}" style="border:1px solid var(--border-soft)">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="q-badge">${q.q}</span>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" ${paid?'checked':''} onchange="markQPaid(${i},this.checked)" class="w-4 h-4" style="accent-color:var(--sage)">
+                            <span class="text-[10px] font-bold" style="color:var(--sage-deep)">Paid</span>
+                        </label>
+                    </div>
+                    <p class="text-xl font-black mb-2" style="color:var(--charcoal)">$${qPay.toLocaleString()}</p>
+                    <p class="text-[10px]" style="color:var(--text-soft)"><strong>Federal:</strong> ${q.fed} (Form 1040-ES)</p>
+                    <p class="text-[10px] mt-0.5" style="color:var(--text-soft)"><strong>AZ:</strong> ${q.az} (Form 140ES)</p>
+                    ${!paid && isPast  ? '<p class="text-[10px] font-bold text-red-500 mt-2">⚠️ Overdue</p>' : ''}
+                    ${!paid && isSoon  ? '<p class="text-[10px] font-bold text-amber-600 mt-2">⏰ Due soon</p>' : ''}
+                </div>`;
+            }).join('');
+        }
+
+        function markQPaid(idx, checked) {
+            if (!window.StateStore) return;
+            const paid = window.StateStore.state.compliancePaid || {};
+            paid[`q-paid-${idx}`] = checked;
+            window.StateStore.update('compliancePaid', paid);
+        }
+
+        // ─── COMPLIANCE CHECKLIST ────────────────────────────────────────────────
+        const COMPLIANCE_ITEMS = [
+            { id:'c1',  q:'Q1 (Jan–Mar)',   text:'Pay Q4 2024 estimated taxes',           sub:'Federal: Jan 15 | AZ: Jan 15 (Form 1040-ES & AZ 140ES)' },
+            { id:'c2',  q:'Q1 (Jan–Mar)',   text:'Reconcile January bank statement',      sub:'Match every transaction to a receipt or invoice' },
+            { id:'c3',  q:'Q1 (Jan–Mar)',   text:'Issue 1099-NEC to any contractors paid $600+', sub:'Due January 31 — use IRS FIRE system or payroll software' },
+            { id:'c4',  q:'Q2 (Apr–Jun)',   text:'File 2024 tax return (or extension)',   sub:'Federal Form 1040 + AZ Form 140 — due April 15' },
+            { id:'c5',  q:'Q2 (Apr–Jun)',   text:'Pay Q1 2025 estimated taxes',           sub:'Federal: April 15 | AZ: April 15' },
+            { id:'c6',  q:'Q2 (Apr–Jun)',   text:'Reconcile Q1 bank statements',         sub:'January, February, March' },
+            { id:'c7',  q:'Q3 (Jul–Sep)',   text:'Pay Q2 2025 estimated taxes',           sub:'Federal: June 16 | AZ: June 16' },
+            { id:'c8',  q:'Q3 (Jul–Sep)',   text:'Reconcile Q2 bank statements',         sub:'April, May, June' },
+            { id:'c9',  q:'Q3 (Jul–Sep)',   text:'Renew TPT license if selling prints',   sub:'Annual renewal at azdor.gov — usually $12' },
+            { id:'c10', q:'Q4 (Oct–Dec)',   text:'Pay Q3 2025 estimated taxes',           sub:'Federal: Sept 15 | AZ: Sept 15' },
+            { id:'c11', q:'Q4 (Oct–Dec)',   text:'Reconcile Q3 bank statements',         sub:'July, August, September' },
+            { id:'c12', q:'Annual',         text:'Confirm statutory agent is current',    sub:'Check AZ ACC (azcc.gov) — no annual report required in AZ ✅' },
+            { id:'c13', q:'Annual',         text:'Review and update LLC Operating Agreement', sub:'Especially if income or business structure changed this year' },
+            { id:'c14', q:'Annual',         text:'Max out SEP-IRA before April 15',      sub:'Deadline to contribute for prior year — most powerful tax lever you have' },
+        ];
+
+        function renderComplianceChecklist() {
+            const container = document.getElementById('compliance-checklist');
+            if (!container) return;
+            const saved  = window.StateStore?.state?.complianceChecks || {};
+            const groups = {};
+            COMPLIANCE_ITEMS.forEach(item => {
+                if (!groups[item.q]) groups[item.q] = [];
+                groups[item.q].push(item);
+            });
+            container.innerHTML = Object.entries(groups).map(([q, items]) => `
+                <div>
+                    <span class="q-badge">${q}</span>
+                    <div class="mt-2 space-y-2">
+                        ${items.map(item => {
+                            const done = saved[item.id];
+                            return `<label class="compliance-item ${done?'done':''} cursor-pointer">
+                                <input type="checkbox" ${done?'checked':''} onchange="saveCheckItem('${item.id}',this.checked,this.closest('.compliance-item'))" class="w-4 h-4 flex-shrink-0">
+                                <div>
+                                    <p class="font-bold text-sm" ${done?'style="text-decoration:line-through;color:var(--text-soft)"':''}>${item.text}</p>
+                                    <p class="text-[11px] mt-0.5" style="color:var(--text-soft)">${item.sub}</p>
+                                </div>
+                            </label>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveCheckItem(id, checked, labelEl) {
+            if (!window.StateStore) return;
+            const checks = window.StateStore.state.complianceChecks || {};
+            checks[id] = checked;
+            window.StateStore.update('complianceChecks', checks);
+            if (checked) labelEl.classList.add('done'); else labelEl.classList.remove('done');
+        }
+
+        // ─── DESTINATION ELOPEMENT ROI --- //
+
         function calcDestinationROI() {
             const revenue = parseFloat(document.getElementById('dest-revenue').value) || 0;
             const flights = parseFloat(document.getElementById('dest-flights').value) || 0;
