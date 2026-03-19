@@ -85,6 +85,9 @@
                 <button onclick="switchTab('analyzer')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-analyzer">
                     <i data-lucide="scan" class="w-5 h-5"></i> <span class="font-semibold text-sm">Analyzer</span>
                 </button>
+                <button onclick="switchTab('pricing')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-pricing">
+                    <i data-lucide="tags" class="w-5 h-5"></i> <span class="font-semibold text-sm">Pricing & Margins</span>
+                </button>
                 <button onclick="switchTab('taxguide')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-taxguide">
                     <i data-lucide="book-open" class="w-5 h-5"></i> <span class="font-semibold text-sm">Write-Off Guide</span>
                 </button>
@@ -344,55 +347,146 @@
                     </div>
                 </div>
 
-                <!-- Destination Elopement ROI Calculator (Phase 8) -->
-                <h3 class="text-2xl font-black text-slate-900 mt-12 mb-6 tracking-tight flex items-center gap-2">
-                    <i data-lucide="plane" class="w-6 h-6 text-rose-500"></i> Destination Elopement Margin Analyzer
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="card p-8 border-l-4 border-rose-500">
-                        <h4 class="font-bold text-lg mb-6 text-slate-800">Travel Package Inputs</h4>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Package Revenue ($)</label>
-                                <input type="number" id="dest-revenue" placeholder="e.g. 3500" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
-                            </div>
+            </div>
+
+            <!-- Tab: Pricing & Margins -->
+            <div id="pricing" class="tab-content space-y-12">
+                <header>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Pricing & Margin Studio</h2>
+                    <p class="text-slate-500 mt-2">Engineer your package prices with intent. Know your floor, understand your margins, and never undercharge again.</p>
+                </header>
+
+                <!-- Package Price Planner -->
+                <section>
+                    <h3 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
+                        <i data-lucide="target" class="w-6 h-6 text-indigo-500"></i> Package Price Planner
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="card p-8 border-l-4 border-indigo-500 space-y-5">
+                            <h4 class="font-bold text-lg text-slate-800">Your Business Inputs</h4>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Flights ($)</label>
-                                    <input type="number" id="dest-flights" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Target Annual Take-Home ($)</label>
+                                    <input type="number" id="pkg-target-income" placeholder="70000" value="70000" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Hotel / AirBNB ($)</label>
-                                    <input type="number" id="dest-hotel" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Max Shoots / Year</label>
+                                    <input type="number" id="pkg-shoots-per-year" placeholder="30" value="30" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Rental Car ($)</label>
-                                    <input type="number" id="dest-car" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Hrs Per Shoot (incl. editing)</label>
+                                    <input type="number" id="pkg-hours-per-shoot" placeholder="12" value="12" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Meals / Per Diem ($)</label>
-                                    <input type="number" id="dest-meals" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Annual Overhead ($)</label>
+                                    <input type="number" id="pkg-overhead" placeholder="12000" value="12000" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
+                                    <p class="text-[10px] text-slate-400 mt-1">Software, insurance, gear, marketing</p>
+                                </div>
+                            </div>
+                            <div class="border-t pt-4">
+                                <h4 class="font-bold text-base text-slate-800 mb-4">Evaluate a Specific Package</h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Package Price ($)</label>
+                                        <input type="number" id="pkg-price" placeholder="e.g. 2500" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Package Direct Costs ($)</label>
+                                        <input type="number" id="pkg-direct-costs" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
+                                        <p class="text-[10px] text-slate-400 mt-1">Second shooter, album, prints, etc.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card p-8 bg-slate-900 text-white flex flex-col gap-6">
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Minimum Viable Price Per Shoot</p>
+                                <h3 id="pkg-mvp" class="text-5xl font-black text-indigo-400">$0</h3>
+                                <p class="text-xs text-slate-400 mt-2">The floor you must charge to hit your income goal after all overhead.</p>
+                            </div>
+                            <div class="border-t border-slate-700 pt-5 grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Effective Hourly Rate</p>
+                                    <h4 id="pkg-hourly" class="text-2xl font-black text-amber-400">$0/hr</h4>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Overhead Per Shoot</p>
+                                    <h4 id="pkg-overhead-per-shoot" class="text-2xl font-black text-rose-400">$0</h4>
+                                </div>
+                            </div>
+                            <div id="pkg-eval-section" class="border-t border-slate-700 pt-5 hidden">
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-3">Package Evaluation</p>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="bg-slate-800 rounded-xl p-3">
+                                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Gross Margin</p>
+                                        <h5 id="pkg-gross-margin" class="text-xl font-black text-emerald-400">$0</h5>
+                                    </div>
+                                    <div class="bg-slate-800 rounded-xl p-3">
+                                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Margin %</p>
+                                        <h5 id="pkg-margin-pct" class="text-xl font-black">0%</h5>
+                                    </div>
+                                    <div class="bg-slate-800 rounded-xl p-3 col-span-2">
+                                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-2">Verdict</p>
+                                        <p id="pkg-verdict" class="text-sm font-bold leading-snug">Enter a package price to see the evaluation.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card p-8 bg-slate-900 text-white flex flex-col justify-between gap-6">
-                        <div>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Total Travel Cost</p>
-                            <h4 id="dest-total-cost" class="text-3xl font-black text-rose-400">$0</h4>
+                </section>
+
+                <!-- Destination Elopement ROI -->
+                <section>
+                    <h3 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
+                        <i data-lucide="plane" class="w-6 h-6 text-rose-500"></i> Destination Elopement Margin Analyzer
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="card p-8 border-l-4 border-rose-500">
+                            <h4 class="font-bold text-lg mb-6 text-slate-800">Travel Package Inputs</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Package Revenue ($)</label>
+                                    <input type="number" id="dest-revenue" placeholder="e.g. 3500" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Flights ($)</label>
+                                        <input type="number" id="dest-flights" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Hotel / AirBNB ($)</label>
+                                        <input type="number" id="dest-hotel" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Rental Car ($)</label>
+                                        <input type="number" id="dest-car" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Meals / Per Diem ($)</label>
+                                        <input type="number" id="dest-meals" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="border-t border-slate-700 pt-6">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Travel Write-Off Value (Est.)</p>
-                            <h4 id="dest-writeoff" class="text-2xl font-black text-amber-400">$0</h4>
-                            <p class="text-xs text-slate-400 mt-1">Flights, hotel &amp; car: 100% deductible. Meals: 50%.</p>
-                        </div>
-                        <div class="border-t border-slate-700 pt-6">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">True Take-Home Margin</p>
-                            <h4 id="dest-net-margin" class="text-4xl font-black text-emerald-400">$0</h4>
-                            <p id="dest-margin-pct" class="text-xs text-slate-400 mt-1">&mdash;</p>
+                        <div class="card p-8 bg-slate-900 text-white flex flex-col justify-between gap-6">
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Total Travel Cost</p>
+                                <h4 id="dest-total-cost" class="text-3xl font-black text-rose-400">$0</h4>
+                            </div>
+                            <div class="border-t border-slate-700 pt-6">
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Travel Write-Off Value (Est.)</p>
+                                <h4 id="dest-writeoff" class="text-2xl font-black text-amber-400">$0</h4>
+                                <p class="text-xs text-slate-400 mt-1">Flights, hotel &amp; car: 100% deductible. Meals: 50%.</p>
+                            </div>
+                            <div class="border-t border-slate-700 pt-6">
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">True Take-Home Margin</p>
+                                <h4 id="dest-net-margin" class="text-4xl font-black text-emerald-400">$0</h4>
+                                <p id="dest-margin-pct" class="text-xs text-slate-400 mt-1">&mdash;</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
 
             <!-- Tab: Tax Planner -->
@@ -1819,6 +1913,53 @@
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
+        // --- PACKAGE PRICE PLANNER --- //
+        function calcPackagePrice() {
+            const income   = parseFloat(document.getElementById('pkg-target-income').value)    || 0;
+            const shoots   = parseFloat(document.getElementById('pkg-shoots-per-year').value)  || 1;
+            const hours    = parseFloat(document.getElementById('pkg-hours-per-shoot').value)  || 1;
+            const overhead = parseFloat(document.getElementById('pkg-overhead').value)         || 0;
+            const price    = parseFloat(document.getElementById('pkg-price').value);
+            const direct   = parseFloat(document.getElementById('pkg-direct-costs').value)     || 0;
+
+            const overheadPerShoot = overhead / shoots;
+            const mvp = ((income + overhead) / shoots);
+            const hourlyRate = mvp / hours;
+
+            const upd = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
+            upd('pkg-mvp',                `$${Math.round(mvp).toLocaleString()}`);
+            upd('pkg-hourly',             `$${Math.round(hourlyRate).toLocaleString()}/hr`);
+            upd('pkg-overhead-per-shoot', `$${Math.round(overheadPerShoot).toLocaleString()}`);
+
+            const evalSection = document.getElementById('pkg-eval-section');
+            if (!isNaN(price) && price > 0) {
+                evalSection && evalSection.classList.remove('hidden');
+                const grossMargin = price - direct - overheadPerShoot;
+                const marginPct   = ((grossMargin / price) * 100).toFixed(1);
+                const surplus     = price - mvp - direct;
+                upd('pkg-gross-margin', `$${Math.round(grossMargin).toLocaleString()}`);
+
+                const pctEl = document.getElementById('pkg-margin-pct');
+                if (pctEl) {
+                    pctEl.innerText = `${marginPct}%`;
+                    pctEl.className = `text-xl font-black ${parseFloat(marginPct) >= 40 ? 'text-emerald-400' : parseFloat(marginPct) >= 20 ? 'text-amber-400' : 'text-rose-400'}`;
+                }
+
+                const verdictEl = document.getElementById('pkg-verdict');
+                if (verdictEl) {
+                    if (surplus >= 500) {
+                        verdictEl.innerHTML = `<span class="text-emerald-400">Healthy — $${Math.round(surplus).toLocaleString()} above your minimum. Great room to offer discounts or add-ons.</span>`;
+                    } else if (surplus >= 0) {
+                        verdictEl.innerHTML = `<span class="text-amber-400">Tight — only $${Math.round(surplus).toLocaleString()} above your minimum. Consider raising this package.</span>`;
+                    } else {
+                        verdictEl.innerHTML = `<span class="text-rose-400">Below floor — you would need to charge at least $${Math.round(mvp + direct).toLocaleString()} to break even on this package.</span>`;
+                    }
+                }
+            } else {
+                evalSection && evalSection.classList.add('hidden');
+            }
+        }
+
         // --- DESTINATION ELOPEMENT ROI --- //
         function calcDestinationROI() {
             const revenue = parseFloat(document.getElementById('dest-revenue').value) || 0;
