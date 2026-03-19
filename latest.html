@@ -175,25 +175,25 @@
 <body class="antialiased">
 
     <!-- Setup Wizard -->
-    <div id="setup-wizard" class="fixed inset-0 bg-slate-100 z-50 flex items-center justify-center p-6 hidden">
+    <div id="setup-wizard" class="fixed inset-0 bg-[#F4F0E6] z-50 flex items-center justify-center p-6 hidden">
         <div class="bg-white rounded-3xl shadow-xl max-w-md w-full p-10">
-            <h1 class="text-3xl font-black mb-2 text-slate-900 tracking-tight">Welcome to Command Center</h1>
-            <p class="text-slate-500 mb-8 text-sm">Let's initialize your LLC profile.</p>
+            <h1 class="text-3xl font-black mb-2 text-[#2C2511] tracking-tight">Welcome to Command Center</h1>
+            <p class="text-[#8A7A6A] mb-8 text-sm">Let's initialize your LLC profile.</p>
             
             <div class="space-y-5">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">LLC Name</label>
-                    <input type="text" id="wizard-name" placeholder="Focus Photography LLC" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold">
+                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">LLC Name</label>
+                    <input type="text" id="wizard-name" placeholder="Focus Photography LLC" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Date Formed</label>
-                    <input type="date" id="wizard-date" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold text-slate-700">
+                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Date Formed</label>
+                    <input type="date" id="wizard-date" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold text-[#4A4030]">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Trailing 12m Revenue ($)</label>
-                    <input type="number" id="wizard-rev" placeholder="50000" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold">
+                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Trailing 12m Revenue ($)</label>
+                    <input type="number" id="wizard-rev" placeholder="50000" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold">
                 </div>
-                <button onclick="finishSetup()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl mt-4 hover:bg-slate-800 transition">Initialize Center</button>
+                <button onclick="finishSetup()" class="w-full bg-[#2C2A22] text-white font-bold py-4 rounded-xl mt-4 hover:bg-[#3A3830] transition">Initialize Center</button>
             </div>
         </div>
     </div>
@@ -213,39 +213,40 @@
             </div>
 
             <nav class="space-y-1.5 flex-grow">
-                <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-dashboard">
+                <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-dashboard">
                     <i data-lucide="layout-grid" class="w-5 h-5"></i> <span class="font-semibold text-sm">Dashboard</span>
                 </button>
-                <button onclick="switchTab('crm')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-crm">
-                    <i data-lucide="users" class="w-5 h-5"></i> <span class="font-semibold text-sm">Client Pipeline</span>
-                </button>
-                <button onclick="switchTab('taxes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-taxes">
+                <button onclick="switchTab('taxes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-taxes">
                     <i data-lucide="calculator" class="w-5 h-5"></i> <span class="font-semibold text-sm">Tax Planner</span>
                 </button>
-                <button onclick="switchTab('analyzer')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-analyzer">
+                <button onclick="switchTab('analyzer')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-analyzer">
                     <i data-lucide="scan" class="w-5 h-5"></i> <span class="font-semibold text-sm">Analyzer</span>
                 </button>
-                <button onclick="switchTab('pricing')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-pricing">
+                <button onclick="switchTab('pricing')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-pricing">
                     <i data-lucide="tags" class="w-5 h-5"></i> <span class="font-semibold text-sm">Pricing & Margins</span>
                 </button>
-                <button onclick="switchTab('taxguide')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-taxguide">
+                <button onclick="switchTab('taxguide')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-taxguide">
                     <i data-lucide="book-open" class="w-5 h-5"></i> <span class="font-semibold text-sm">Write-Off Guide</span>
                 </button>
-                <button onclick="switchTab('discounts')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-discounts">
+                <button onclick="switchTab('discounts')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-discounts">
                     <i data-lucide="badge-percent" class="w-5 h-5"></i> <span class="font-semibold text-sm">Vendor Perks</span>
                 </button>
-                <button onclick="switchTab('legal')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-legal">
+                <button onclick="switchTab('legal')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-legal">
                     <i data-lucide="shield-check" class="w-5 h-5"></i> <span class="font-semibold text-sm">Legal Health</span>
                 </button>
-                <div class="h-px bg-slate-800 my-2"></div>
-                <button onclick="switchTab('emails')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-emails">
+                <div class="h-px bg-[#3A3830] my-2"></div>
+                <button onclick="switchTab('emails')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-emails">
                     <i data-lucide="mail" class="w-5 h-5"></i> <span class="font-semibold text-sm">Email Templates</span>
                 </button>
-                <button onclick="switchTab('social')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-social">
+                <button onclick="switchTab('social')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-social">
                     <i data-lucide="film" class="w-5 h-5"></i> <span class="font-semibold text-sm">Social Planner</span>
                 </button>
-                <button onclick="switchTab('operations')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-operations">
+                <button onclick="switchTab('operations')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-operations">
                     <i data-lucide="list-checks" class="w-5 h-5"></i> <span class="font-semibold text-sm">Shoot Operations</span>
+                </button>
+                <div class="h-px my-2" style="background:rgba(107,140,122,0.2)"></div>
+                <button onclick="switchTab('settings')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-[#9C8A7A] hover:bg-white/5 hover:text-white" id="btn-settings">
+                    <i data-lucide="settings" class="w-5 h-5"></i> <span class="font-semibold text-sm">Settings</span>
                 </button>
             </nav>
 
@@ -260,68 +261,27 @@
         <!-- Main Content Area -->
         <main class="flex-grow p-6 md:p-12 lg:p-16 overflow-y-auto">
             
-            <!-- Tab: Client CRM Pipeline -->
-            <div id="crm" class="tab-content space-y-10">
-                <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Client Pipeline & Retainers</h2>
-                    <p class="text-slate-500 mt-2">Manage your 48-hour lead SLAs, active bookings, and non-refundable retainers.</p>
-                </header>
-                <!-- Add new Lead -->
-                <div class="card p-6 border-dashed bg-slate-50">
-                    <h4 class="font-bold text-sm mb-4">Log New Inquiry (Lead)</h4>
-                    <div class="flex flex-col md:flex-row gap-4">
-                        <input type="text" id="new-lead-name" placeholder="Client Name (e.g. Sarah & John)" class="px-4 py-3 border rounded-xl flex-grow text-sm font-medium">
-                        <input type="text" id="new-lead-type" placeholder="Shoot Type (e.g. Desert Elopement)" class="px-4 py-3 border rounded-xl flex-grow text-sm font-medium">
-                        <button onclick="addCRMLead()" class="text-white px-6 py-3 rounded-xl font-bold" style="background: linear-gradient(135deg, #D4A5A5, #7BAAB8);" class=" text-sm shadow-md">Start 48hr SLA Timer</button>
-                    </div>
-                </div>
 
-                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mt-8">
-                    <!-- Active Leads Column -->
-                    <div class="card p-8 h-full shadow-sm">
-                        <h4 class="text-xl font-black mb-6 flex items-center gap-2">
-                            <i data-lucide="clock" class="w-5 h-5 text-rose-500"></i> Active Inquiries (48h Response)
-                        </h4>
-                        <div id="crm-leads-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-                            <!-- JS populated -->
-                        </div>
-                    </div>
-
-                    <!-- Booked Retainers Column -->
-                    <div class="card p-8 bg-slate-900 text-white h-full shadow-md">
-                        <div class="flex justify-between items-end mb-6">
-                            <h4 class="text-xl font-black flex items-center gap-2">
-                                <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i> Booked Dates
-                            </h4>
-                            <button onclick="promptNewBooking()" class="text-[10px] bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider transition">+ Log Booking</button>
-                        </div>
-                        <div id="crm-booked-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-                            <!-- JS populated -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab: Dashboard -->
+                        <!-- Tab: Dashboard -->
             <div id="dashboard" class="tab-content active space-y-10">
                 <header class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
-                        <h2 class="text-4xl font-black text-slate-900 tracking-tight">Executive Dashboard</h2>
-                        <p class="text-slate-500 mt-2">LLC Status: <strong>Operating (Arizona)</strong> • Tax Year: <strong>2026</strong></p>
+                        <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Executive Dashboard</h2>
+                        <p class="text-[#8A7A6A] mt-2">LLC Status: <strong>Operating (Arizona)</strong> • Tax Year: <strong>2026</strong></p>
                     </div>
                 </header>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Primary Financials -->
-                    <div class="card p-8 bg-slate-900 text-white shadow-xl xl:col-span-1 border border-slate-700 h-full flex flex-col justify-between">
+                    <div class="card p-8 bg-[#2C2A22] text-white shadow-xl xl:col-span-1 border border-slate-700 h-full flex flex-col justify-between">
                         <div>
-                            <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Annual Take-Home (Est)</p>
-                            <h3 id="dash-takehome" class="text-4xl font-black text-emerald-400">$0</h3>
-                            <p class="text-xs text-slate-400 mt-4 leading-relaxed">Tracking toward your $100,000 net profit baseline for Section 199A QBI maximization.</p>
+                            <p class="text-[11px] font-black text-[#9C8A7A] uppercase tracking-widest mb-1">Annual Take-Home (Est)</p>
+                            <h3 id="dash-takehome" class="text-4xl font-black text-[#6B8C7A]">$0</h3>
+                            <p class="text-xs text-[#9C8A7A] mt-4 leading-relaxed">Tracking toward your $100,000 net profit baseline for Section 199A QBI maximization.</p>
                         </div>
                         <div class="mt-6">
-                            <div class="flex justify-between text-xs mb-1"><span class="text-slate-400">Profit Target</span><span id="profit-target-percent" class="font-bold text-emerald-400">0%</span></div>
-                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="flex justify-between text-xs mb-1"><span class="text-[#9C8A7A]">Profit Target</span><span id="profit-target-percent" class="font-bold text-[#6B8C7A]">0%</span></div>
+                            <div class="w-full bg-[#3A3830] h-2 rounded-full overflow-hidden">
                                 <div id="profit-progress" class="bg-emerald-500 h-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
@@ -331,35 +291,35 @@
                     <div class="card p-8 border-t-4 border-rose-600 xl:col-span-1 shadow-md h-full flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-start mb-4">
-                                <p class="text-[11px] font-black text-rose-600/70 uppercase tracking-widest">Next Tax Milestone</p>
-                                <i data-lucide="calendar-alert" class="w-5 h-5 text-rose-500"></i>
+                                <p class="text-[11px] font-black text-[#8C5353]/70 uppercase tracking-widest">Next Tax Milestone</p>
+                                <i data-lucide="calendar-alert" class="w-5 h-5 text-[#b07070]"></i>
                             </div>
-                            <h3 class="text-3xl font-black text-slate-900 mb-1">April 15th</h3>
-                            <p class="text-sm font-bold text-slate-600">Q1 Estimated Tax Payment</p>
+                            <h3 class="text-3xl font-black text-[#2C2511] mb-1">April 15th</h3>
+                            <p class="text-sm font-bold text-[#5C4A3A]">Q1 Estimated Tax Payment</p>
                         </div>
-                        <ul class="text-[11px] font-bold text-slate-500 mt-6 space-y-3">
-                            <li class="flex gap-3 items-center"><i data-lucide="circle-check" class="w-4 h-4 text-emerald-500"></i> Annual Report Filed (AZCC)</li>
-                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-slate-300"></i> Prepare CPA Profit/Loss</li>
-                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-slate-300"></i> Audit Equipment Depreciation</li>
+                        <ul class="text-[11px] font-bold text-[#8A7A6A] mt-6 space-y-3">
+                            <li class="flex gap-3 items-center"><i data-lucide="circle-check" class="w-4 h-4 text-[#4A6657]"></i> Annual Report Filed (AZCC)</li>
+                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-[#C0B0A0]"></i> Prepare CPA Profit/Loss</li>
+                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-[#C0B0A0]"></i> Audit Equipment Depreciation</li>
                         </ul>
                     </div>
 
                     <!-- CRM / Active Pipeline -->
-                    <div class="card p-8 border-t-4 border-blue-600 shadow-md xl:col-span-1 h-full flex flex-col justify-between">
+                    <div class="card p-8 border-t-4 border-[#4A6657] shadow-md xl:col-span-1 h-full flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-start mb-4">
-                                <p class="text-[11px] font-black text-blue-600/70 uppercase tracking-widest">Active Pipeline</p>
+                                <p class="text-[11px] font-black text-[#6B8C7A]/70 uppercase tracking-widest">Active Pipeline</p>
                                 <i data-lucide="users" class="w-5 h-5 text-blue-500"></i>
                             </div>
                             <div class="flex items-end gap-3 mb-2">
-                                <h3 class="text-4xl font-black text-slate-900">4</h3>
-                                <p class="text-sm text-slate-500 font-bold mb-1">Open Inquiries</p>
+                                <h3 class="text-4xl font-black text-[#2C2511]">4</h3>
+                                <p class="text-sm text-[#8A7A6A] font-bold mb-1">Open Inquiries</p>
                             </div>
                         </div>
                         <div class="space-y-3 mt-4">
-                            <div class="flex justify-between text-xs p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Retainers Pending</span><span class="text-slate-500 font-bold">2</span></div>
-                            <div class="flex justify-between text-xs p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Contract Signatures</span><span class="text-slate-500 font-bold">1</span></div>
-                            <div class="flex justify-between text-xs p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Upcoming Shoots</span><span class="text-slate-500 font-bold">3</span></div>
+                            <div class="flex justify-between text-xs p-2.5 bg-[#FAF8F3] rounded-lg"><span class="font-bold text-[#4A4030]">Retainers Pending</span><span class="text-[#8A7A6A] font-bold">2</span></div>
+                            <div class="flex justify-between text-xs p-2.5 bg-[#FAF8F3] rounded-lg"><span class="font-bold text-[#4A4030]">Contract Signatures</span><span class="text-[#8A7A6A] font-bold">1</span></div>
+                            <div class="flex justify-between text-xs p-2.5 bg-[#FAF8F3] rounded-lg"><span class="font-bold text-[#4A4030]">Upcoming Shoots</span><span class="text-[#8A7A6A] font-bold">3</span></div>
                         </div>
                     </div>
                 </div>
@@ -370,16 +330,16 @@
                             <i data-lucide="zap" class="w-5 h-5 text-amber-500 fill-amber-500"></i> Operational Priorities
                         </h4>
                         <div class="space-y-4">
-                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
-                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
+                            <label class="flex items-center gap-4 p-4 bg-[#FAF8F3] rounded-2xl cursor-pointer hover:bg-[#F4F0E6] transition">
+                                <input type="checkbox" class="w-5 h-5 rounded-lg border-[#D8D0C0] text-[#6B8C7A]">
                                 <span class="text-sm font-semibold">Separate Phone Bill Deductions for Tax Year</span>
                             </label>
-                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
-                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
+                            <label class="flex items-center gap-4 p-4 bg-[#FAF8F3] rounded-2xl cursor-pointer hover:bg-[#F4F0E6] transition">
+                                <input type="checkbox" class="w-5 h-5 rounded-lg border-[#D8D0C0] text-[#6B8C7A]">
                                 <span class="text-sm font-semibold">Log Subcontractor Payments (1099-NEC)</span>
                             </label>
-                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
-                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
+                            <label class="flex items-center gap-4 p-4 bg-[#FAF8F3] rounded-2xl cursor-pointer hover:bg-[#F4F0E6] transition">
+                                <input type="checkbox" class="w-5 h-5 rounded-lg border-[#D8D0C0] text-[#6B8C7A]">
                                 <span class="text-sm font-semibold">Export Q1 Gross Receipts to CPA</span>
                             </label>
                         </div>
@@ -390,8 +350,8 @@
 
             <div id="analyzer" class="tab-content space-y-10">
                 <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Write-Off Analyzer</h2>
-                    <p class="text-slate-500 mt-2">Deductibility and True Cost calculated via your live Marginal Rate.</p>
+                    <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Write-Off Analyzer</h2>
+                    <p class="text-[#8A7A6A] mt-2">Deductibility and True Cost calculated via your live Marginal Rate.</p>
                 </header>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -399,16 +359,16 @@
                         <h4 class="font-bold text-lg mb-6">Theoretical Expense</h4>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Item Name</label>
-                                <input type="text" id="analyze-name" placeholder="e.g., Canon RF 70-200mm" class="w-full px-4 py-3 bg-slate-50 border rounded-xl" oninput="calculateROI()">
+                                <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Item Name</label>
+                                <input type="text" id="analyze-name" placeholder="e.g., Canon RF 70-200mm" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl" oninput="calculateROI()">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Cost ($)</label>
-                                <input type="number" id="analyze-cost" value="" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calculateROI()">
+                                <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Cost ($)</label>
+                                <input type="number" id="analyze-cost" value="" placeholder="0" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calculateROI()">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">IRS Category</label>
-                                <select id="analyze-cat" class="w-full px-4 py-3 bg-slate-50 border rounded-xl" onchange="calculateROI()">
+                                <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">IRS Category</label>
+                                <select id="analyze-cat" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl" onchange="calculateROI()">
                                     <option value="1">Gear & Equipment (100% Deductible)</option>
                                     <option value="1">Travel & Lodging (100% Deductible)</option>
                                     <option value="0.5">Business Meals (50% Deductible)</option>
@@ -418,49 +378,49 @@
                         </div>
                     </div>
                     
-                    <div class="card p-8 bg-slate-900 text-white flex flex-col justify-center">
+                    <div class="card p-8 bg-[#2C2A22] text-white flex flex-col justify-center">
                         <div class="mb-6 pb-6 border-b border-slate-700">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Estimated Tax Savings</p>
-                            <h3 id="analyze-savings" class="text-3xl font-black text-emerald-400">+$0</h3>
+                            <p class="text-[10px] text-[#9C8A7A] font-bold uppercase mb-1">Estimated Tax Savings</p>
+                            <h3 id="analyze-savings" class="text-3xl font-black text-[#6B8C7A]">+$0</h3>
                             <p id="analyze-warning" class="text-xs text-rose-400 mt-2 hidden">⚠️ This category is not deductible.</p>
                         </div>
                         <div>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">True Out-of-Pocket Cost</p>
+                            <p class="text-[10px] text-[#9C8A7A] font-bold uppercase mb-1">True Out-of-Pocket Cost</p>
                             <h3 id="analyze-true-cost" class="text-4xl font-black min-h-[40px]">$0</h3>
                         </div>
                     </div>
                 </div>
 
-                <h3 class="text-2xl font-black text-slate-900 mt-12 mb-6 tracking-tight">IRS 2025 Fast Track Calculators</h3>
+                <h3 class="text-2xl font-black text-[#2C2511] mt-12 mb-6 tracking-tight">IRS 2025 Fast Track Calculators</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Section 179 -->
-                    <div class="card p-6 border-t-4 border-indigo-600">
-                        <h4 class="font-black text-slate-800 mb-2">📸 Section 179</h4>
-                        <p class="text-xs text-slate-500 mb-4">100% deduction on camera gear placed in service in 2025.</p>
-                        <input type="number" id="gear-cost" placeholder="Total Cost ($)" class="w-full px-4 py-3 bg-slate-50 border rounded-xl mb-4" oninput="calcSec179()">
-                        <div class="bg-indigo-50 p-4 rounded-xl text-indigo-900 text-center">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-700/70">Est. Tax Cash Saved</p>
+                    <div class="card p-6 border-t-4 border-[#4A6657]">
+                        <h4 class="font-black text-[#3C3520] mb-2">📸 Section 179</h4>
+                        <p class="text-xs text-[#8A7A6A] mb-4">100% deduction on camera gear placed in service in 2025.</p>
+                        <input type="number" id="gear-cost" placeholder="Total Cost ($)" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl mb-4" oninput="calcSec179()">
+                        <div class="bg-[#f0f7f3] p-4 rounded-xl text-indigo-900 text-center">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-[#4A6657]/70">Est. Tax Cash Saved</p>
                             <h5 id="sec179-saved" class="text-3xl font-black mt-1">$0</h5>
                         </div>
                     </div>
 
                     <!-- Mileage -->
                     <div class="card p-6 border-t-4 border-emerald-600">
-                        <h4 class="font-black text-slate-800 mb-2">🚗 2025 IRS Mileage</h4>
-                        <p class="text-xs text-slate-500 mb-4">Automatically multiply recorded gig miles by $0.70/mile.</p>
-                        <input type="number" id="mileage-input" placeholder="Total Miles Driven" class="w-full px-4 py-3 bg-slate-50 border rounded-xl mb-4" oninput="calcMileage()">
-                        <div class="bg-emerald-50 p-4 rounded-xl text-emerald-900 text-center">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-700/70">Total Write-Off</p>
+                        <h4 class="font-black text-[#3C3520] mb-2">🚗 2025 IRS Mileage</h4>
+                        <p class="text-xs text-[#8A7A6A] mb-4">Automatically multiply recorded gig miles by $0.70/mile.</p>
+                        <input type="number" id="mileage-input" placeholder="Total Miles Driven" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl mb-4" oninput="calcMileage()">
+                        <div class="bg-[#f0f7f3] p-4 rounded-xl text-emerald-900 text-center">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-[#2d5a3d]/70">Total Write-Off</p>
                             <h5 id="mileage-deduction" class="text-3xl font-black mt-1">$0</h5>
                         </div>
                     </div>
 
                     <!-- Home Office -->
                     <div class="card p-6 border-t-4 border-rose-600">
-                        <h4 class="font-black text-slate-800 mb-2">🏠 Home Office</h4>
-                        <p class="text-xs text-slate-500 mb-4">Simplified Method: $6 per sq. ft. (Max 300 sq. ft / $1,800).</p>
-                        <input type="number" id="office-sqft" placeholder="Square Footage" max="300" class="w-full px-4 py-3 bg-slate-50 border rounded-xl mb-4" oninput="calcHomeOffice()">
-                        <div class="bg-rose-50 p-4 rounded-xl text-rose-900 text-center">
+                        <h4 class="font-black text-[#3C3520] mb-2">🏠 Home Office</h4>
+                        <p class="text-xs text-[#8A7A6A] mb-4">Simplified Method: $6 per sq. ft. (Max 300 sq. ft / $1,800).</p>
+                        <input type="number" id="office-sqft" placeholder="Square Footage" max="300" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl mb-4" oninput="calcHomeOffice()">
+                        <div class="bg-[#f5f0eb] p-4 rounded-xl text-rose-900 text-center">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-rose-700/70">Total Write-Off</p>
                             <h5 id="office-deduction" class="text-3xl font-black mt-1">$0</h5>
                         </div>
@@ -472,82 +432,82 @@
             <!-- Tab: Pricing & Margins -->
             <div id="pricing" class="tab-content space-y-12">
                 <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Pricing & Margin Studio</h2>
-                    <p class="text-slate-500 mt-2">Engineer your package prices with intent. Know your floor, understand your margins, and never undercharge again.</p>
+                    <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Pricing & Margin Studio</h2>
+                    <p class="text-[#8A7A6A] mt-2">Engineer your package prices with intent. Know your floor, understand your margins, and never undercharge again.</p>
                 </header>
 
                 <!-- Package Price Planner -->
                 <section>
-                    <h3 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
-                        <i data-lucide="target" class="w-6 h-6 text-indigo-500"></i> Package Price Planner
+                    <h3 class="text-2xl font-black text-[#2C2511] mb-6 flex items-center gap-2">
+                        <i data-lucide="target" class="w-6 h-6 text-[#6B8C7A]"></i> Package Price Planner
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="card p-8 border-l-4 border-indigo-500 space-y-5">
-                            <h4 class="font-bold text-lg text-slate-800">Your Business Inputs</h4>
+                            <h4 class="font-bold text-lg text-[#3C3520]">Your Business Inputs</h4>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Target Annual Take-Home ($)</label>
-                                    <input type="number" id="pkg-target-income" placeholder="70000" value="70000" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
+                                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Target Annual Take-Home ($)</label>
+                                    <input type="number" id="pkg-target-income" placeholder="70000" value="70000" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcPackagePrice()">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Max Shoots / Year</label>
-                                    <input type="number" id="pkg-shoots-per-year" placeholder="30" value="30" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
+                                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Max Shoots / Year</label>
+                                    <input type="number" id="pkg-shoots-per-year" placeholder="30" value="30" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcPackagePrice()">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Hrs Per Shoot (incl. editing)</label>
-                                    <input type="number" id="pkg-hours-per-shoot" placeholder="12" value="12" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
+                                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Hrs Per Shoot (incl. editing)</label>
+                                    <input type="number" id="pkg-hours-per-shoot" placeholder="12" value="12" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcPackagePrice()">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Annual Overhead ($)</label>
-                                    <input type="number" id="pkg-overhead" placeholder="12000" value="12000" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
-                                    <p class="text-[10px] text-slate-400 mt-1">Software, insurance, gear, marketing</p>
+                                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Annual Overhead ($)</label>
+                                    <input type="number" id="pkg-overhead" placeholder="12000" value="12000" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcPackagePrice()">
+                                    <p class="text-[10px] text-[#9C8A7A] mt-1">Software, insurance, gear, marketing</p>
                                 </div>
                             </div>
                             <div class="border-t pt-4">
-                                <h4 class="font-bold text-base text-slate-800 mb-4">Evaluate a Specific Package</h4>
+                                <h4 class="font-bold text-base text-[#3C3520] mb-4">Evaluate a Specific Package</h4>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Package Price ($)</label>
-                                        <input type="number" id="pkg-price" placeholder="e.g. 2500" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
+                                        <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Package Price ($)</label>
+                                        <input type="number" id="pkg-price" placeholder="e.g. 2500" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcPackagePrice()">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Package Direct Costs ($)</label>
-                                        <input type="number" id="pkg-direct-costs" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcPackagePrice()">
-                                        <p class="text-[10px] text-slate-400 mt-1">Second shooter, album, prints, etc.</p>
+                                        <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Package Direct Costs ($)</label>
+                                        <input type="number" id="pkg-direct-costs" placeholder="0" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcPackagePrice()">
+                                        <p class="text-[10px] text-[#9C8A7A] mt-1">Second shooter, album, prints, etc.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card p-8 bg-slate-900 text-white flex flex-col gap-6">
+                        <div class="card p-8 bg-[#2C2A22] text-white flex flex-col gap-6">
                             <div>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Minimum Viable Price Per Shoot</p>
+                                <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Minimum Viable Price Per Shoot</p>
                                 <h3 id="pkg-mvp" class="text-5xl font-black text-indigo-400">$0</h3>
-                                <p class="text-xs text-slate-400 mt-2">The floor you must charge to hit your income goal after all overhead.</p>
+                                <p class="text-xs text-[#9C8A7A] mt-2">The floor you must charge to hit your income goal after all overhead.</p>
                             </div>
                             <div class="border-t border-slate-700 pt-5 grid grid-cols-2 gap-4">
                                 <div>
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Effective Hourly Rate</p>
+                                    <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Effective Hourly Rate</p>
                                     <h4 id="pkg-hourly" class="text-2xl font-black text-amber-400">$0/hr</h4>
                                 </div>
                                 <div>
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Overhead Per Shoot</p>
+                                    <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Overhead Per Shoot</p>
                                     <h4 id="pkg-overhead-per-shoot" class="text-2xl font-black text-rose-400">$0</h4>
                                 </div>
                             </div>
                             <div id="pkg-eval-section" class="border-t border-slate-700 pt-5 hidden">
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-3">Package Evaluation</p>
+                                <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-3">Package Evaluation</p>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <div class="bg-slate-800 rounded-xl p-3">
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Gross Margin</p>
-                                        <h5 id="pkg-gross-margin" class="text-xl font-black text-emerald-400">$0</h5>
+                                    <div class="bg-[#3A3830] rounded-xl p-3">
+                                        <p class="text-[9px] font-bold text-[#9C8A7A] uppercase mb-1">Gross Margin</p>
+                                        <h5 id="pkg-gross-margin" class="text-xl font-black text-[#6B8C7A]">$0</h5>
                                     </div>
-                                    <div class="bg-slate-800 rounded-xl p-3">
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Margin %</p>
+                                    <div class="bg-[#3A3830] rounded-xl p-3">
+                                        <p class="text-[9px] font-bold text-[#9C8A7A] uppercase mb-1">Margin %</p>
                                         <h5 id="pkg-margin-pct" class="text-xl font-black">0%</h5>
                                     </div>
-                                    <div class="bg-slate-800 rounded-xl p-3 col-span-2">
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-2">Verdict</p>
+                                    <div class="bg-[#3A3830] rounded-xl p-3 col-span-2">
+                                        <p class="text-[9px] font-bold text-[#9C8A7A] uppercase mb-2">Verdict</p>
                                         <p id="pkg-verdict" class="text-sm font-bold leading-snug">Enter a package price to see the evaluation.</p>
                                     </div>
                                 </div>
@@ -558,51 +518,51 @@
 
                 <!-- Destination Elopement ROI -->
                 <section>
-                    <h3 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
-                        <i data-lucide="plane" class="w-6 h-6 text-rose-500"></i> Destination Elopement Margin Analyzer
+                    <h3 class="text-2xl font-black text-[#2C2511] mb-6 flex items-center gap-2">
+                        <i data-lucide="plane" class="w-6 h-6 text-[#b07070]"></i> Destination Elopement Margin Analyzer
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="card p-8 border-l-4 border-rose-500">
-                            <h4 class="font-bold text-lg mb-6 text-slate-800">Travel Package Inputs</h4>
+                        <div class="card p-8 border-l-4 border-[#b07070]">
+                            <h4 class="font-bold text-lg mb-6 text-[#3C3520]">Travel Package Inputs</h4>
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Package Revenue ($)</label>
-                                    <input type="number" id="dest-revenue" placeholder="e.g. 3500" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                    <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Package Revenue ($)</label>
+                                    <input type="number" id="dest-revenue" placeholder="e.g. 3500" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcDestinationROI()">
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Flights ($)</label>
-                                        <input type="number" id="dest-flights" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                        <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Flights ($)</label>
+                                        <input type="number" id="dest-flights" placeholder="0" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcDestinationROI()">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Hotel / AirBNB ($)</label>
-                                        <input type="number" id="dest-hotel" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                        <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Hotel / AirBNB ($)</label>
+                                        <input type="number" id="dest-hotel" placeholder="0" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcDestinationROI()">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Rental Car ($)</label>
-                                        <input type="number" id="dest-car" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                        <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Rental Car ($)</label>
+                                        <input type="number" id="dest-car" placeholder="0" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcDestinationROI()">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Meals / Per Diem ($)</label>
-                                        <input type="number" id="dest-meals" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                        <label class="block text-xs font-bold text-[#8A7A6A] uppercase mb-2">Meals / Per Diem ($)</label>
+                                        <input type="number" id="dest-meals" placeholder="0" class="w-full px-4 py-3 bg-[#FAF8F3] border rounded-xl font-bold" oninput="calcDestinationROI()">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card p-8 bg-slate-900 text-white flex flex-col justify-between gap-6">
+                        <div class="card p-8 bg-[#2C2A22] text-white flex flex-col justify-between gap-6">
                             <div>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Total Travel Cost</p>
+                                <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Total Travel Cost</p>
                                 <h4 id="dest-total-cost" class="text-3xl font-black text-rose-400">$0</h4>
                             </div>
                             <div class="border-t border-slate-700 pt-6">
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Travel Write-Off Value (Est.)</p>
+                                <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Travel Write-Off Value (Est.)</p>
                                 <h4 id="dest-writeoff" class="text-2xl font-black text-amber-400">$0</h4>
-                                <p class="text-xs text-slate-400 mt-1">Flights, hotel &amp; car: 100% deductible. Meals: 50%.</p>
+                                <p class="text-xs text-[#9C8A7A] mt-1">Flights, hotel &amp; car: 100% deductible. Meals: 50%.</p>
                             </div>
                             <div class="border-t border-slate-700 pt-6">
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">True Take-Home Margin</p>
-                                <h4 id="dest-net-margin" class="text-4xl font-black text-emerald-400">$0</h4>
-                                <p id="dest-margin-pct" class="text-xs text-slate-400 mt-1">&mdash;</p>
+                                <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">True Take-Home Margin</p>
+                                <h4 id="dest-net-margin" class="text-4xl font-black text-[#6B8C7A]">$0</h4>
+                                <p id="dest-margin-pct" class="text-xs text-[#9C8A7A] mt-1">&mdash;</p>
                             </div>
                         </div>
                     </div>
@@ -907,7 +867,7 @@
 
                 <!-- Cannot Deduct -->
                 <section>
-                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><i data-lucide="x-circle" class="w-5 h-5 text-rose-500"></i> What You Cannot Deduct</h3>
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><i data-lucide="x-circle" class="w-5 h-5 text-[#b07070]"></i> What You Cannot Deduct</h3>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                         <div class="card p-6" style="border-left:4px solid #fca5a5">
                             <div class="flex items-start justify-between mb-2"><h4 class="font-bold text-sm">Personal Clothing &amp; Appearance</h4><span class="deduct-badge deduct-0">0%</span></div>
@@ -998,68 +958,68 @@
             <!-- Tab: Vendor Perks -->
             <div id="discounts" class="tab-content space-y-10">
                 <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">LLC Banking & Vendor Perks</h2>
-                    <p class="text-slate-500 mt-2">Highly vetted ecosystem accounts specifically curated for professional photographers.</p>
+                    <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">LLC Banking & Vendor Perks</h2>
+                    <p class="text-[#8A7A6A] mt-2">Highly vetted ecosystem accounts specifically curated for professional photographers.</p>
                 </header>
 
-                <h3 class="text-xl font-black text-slate-800 border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="building-2" class="w-5 h-5 text-indigo-500"></i> Zero-Fee Business Checking</h3>
+                <h3 class="text-xl font-black text-[#3C3520] border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="building-2" class="w-5 h-5 text-[#6B8C7A]"></i> Zero-Fee Business Checking</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="card p-6 border-l-4 border-indigo-600 h-full flex flex-col shadow-sm">
+                    <div class="card p-6 border-l-4 border-[#4A6657] h-full flex flex-col shadow-sm">
                         <h4 class="font-black text-lg">Novo Business Checking</h4>
-                        <p class="text-xs text-slate-500 mt-2">Incredible for sole-proprietors. Automatically sweeps 15.3% of your inbound invoices into a hidden tax reserve sub-account.</p>
-                        <a href="https://novo.co" target="_blank" class="mt-auto pt-6 block text-center py-2.5 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-bold hover:bg-indigo-100 transition">Open Novo Account</a>
+                        <p class="text-xs text-[#8A7A6A] mt-2">Incredible for sole-proprietors. Automatically sweeps 15.3% of your inbound invoices into a hidden tax reserve sub-account.</p>
+                        <a href="https://novo.co" target="_blank" class="mt-auto pt-6 block text-center py-2.5 bg-[#f0f7f3] text-[#4A6657] rounded-xl text-xs font-bold hover:bg-[#d4ead8] transition">Open Novo Account</a>
                     </div>
-                    <div class="card p-6 border-l-4 border-teal-600 h-full flex flex-col shadow-sm">
+                    <div class="card p-6 border-l-4 border-[#3D7080] h-full flex flex-col shadow-sm">
                         <h4 class="font-black text-lg">Relay Financial</h4>
-                        <p class="text-xs text-slate-500 mt-2">Best for Profit First methodologies. Allows up to 20 free checking accounts under one LLC to perfectly silo gear savings and operating expenses.</p>
-                        <a href="https://relayfi.com" target="_blank" class="mt-auto pt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Explore Relay</a>
+                        <p class="text-xs text-[#8A7A6A] mt-2">Best for Profit First methodologies. Allows up to 20 free checking accounts under one LLC to perfectly silo gear savings and operating expenses.</p>
+                        <a href="https://relayfi.com" target="_blank" class="mt-auto pt-6 block text-center py-2.5 border border-[#E8E0D0] rounded-xl text-xs font-bold hover:bg-[#FAF8F3] transition">Explore Relay</a>
                     </div>
                     <div class="card p-6 border-l-4 border-blue-800 h-full flex flex-col shadow-sm">
                         <h4 class="font-black text-lg">Chase Business Complete</h4>
-                        <p class="text-xs text-slate-500 mt-2">The heavyweight champion. If you need physical branches to deposit cash or heavy lending power, Chase is the gold standard.</p>
-                        <a href="https://www.chase.com/business/checking" target="_blank" class="mt-auto pt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">View Chase Options</a>
+                        <p class="text-xs text-[#8A7A6A] mt-2">The heavyweight champion. If you need physical branches to deposit cash or heavy lending power, Chase is the gold standard.</p>
+                        <a href="https://www.chase.com/business/checking" target="_blank" class="mt-auto pt-6 block text-center py-2.5 border border-[#E8E0D0] rounded-xl text-xs font-bold hover:bg-[#FAF8F3] transition">View Chase Options</a>
                     </div>
                 </div>
 
-                <h3 class="text-xl font-black text-slate-800 border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="credit-card" class="w-5 h-5 text-emerald-500"></i> Tax-Optimized Credit Lines</h3>
+                <h3 class="text-xl font-black text-[#3C3520] border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="credit-card" class="w-5 h-5 text-[#4A6657]"></i> Tax-Optimized Credit Lines</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div class="card p-6 border-l-4 border-slate-900 bg-slate-900 text-white flex flex-col shadow-md">
+                    <div class="card p-6 border-l-4 border-slate-900 bg-[#2C2A22] text-white flex flex-col shadow-md">
                         <h4 class="font-black text-lg flex items-center justify-between">Amex Blue Business Plus <i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i></h4>
-                        <p class="text-sm text-slate-400 mt-2 leading-relaxed">The holy grail of photography cards. An un-capped 2X points on every single purchase up to $50k/yr, perfectly subsidizing your destination travel.</p>
-                        <a href="https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/american-express-blue-business-plus-credit-card-amex/" target="_blank" class="mt-auto mt-6 block text-center py-3 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition">Apply for BBP</a>
+                        <p class="text-sm text-[#9C8A7A] mt-2 leading-relaxed">The holy grail of photography cards. An un-capped 2X points on every single purchase up to $50k/yr, perfectly subsidizing your destination travel.</p>
+                        <a href="https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/american-express-blue-business-plus-credit-card-amex/" target="_blank" class="mt-auto mt-6 block text-center py-3 bg-[#6B8C7A] text-white rounded-xl text-xs font-bold hover:bg-[#4A6657] transition">Apply for BBP</a>
                     </div>
-                    <div class="card p-6 border-l-4 border-blue-500 flex flex-col shadow-md">
+                    <div class="card p-6 border-l-4 border-[#6B8C7A] flex flex-col shadow-md">
                         <h4 class="font-black text-lg">Chase Ink Business Cash</h4>
-                        <p class="text-sm text-slate-500 mt-2 leading-relaxed">No annual fee. Earns 5% cash back on internet, cable, and phone services (massive capability for your business line) and 2% at gas stations.</p>
-                        <a href="https://creditcards.chase.com/business-credit-cards/ink/cash" target="_blank" class="mt-auto mt-6 block text-center py-3 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Compare Chase Ink</a>
+                        <p class="text-sm text-[#8A7A6A] mt-2 leading-relaxed">No annual fee. Earns 5% cash back on internet, cable, and phone services (massive capability for your business line) and 2% at gas stations.</p>
+                        <a href="https://creditcards.chase.com/business-credit-cards/ink/cash" target="_blank" class="mt-auto mt-6 block text-center py-3 border border-[#E8E0D0] rounded-xl text-xs font-bold hover:bg-[#FAF8F3] transition">Compare Chase Ink</a>
                     </div>
                 </div>
 
-                <h3 class="text-xl font-black text-slate-800 border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="camera" class="w-5 h-5 text-red-500"></i> Photography Hardware Ecosystem</h3>
+                <h3 class="text-xl font-black text-[#3C3520] border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="camera" class="w-5 h-5 text-[#c0392b]"></i> Photography Hardware Ecosystem</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="perks-container">
-                    <div class="card p-6 border-l-4 border-red-600 shadow-sm">
+                    <div class="card p-6 border-l-4 border-[#8C5353] shadow-sm">
                         <h4 class="font-black text-lg">Canon CPS Platinum</h4>
-                        <p class="text-xs text-slate-500 mt-2">The essential tool. 2-day repair turnaround, free return shipping, and 15 free sensor cleanings/checks per year.</p>
-                        <a href="https://www.usa.canon.com/pro/canon-professional-services" target="_blank" class="mt-6 block text-center py-2.5 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 transition">Access CPS</a>
+                        <p class="text-xs text-[#8A7A6A] mt-2">The essential tool. 2-day repair turnaround, free return shipping, and 15 free sensor cleanings/checks per year.</p>
+                        <a href="https://www.usa.canon.com/pro/canon-professional-services" target="_blank" class="mt-6 block text-center py-2.5 bg-[#6B8C7A] text-white rounded-xl text-xs font-bold hover:bg-[#4A6657] transition">Access CPS</a>
                     </div>
-                    <div class="card p-6 border-l-4 border-slate-300 shadow-sm">
+                    <div class="card p-6 border-l-4 border-[#D8D0C0] shadow-sm">
                         <h4 class="font-black text-lg">B&H B2B Portal</h4>
-                        <p class="text-xs text-slate-500 mt-2">Link your EIN and AZ Form 5000A. Tax-free checkout on RF lenses and bodies automatically.</p>
-                        <a href="https://www.bhphotovideo.com/b2b" target="_blank" class="mt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Setup B2B Account</a>
+                        <p class="text-xs text-[#8A7A6A] mt-2">Link your EIN and AZ Form 5000A. Tax-free checkout on RF lenses and bodies automatically.</p>
+                        <a href="https://www.bhphotovideo.com/b2b" target="_blank" class="mt-6 block text-center py-2.5 border border-[#E8E0D0] rounded-xl text-xs font-bold hover:bg-[#FAF8F3] transition">Setup B2B Account</a>
                     </div>
                     <div class="card p-6 border-l-4 border-blue-400 shadow-sm">
                         <h4 class="font-black text-lg">PPA Membership</h4>
-                        <p class="text-xs text-slate-500 mt-2">Covers Canon gear against theft or damage (up to $15k) for around $30/mo membership fee.</p>
-                        <a href="https://www.ppa.com/" target="_blank" class="mt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Join PPA</a>
+                        <p class="text-xs text-[#8A7A6A] mt-2">Covers Canon gear against theft or damage (up to $15k) for around $30/mo membership fee.</p>
+                        <a href="https://www.ppa.com/" target="_blank" class="mt-6 block text-center py-2.5 border border-[#E8E0D0] rounded-xl text-xs font-bold hover:bg-[#FAF8F3] transition">Join PPA</a>
                     </div>
                 </div>
 
-                <div class="card p-6 mt-8 bg-slate-50 border-dashed">
+                <div class="card p-6 mt-8 bg-[#FAF8F3] border-dashed">
                     <h4 class="font-bold text-sm mb-4">Add Custom Vendor Perk</h4>
                     <div class="flex flex-col md:flex-row gap-4">
                         <input type="text" id="new-perk-title" placeholder="Perk Name (e.g., Hertz Gold)" class="px-4 py-3 border rounded-xl flex-grow font-medium">
                         <input type="text" id="new-perk-desc" placeholder="Details or HTTP Link" class="px-4 py-3 border rounded-xl flex-grow font-medium">
-                        <button onclick="addCustomPerk()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 drop-shadow shadow-blue-500/30">Add Perk</button>
+                        <button onclick="addCustomPerk()" class="bg-[#6B8C7A] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#4A6657] drop-shadow shadow-[#6B8C7A]/20">Add Perk</button>
                     </div>
                 </div>
             </div>
@@ -1067,26 +1027,26 @@
             <!-- Tab: Legal Health -->
             <div id="legal" class="tab-content space-y-10">
                 <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Legal Veil Health</h2>
-                    <p class="text-slate-500 mt-2">Protecting your personal assets via Arizona LLC law.</p>
+                    <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Legal Veil Health</h2>
+                    <p class="text-[#8A7A6A] mt-2">Protecting your personal assets via Arizona LLC law.</p>
                 </header>
 
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
                     <section class="xl:col-span-2 card p-10">
                         <h4 class="text-2xl font-black mb-8">Veil Compliance Tracker</h4>
                         <div class="space-y-6" id="legal-checklist">
-                            <label class="flex items-start gap-5 p-6 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition group static-check">
-                                <input type="checkbox" checked class="mt-1 w-6 h-6 text-emerald-600 rounded-lg border-slate-300">
+                            <label class="flex items-start gap-5 p-6 bg-[#FAF8F3] rounded-2xl cursor-pointer hover:bg-[#F4F0E6] transition group static-check">
+                                <input type="checkbox" checked class="mt-1 w-6 h-6 text-[#4A6657] rounded-lg border-[#D8D0C0]">
                                 <div>
-                                    <p class="font-bold text-slate-900">Separate Phone Account</p>
-                                    <p class="text-xs text-slate-500 mt-1">If the bill is in the LLC name, the deduction is ironclad.</p>
+                                    <p class="font-bold text-[#2C2511]">Separate Phone Account</p>
+                                    <p class="text-xs text-[#8A7A6A] mt-1">If the bill is in the LLC name, the deduction is ironclad.</p>
                                 </div>
                             </label>
-                            <label class="flex items-start gap-5 p-6 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition group static-check">
-                                <input type="checkbox" class="mt-1 w-6 h-6 text-emerald-600 rounded-lg border-slate-300">
+                            <label class="flex items-start gap-5 p-6 bg-[#FAF8F3] rounded-2xl cursor-pointer hover:bg-[#F4F0E6] transition group static-check">
+                                <input type="checkbox" class="mt-1 w-6 h-6 text-[#4A6657] rounded-lg border-[#D8D0C0]">
                                 <div>
-                                    <p class="font-bold text-slate-900">Signed as "Manager"</p>
-                                    <p class="text-xs text-slate-500 mt-1">Signature block: [Name], Manager of [Business Name] LLC.</p>
+                                    <p class="font-bold text-[#2C2511]">Signed as "Manager"</p>
+                                    <p class="text-xs text-[#8A7A6A] mt-1">Signature block: [Name], Manager of [Business Name] LLC.</p>
                                 </div>
                             </label>
                         </div>
@@ -1101,7 +1061,7 @@
                                     <option value="annual">Annual Filing</option>
                                 </select>
                                 <input type="text" id="stat-agent" placeholder="Statutory Agent Name" class="px-4 py-3 border rounded-xl" oninput="saveComplianceInfo()">
-                                <input type="date" id="agent-renewal" class="px-4 py-3 border rounded-xl text-slate-500" onchange="saveComplianceInfo()">
+                                <input type="date" id="agent-renewal" class="px-4 py-3 border rounded-xl text-[#8A7A6A]" onchange="saveComplianceInfo()">
                             </div>
                         </div>
 
@@ -1114,9 +1074,9 @@
                         </div>
                     </section>
 
-                    <section class="xl:col-span-1 card p-10 bg-slate-900 text-white">
+                    <section class="xl:col-span-1 card p-10 bg-[#2C2A22] text-white">
                         <h4 class="text-xl font-black mb-6 flex items-center gap-2">
-                            <i data-lucide="calendar" class="w-5 h-5 text-emerald-400"></i> Compliance Calendar
+                            <i data-lucide="calendar" class="w-5 h-5 text-[#6B8C7A]"></i> Compliance Calendar
                         </h4>
                         <div class="space-y-6" id="compliance-calendar">
                             <!-- Populated dynamically by JS -->
@@ -1128,8 +1088,8 @@
             <!-- Tab: Email Templates -->
             <div id="emails" class="tab-content space-y-10">
                 <header class="no-print">
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Email Engine & Inbox</h2>
-                    <p class="text-slate-500 mt-2">Tokenized templates wired directly into your active Gmail threads.</p>
+                    <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Email Engine & Inbox</h2>
+                    <p class="text-[#8A7A6A] mt-2">Tokenized templates wired directly into your active Gmail threads.</p>
                 </header>
                 
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -1137,30 +1097,30 @@
                     <!-- Inbox Scanner -->
                     <div class="card p-6 bg-white xl:col-span-1 flex flex-col h-[750px]">
                         <div class="flex justify-between items-center mb-4 border-b pb-4">
-                            <h4 class="font-black text-lg text-slate-900 flex items-center gap-2"><i data-lucide="inbox" class="w-5 h-5 text-blue-500"></i> Active Threads</h4>
-                            <button onclick="fetchLatestInbox()" id="btn-fetch-inbox" class="text-blue-600 hover:text-blue-800 p-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+                            <h4 class="font-black text-lg text-[#2C2511] flex items-center gap-2"><i data-lucide="inbox" class="w-5 h-5 text-blue-500"></i> Active Threads</h4>
+                            <button onclick="fetchLatestInbox()" id="btn-fetch-inbox" class="text-[#6B8C7A] hover:text-[#2d5a3d] p-2 bg-[#f0f7f3] hover:bg-[#d4ead8] rounded-lg transition"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
                         </div>
                         <div id="inbox-list" class="flex-1 overflow-y-auto space-y-2 pr-2">
-                            <p class="text-xs text-slate-400 italic text-center mt-10">Configure your Gmail App Password below and click refresh.</p>
+                            <p class="text-xs text-[#9C8A7A] italic text-center mt-10">Configure your Gmail App Password below and click refresh.</p>
                         </div>
-                        <div class="mt-4 pt-4 border-t bg-slate-50 p-4 rounded-xl">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex justify-between items-center">Gmail Native Connection <i data-lucide="lock" class="w-3 h-3 text-emerald-500"></i></p>
+                        <div class="mt-4 pt-4 border-t bg-[#FAF8F3] p-4 rounded-xl">
+                            <p class="text-[10px] font-bold text-[#9C8A7A] uppercase tracking-widest mb-2 flex justify-between items-center">Gmail Native Connection <i data-lucide="lock" class="w-3 h-3 text-[#4A6657]"></i></p>
                             <input type="email" id="gmail-address" placeholder="Business Gmail Address" class="w-full px-3 py-2 text-xs border rounded-lg mb-2 font-medium" onchange="saveGmailSettings()">
                             <input type="password" id="gmail-app-pass" placeholder="16-Digit App Password" class="w-full px-3 py-2 text-xs border rounded-lg font-medium" onchange="saveGmailSettings()">
                         </div>
                     </div>
 
                     <!-- Template Runner -->
-                    <div class="card p-6 bg-slate-50 xl:col-span-1 h-[750px] flex flex-col">
-                        <h4 class="font-black text-lg text-slate-900 mb-6 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-amber-500"></i> Execute Reply</h4>
+                    <div class="card p-6 bg-[#FAF8F3] xl:col-span-1 h-[750px] flex flex-col">
+                        <h4 class="font-black text-lg text-[#2C2511] mb-6 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-amber-500"></i> Execute Reply</h4>
                         
-                        <div id="reply-target-warning" class="bg-blue-100 text-blue-800 text-xs px-3 py-2 rounded-lg font-bold mb-4 hidden border border-blue-200">
+                        <div id="reply-target-warning" class="bg-[#d4ead8] text-blue-800 text-xs px-3 py-2 rounded-lg font-bold mb-4 hidden border border-blue-200">
                             Replying to: <span id="reply-target-name">Unknown</span>
                         </div>
 
                         <div class="mb-6">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 shadow-sm">Select Template</label>
-                            <select id="email-selector" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl" onchange="loadSelectedTemplate()">
+                            <label class="block text-[10px] font-bold text-[#9C8A7A] uppercase tracking-widest mb-2 shadow-sm">Select Template</label>
+                            <select id="email-selector" class="w-full px-4 py-3 bg-white border border-[#E8E0D0] rounded-xl" onchange="loadSelectedTemplate()">
                                 <option value="">-- Choose a template --</option>
                             </select>
                         </div>
@@ -1169,15 +1129,15 @@
                             <!-- Injected dynamically via JS based on {{Tokens}} -->
                         </div>
 
-                        <div id="email-preview-box" class="hidden mt-auto pt-4 border-t border-slate-200">
-                            <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm mb-4 max-h-[150px] overflow-y-auto">
-                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 border-b pb-1">Subject: <span id="email-preview-subject" class="font-bold text-slate-800"></span></p>
-                                <p id="email-preview-body" class="whitespace-pre-wrap text-xs text-slate-600 leading-relaxed mt-2"></p>
+                        <div id="email-preview-box" class="hidden mt-auto pt-4 border-t border-[#E8E0D0]">
+                            <div class="p-4 bg-white border border-[#E8E0D0] rounded-xl shadow-sm mb-4 max-h-[150px] overflow-y-auto">
+                                <p class="text-[9px] font-bold text-[#9C8A7A] uppercase tracking-widest mb-1 border-b pb-1">Subject: <span id="email-preview-subject" class="font-bold text-[#3C3520]"></span></p>
+                                <p id="email-preview-body" class="whitespace-pre-wrap text-xs text-[#5C4A3A] leading-relaxed mt-2"></p>
                             </div>
                             
                             <div class="flex gap-2">
-                                <button onclick="copyEmailToClipboard()" class="flex-1 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-100 transition" title="Copy to Clipboard"><i data-lucide="copy" class="w-4 h-4 mx-auto"></i></button>
-                                <button onclick="sendViaMailApp()" id="btn-native-reply" class="flex-[3] bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition flex items-center justify-center gap-2">
+                                <button onclick="copyEmailToClipboard()" class="flex-1 bg-white border border-[#D8D0C0] text-[#4A4030] px-4 py-2 rounded-xl text-sm font-bold hover:bg-[#F4F0E6] transition" title="Copy to Clipboard"><i data-lucide="copy" class="w-4 h-4 mx-auto"></i></button>
+                                <button onclick="sendViaMailApp()" id="btn-native-reply" class="flex-[3] bg-[#6B8C7A] text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-[#4A6657] shadow-lg shadow-blue-500/20 transition flex items-center justify-center gap-2">
                                     <i data-lucide="send" class="w-4 h-4"></i> Send Reply
                                 </button>
                             </div>
@@ -1186,25 +1146,25 @@
 
                     <!-- Template Editor -->
                     <div class="card p-6 xl:col-span-1 h-[750px] flex flex-col">
-                        <h4 class="font-black text-lg text-slate-900 mb-6 flex items-center gap-2" id="email-editor-title"><i data-lucide="file-edit" class="w-5 h-5 text-indigo-500"></i> Create Template</h4>
+                        <h4 class="font-black text-lg text-[#2C2511] mb-6 flex items-center gap-2" id="email-editor-title"><i data-lucide="file-edit" class="w-5 h-5 text-[#6B8C7A]"></i> Create Template</h4>
                         <div class="space-y-4 flex-grow flex flex-col">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Template Name</label>
+                                <label class="block text-[10px] font-bold text-[#9C8A7A] uppercase tracking-widest mb-2">Template Name</label>
                                 <input type="text" id="edit-tmpl-name" placeholder="e.g. Wedding Delivery" class="w-full px-4 py-3 border rounded-xl font-medium text-sm">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Subject Line</label>
+                                <label class="block text-[10px] font-bold text-[#9C8A7A] uppercase tracking-widest mb-2">Subject Line</label>
                                 <input type="text" id="edit-tmpl-subject" placeholder="Your Wedding Gallery: {{Date}}" class="w-full px-4 py-3 border rounded-xl font-medium text-sm">
                             </div>
                             <div class="flex-grow flex flex-col">
                                 <div class="flex justify-between items-end mb-2">
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email Body</label>
+                                    <label class="block text-[10px] font-bold text-[#9C8A7A] uppercase tracking-widest">Email Body</label>
                                 </div>
                                 <textarea id="edit-tmpl-body" placeholder="Hi {{ClientName}},\n\nYour gallery is ready!" class="w-full px-4 py-3 border rounded-xl font-medium flex-grow resize-none text-sm"></textarea>
                             </div>
                             
                             <div class="flex justify-between items-center pt-2">
-                                <button id="btn-delete-tmpl" onclick="deleteActiveTemplate()" class="text-rose-500 font-bold text-xs hidden hover:text-rose-700">Delete</button>
+                                <button id="btn-delete-tmpl" onclick="deleteActiveTemplate()" class="text-[#b07070] font-bold text-xs hidden hover:text-rose-700">Delete</button>
                                 <button onclick="saveTemplate()" class="bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-emerald-700 ml-auto flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> Save</button>
                             </div>
                         </div>
@@ -1216,11 +1176,11 @@
             <!-- Tab: Social Media Planner -->
             <div id="social" class="tab-content space-y-10">
                 <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Social Media Content Planner</h2>
-                    <p class="text-slate-500 mt-2">Funnel your 72-hour sneak peeks into a consistent Instagram & TikTok presence.</p>
+                    <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Social Media Content Planner</h2>
+                    <p class="text-[#8A7A6A] mt-2">Funnel your 72-hour sneak peeks into a consistent Instagram & TikTok presence.</p>
                 </header>
 
-                <div class="card p-6 border-dashed bg-slate-50">
+                <div class="card p-6 border-dashed bg-[#FAF8F3]">
                     <h4 class="font-bold text-sm mb-4">Add New Content Card</h4>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <input type="text" id="new-social-title" placeholder="e.g. Sedona Elopement Reel" class="px-4 py-3 border rounded-xl col-span-1 md:col-span-2 text-sm font-medium">
@@ -1235,8 +1195,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Drafting -->
-                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100">
-                        <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
+                    <div class="bg-[#FAF8F3] rounded-2xl p-6 border border-slate-100">
+                        <h4 class="text-[11px] font-black uppercase tracking-widest text-[#8A7A6A] mb-4 flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span> Drafting / Concept
                         </h4>
                         <div id="social-col-draft" class="space-y-3 min-h-[200px]"></div>
@@ -1249,8 +1209,8 @@
                         <div id="social-col-audio" class="space-y-3 min-h-[200px]"></div>
                     </div>
                     <!-- Ready to Publish -->
-                    <div class="bg-emerald-50 rounded-2xl p-6 border border-emerald-100">
-                        <h4 class="text-[11px] font-black uppercase tracking-widest text-emerald-600 mb-4 flex items-center gap-2">
+                    <div class="bg-[#f0f7f3] rounded-2xl p-6 border border-[#d4ead8]">
+                        <h4 class="text-[11px] font-black uppercase tracking-widest text-[#4A6657] mb-4 flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span> Ready to Publish
                         </h4>
                         <div id="social-col-ready" class="space-y-3 min-h-[200px]"></div>
@@ -1261,12 +1221,12 @@
             <!-- Tab: Operations -->
             <div id="operations" class="tab-content space-y-10">
                 <header class="no-print">
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Shoot Operations</h2>
-                    <p class="text-slate-500 mt-2">Pre and post-production checklists.</p>
+                    <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Shoot Operations</h2>
+                    <p class="text-[#8A7A6A] mt-2">Pre and post-production checklists.</p>
                 </header>
                 <div id="operations-container" class="no-print grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Add Task Form -->
-                    <div class="card p-6 bg-slate-50 border-dashed mb-auto">
+                    <div class="card p-6 bg-[#FAF8F3] border-dashed mb-auto">
                         <h4 class="font-bold text-sm mb-4">Add Workflow Task</h4>
                         <div class="flex flex-col gap-4">
                             <input type="text" id="new-op-title" placeholder="e.g. Format SD Cards & Pack Batteries" class="px-4 py-3 border rounded-xl flex-grow">
@@ -1282,11 +1242,152 @@
                     <div class="card p-8 min-h-[500px]">
                         <h4 class="font-bold text-lg mb-6">Active Workflows</h4>
                         
-                        <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Pre-Production</h5>
+                        <h5 class="text-[10px] font-black text-[#9C8A7A] uppercase tracking-widest mb-3">Pre-Production</h5>
                         <div id="ops-pre-list" class="space-y-3 mb-8"></div>
 
-                        <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Post-Production</h5>
+                        <h5 class="text-[10px] font-black text-[#9C8A7A] uppercase tracking-widest mb-3">Post-Production</h5>
                         <div id="ops-post-list" class="space-y-3"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Tab: Settings -->
+            <div id="settings" class="tab-content space-y-10">
+                <header>
+                    <h2 class="text-4xl font-black tracking-tight">Settings</h2>
+                    <p class="mt-2" style="color:var(--text-soft)">Configure your Command Center, take the app tour, and manage your data.</p>
+                </header>
+
+                <!-- App Tour Card -->
+                <div class="card p-8" style="border-left:4px solid var(--sage)">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-2 flex items-center gap-2">
+                                <i data-lucide="compass" class="w-6 h-6" style="color:var(--sage)"></i>
+                                App Walkthrough Tour
+                            </h3>
+                            <p class="text-sm mb-4" style="color:var(--text-soft)">Take an interactive guided tour through every section of your Command Center. Perfect for getting up to speed or showing someone else how it works.</p>
+                            <button onclick="startTour()" class="px-6 py-3 rounded-xl font-bold text-white text-sm" style="background:linear-gradient(135deg,var(--sage),var(--sage-deep))">
+                                Launch Tour 🐰
+                            </button>
+                        </div>
+                        <div class="hidden md:flex w-24 h-24 rounded-2xl items-center justify-center flex-shrink-0" style="background:var(--sage-pale)">
+                            <i data-lucide="map" class="w-10 h-10" style="color:var(--sage)"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <!-- Business Profile -->
+                    <div class="card p-8">
+                        <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                            <i data-lucide="building-2" class="w-5 h-5" style="color:var(--sage)"></i>
+                            Business Profile
+                        </h3>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">Business Name</label>
+                                <input type="text" id="settings-biz-name" placeholder="The Love Lens LLC" class="w-full px-4 py-3 border rounded-xl font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">Your Name</label>
+                                <input type="text" id="settings-owner-name" placeholder="Ariana" class="w-full px-4 py-3 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">Business Email</label>
+                                <input type="email" id="settings-email" placeholder="hello@thelovelensbyariana.com" class="w-full px-4 py-3 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">LLC Formation Date</label>
+                                <input type="date" id="settings-formed" class="w-full px-4 py-3 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">AZCC File Number</label>
+                                <input type="text" id="settings-azcc" placeholder="e.g. L-1234567-0" class="w-full px-4 py-3 border rounded-xl">
+                            </div>
+                            <button onclick="saveBusinessProfile()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--sage)">Save Profile</button>
+                        </div>
+                    </div>
+
+                    <!-- Email & Notifications -->
+                    <div class="card p-8">
+                        <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                            <i data-lucide="mail" class="w-5 h-5" style="color:var(--sage)"></i>
+                            Gmail Connection
+                        </h3>
+                        <p class="text-sm mb-5" style="color:var(--text-soft)">Connect your Gmail to read client inquiry threads directly inside the Email Templates tab.</p>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">Gmail Address</label>
+                                <input type="email" id="settings-gmail" placeholder="you@gmail.com" class="w-full px-4 py-3 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-black uppercase tracking-widest mb-2 flex items-center" style="color:var(--sage)">
+                                    App Password
+                                    <span class="info-badge" onclick="showInfo(this)" data-title="Gmail App Password" data-body="A Gmail App Password is a 16-digit code generated at myaccount.google.com that lets this app access your email securely without using your real password. You must have 2-Factor Authentication enabled." data-ref="Google Account Security" data-az="" data-link="https://myaccount.google.com/apppasswords">ⓘ</span>
+                                </label>
+                                <input type="password" id="settings-gmail-pw" placeholder="16-character app password" class="w-full px-4 py-3 border rounded-xl font-mono">
+                            </div>
+                            <button onclick="saveGmailSettings()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--sage)">Save Gmail Settings</button>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="wave-divider mt-8"></div>
+
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i data-lucide="bell" class="w-5 h-5" style="color:var(--sage)"></i>
+                            Preferences
+                        </h3>
+                        <div class="space-y-4">
+                            <label class="flex items-center justify-between cursor-pointer p-3 rounded-xl" style="background:var(--parchment)">
+                                <span class="text-sm font-medium">Show quarterly tax reminders on dashboard</span>
+                                <input type="checkbox" id="pref-tax-reminders" checked class="w-4 h-4" style="accent-color:var(--sage)">
+                            </label>
+                            <label class="flex items-center justify-between cursor-pointer p-3 rounded-xl" style="background:var(--parchment)">
+                                <span class="text-sm font-medium">Show AZ TPT compliance badge</span>
+                                <input type="checkbox" id="pref-tpt-badge" checked class="w-4 h-4" style="accent-color:var(--sage)">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Management -->
+                <div class="card p-8">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i data-lucide="database" class="w-5 h-5" style="color:var(--ocean)"></i>
+                        Data Management
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="p-5 rounded-2xl" style="background:var(--parchment);border:1px solid var(--border-soft)">
+                            <h4 class="font-bold text-sm mb-2">Export All Data</h4>
+                            <p class="text-xs mb-4" style="color:var(--text-soft)">Download your full Command Center data as a JSON backup file.</p>
+                            <button onclick="exportData()" class="w-full py-2.5 rounded-xl text-sm font-bold" style="background:var(--sage-pale);color:var(--sage-deep)">Export Backup</button>
+                        </div>
+                        <div class="p-5 rounded-2xl" style="background:var(--parchment);border:1px solid var(--border-soft)">
+                            <h4 class="font-bold text-sm mb-2">App Version</h4>
+                            <p class="text-xs mb-1" style="color:var(--text-soft)">Auto-updates from GitHub every 3 minutes while the app is open.</p>
+                            <p class="text-xs font-bold mt-3" style="color:var(--sage)">The Love Lens Command Center</p>
+                            <p class="text-[10px] mt-1" style="color:var(--text-soft)">Last checked: <span id="last-update-check">—</span></p>
+                        </div>
+                        <div class="p-5 rounded-2xl" style="background:#fff5f5;border:1px solid #fecaca">
+                            <h4 class="font-bold text-sm mb-2 text-red-700">Reset App Data</h4>
+                            <p class="text-xs mb-4" style="color:var(--text-soft)">Clears all saved data and returns to the initial setup. Cannot be undone.</p>
+                            <button onclick="confirmReset()" class="w-full py-2.5 rounded-xl text-sm font-bold" style="background:#fee2e2;color:#991b1b">Factory Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="rounded-2xl p-8 text-white" style="background:linear-gradient(135deg,var(--sage-deep),var(--ocean-deep))">
+                    <h3 class="text-xl font-bold mb-2">About This App</h3>
+                    <p class="text-sm mb-4" style="color:rgba(255,255,255,0.7)">Built specifically for The Love Lens by Ariana — an Arizona photography LLC management suite covering taxes, compliance, invoicing, email templates, pricing, and social planning.</p>
+                    <div class="flex flex-wrap gap-6 text-xs" style="color:rgba(255,255,255,0.55)">
+                        <span>Built with Electron + Vanilla JS</span>
+                        <span>•</span>
+                        <span>Auto-updates via GitHub</span>
+                        <span>•</span>
+                        <span>All data stored locally on this Mac</span>
                     </div>
                 </div>
             </div>
@@ -1306,6 +1407,7 @@
             sneakPeeks: [],
             socialCards: [],
             complianceChecks: {},
+            businessProfile: {},
             compliancePaid: {},
             workflows: [],
             emailTemplates: [
@@ -1493,13 +1595,14 @@
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+            document.getElementById(tabId)?.classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-white/10', 'text-white');
-                btn.classList.add('text-slate-400');
+                btn.classList.add('text-[#9C8A7A]');
             });
             const activeBtn = document.getElementById('btn-' + tabId);
             if (activeBtn) activeBtn.classList.add('bg-white/10', 'text-white');
+            if (tabId === 'settings') loadSettingsTab();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
@@ -1572,7 +1675,7 @@
             const protEl = document.getElementById('dash-protection');
             if (protEl) {
                 protEl.innerText = score + '%';
-                protEl.className = score < 50 ? "text-4xl font-black text-rose-600" : score < 100 ? "text-4xl font-black text-amber-500" : "text-4xl font-black text-emerald-600";
+                protEl.className = score < 50 ? "text-4xl font-black text-[#8C5353]" : score < 100 ? "text-4xl font-black text-amber-500" : "text-4xl font-black text-[#4A6657]";
             }
         }
         
@@ -1599,9 +1702,9 @@
                 div.innerHTML = `
                     <div class="flex justify-between items-start">
                         <h4 class="font-black text-lg">${p.title}</h4>
-                        <button onclick="removePerk(${idx})" class="text-rose-500 hover:text-rose-700 font-bold text-xs uppercase">Remove</button>
+                        <button onclick="removePerk(${idx})" class="text-[#b07070] hover:text-rose-700 font-bold text-xs uppercase">Remove</button>
                     </div>
-                    <p class="text-xs text-slate-500 mt-2">${p.desc}</p>
+                    <p class="text-xs text-[#8A7A6A] mt-2">${p.desc}</p>
                 `;
                 container.appendChild(div);
             });
@@ -1643,13 +1746,13 @@
             const checks = window.StateStore.state.customChecks || [];
             checks.forEach((c, idx) => {
                 const label = document.createElement('label');
-                label.className = 'flex items-start gap-5 p-6 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition group custom-check-item relative';
+                label.className = 'flex items-start gap-5 p-6 bg-[#FAF8F3] rounded-2xl cursor-pointer hover:bg-[#F4F0E6] transition group custom-check-item relative';
                 label.innerHTML = `
-                    <input type="checkbox" onchange="toggleCustomCheck(${idx}, this.checked)" ${c.checked ? 'checked' : ''} class="mt-1 w-6 h-6 text-emerald-600 rounded-lg border-slate-300">
+                    <input type="checkbox" onchange="toggleCustomCheck(${idx}, this.checked)" ${c.checked ? 'checked' : ''} class="mt-1 w-6 h-6 text-[#4A6657] rounded-lg border-[#D8D0C0]">
                     <div>
-                        <p class="font-bold text-slate-900">${c.title}</p>
+                        <p class="font-bold text-[#2C2511]">${c.title}</p>
                     </div>
-                    <button onclick="removeCheck(${idx})" class="absolute top-4 right-4 text-xs text-slate-400 hover:text-rose-500 font-bold uppercase">Remove</button>
+                    <button onclick="removeCheck(${idx})" class="absolute top-4 right-4 text-xs text-[#9C8A7A] hover:text-[#b07070] font-bold uppercase">Remove</button>
                 `;
                 container.appendChild(label);
             });
@@ -1718,7 +1821,7 @@
             
             const profile = window.StateStore.state.profile;
             if(!profile || !profile.date) {
-                container.innerHTML = `<p class="text-sm text-slate-500">Awaiting profile initialization...</p>`;
+                container.innerHTML = `<p class="text-sm text-[#8A7A6A]">Awaiting profile initialization...</p>`;
                 return;
             }
 
@@ -1734,7 +1837,7 @@
             const options = { month: 'short', day: 'numeric', year: 'numeric' };
 
             const comp = window.StateStore.state.compliance || {};
-            let tptNote = `<p class="text-xs text-slate-300">Set your TPT License and frequency in the Legal tab.</p>`;
+            let tptNote = `<p class="text-xs text-[#C0B0A0]">Set your TPT License and frequency in the Legal tab.</p>`;
             let tptDueStr = 'Pending Setup';
 
             // AZ TPT Deadlines calculation
@@ -1754,19 +1857,19 @@
                 }
 
                 tptDueStr = nextTptDue.toLocaleDateString('en-US', options);
-                tptNote = `<p class="text-xs text-slate-300">License: <span class="text-white font-mono">${comp.tptLicense || 'Missing'}</span> | AZ Dept. of Revenue TPT Return.</p>`;
+                tptNote = `<p class="text-xs text-[#C0B0A0]">License: <span class="text-white font-mono">${comp.tptLicense || 'Missing'}</span> | AZ Dept. of Revenue TPT Return.</p>`;
             }
 
             container.innerHTML = `
-                <div class="p-5 bg-slate-800 rounded-2xl border ${comp.tptLicense ? 'border-emerald-600/50' : 'border-rose-600/50'}">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">AZ TPT (Sales Tax) Return</p>
-                    <h5 class="font-bold text-lg ${comp.tptLicense ? 'text-emerald-400' : 'text-rose-400'} mb-1">Due: ${tptDueStr}</h5>
+                <div class="p-5 bg-[#3A3830] rounded-2xl border ${comp.tptLicense ? 'border-emerald-600/50' : 'border-rose-600/50'}">
+                    <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">AZ TPT (Sales Tax) Return</p>
+                    <h5 class="font-bold text-lg ${comp.tptLicense ? 'text-[#6B8C7A]' : 'text-rose-400'} mb-1">Due: ${tptDueStr}</h5>
                     ${tptNote}
                 </div>
-                <div class="p-5 bg-slate-800 rounded-2xl border border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Q1 Estimated Taxes</p>
+                <div class="p-5 bg-[#3A3830] rounded-2xl border border-slate-700">
+                    <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Q1 Estimated Taxes</p>
                     <h5 class="font-bold text-lg text-rose-400 mb-1">Due: Apr 15, ${new Date().getFullYear()}</h5>
-                    <p class="text-xs text-slate-300">IRS Form 1040-ES due if you expect to owe >$1,000 this year.</p>
+                    <p class="text-xs text-[#C0B0A0]">IRS Form 1040-ES due if you expect to owe >$1,000 this year.</p>
                 </div>
             `;
         }
@@ -1816,10 +1919,10 @@
             btn.disabled = true;
 
             const targetList = document.getElementById('inbox-list');
-            targetList.innerHTML = '<p class="text-xs text-slate-500 italic text-center mt-4">Syncing with Gmail...</p>';
+            targetList.innerHTML = '<p class="text-xs text-[#8A7A6A] italic text-center mt-4">Syncing with Gmail...</p>';
 
             if(!window.electronAPI || !window.electronAPI.fetchInbox) {
-                 targetList.innerHTML = '<p class="text-xs text-rose-500 italic text-center mt-4">Error: Electron Native MailAPI not bridged.</p>';
+                 targetList.innerHTML = '<p class="text-xs text-[#b07070] italic text-center mt-4">Error: Electron Native MailAPI not bridged.</p>';
                  btn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i>';
                  btn.disabled = false;
                  return;
@@ -1833,12 +1936,12 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
             if(!res.success) {
-                targetList.innerHTML = `<p class="text-xs text-rose-500 p-2 break-words">Failed: ${res.error}</p>`;
+                targetList.innerHTML = `<p class="text-xs text-[#b07070] p-2 break-words">Failed: ${res.error}</p>`;
                 return;
             }
 
             if(res.emails.length === 0) {
-                targetList.innerHTML = '<p class="text-xs text-slate-400 italic mt-4">Inbox returned 0 results.</p>';
+                targetList.innerHTML = '<p class="text-xs text-[#9C8A7A] italic mt-4">Inbox returned 0 results.</p>';
                 return;
             }
 
@@ -1846,17 +1949,17 @@
             res.emails.forEach(email => {
                 const safeEmail = JSON.stringify(email).replace(/"/g, '&quot;');
                 const card = document.createElement('div');
-                card.className = "p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition border-slate-200";
+                card.className = "p-3 border rounded-lg cursor-pointer hover:bg-[#f0f7f3] transition border-[#E8E0D0]";
                 card.onclick = () => selectReplyTarget(email);
                 
                 const dateClean = new Date(email.date).toLocaleDateString();
                 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-1">
-                        <p class="font-bold text-xs text-slate-900 truncate pr-2 max-w-[70%]">${email.from}</p>
-                        <span class="text-[9px] text-slate-400 flex-shrink-0">${dateClean}</span>
+                        <p class="font-bold text-xs text-[#2C2511] truncate pr-2 max-w-[70%]">${email.from}</p>
+                        <span class="text-[9px] text-[#9C8A7A] flex-shrink-0">${dateClean}</span>
                     </div>
-                    <p class="text-[11px] text-slate-600 line-clamp-2">${email.subject}</p>
+                    <p class="text-[11px] text-[#5C4A3A] line-clamp-2">${email.subject}</p>
                 `;
                 targetList.appendChild(card);
             });
@@ -1868,8 +1971,8 @@
             document.getElementById('reply-target-name').innerText = emailObj.from + " (" + emailObj.subject + ")";
             const btn = document.getElementById('btn-native-reply');
             btn.innerHTML = '<i data-lucide="reply" class="w-4 h-4"></i> Inject Reply';
-            btn.classList.replace('bg-blue-600', 'bg-indigo-600');
-            btn.classList.replace('hover:bg-blue-700', 'hover:bg-indigo-700');
+            btn.classList.replace('bg-[#6B8C7A]', 'bg-indigo-600');
+            btn.classList.replace('hover:bg-[#4A6657]', 'hover:bg-indigo-700');
             if (typeof lucide !== 'undefined') lucide.createIcons();
             
             // Auto inject subject line wrapper "Re: " if not there.
@@ -1907,7 +2010,7 @@
             document.getElementById('edit-tmpl-subject').value = '';
             document.getElementById('edit-tmpl-body').value = '';
             activeTemplateId = null;
-            document.getElementById('email-editor-title').innerHTML = '<i data-lucide="file-edit" class="w-5 h-5 text-indigo-500"></i> Create Template';
+            document.getElementById('email-editor-title').innerHTML = '<i data-lucide="file-edit" class="w-5 h-5 text-[#6B8C7A]"></i> Create Template';
             document.getElementById('btn-delete-tmpl').classList.add('hidden');
             
             renderEmailTemplates();
@@ -1927,7 +2030,7 @@
                 document.getElementById('edit-tmpl-subject').value = '';
                 document.getElementById('edit-tmpl-body').value = '';
                 activeTemplateId = null;
-                document.getElementById('email-editor-title').innerHTML = '<i data-lucide="file-edit" class="w-5 h-5 text-indigo-500"></i> Create Template';
+                document.getElementById('email-editor-title').innerHTML = '<i data-lucide="file-edit" class="w-5 h-5 text-[#6B8C7A]"></i> Create Template';
                 document.getElementById('btn-delete-tmpl').classList.add('hidden');
                 if (typeof lucide !== 'undefined') lucide.createIcons();
                 return;
@@ -1942,7 +2045,7 @@
             document.getElementById('edit-tmpl-subject').value = tmpl.subject;
             document.getElementById('edit-tmpl-body').value = tmpl.body;
             activeTemplateId = tmpl.id;
-            document.getElementById('email-editor-title').innerHTML = '<i data-lucide="edit-3" class="w-5 h-5 text-emerald-500"></i> Edit Template';
+            document.getElementById('email-editor-title').innerHTML = '<i data-lucide="edit-3" class="w-5 h-5 text-[#4A6657]"></i> Edit Template';
             document.getElementById('btn-delete-tmpl').classList.remove('hidden');
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -1960,13 +2063,13 @@
                 tokens.forEach(token => {
                     container.innerHTML += `
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-3 mb-1 shadow-sm">${token}</label>
-                            <input type="text" id="token-${token}" placeholder="Value for ${token}" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl tmpl-input text-sm" oninput="livePreviewEmail()">
+                            <label class="block text-[10px] font-bold text-[#9C8A7A] uppercase tracking-widest mt-3 mb-1 shadow-sm">${token}</label>
+                            <input type="text" id="token-${token}" placeholder="Value for ${token}" class="w-full px-4 py-2 bg-white border border-[#E8E0D0] rounded-xl tmpl-input text-sm" oninput="livePreviewEmail()">
                         </div>
                     `;
                 });
             } else {
-                container.innerHTML = `<p class="text-xs text-slate-400 italic border rounded-lg p-4 bg-white text-center">No {{Tokens}} detected in this template.</p>`;
+                container.innerHTML = `<p class="text-xs text-[#9C8A7A] italic border rounded-lg p-4 bg-white text-center">No {{Tokens}} detected in this template.</p>`;
             }
 
             document.getElementById('email-preview-box').classList.remove('hidden');
@@ -2051,18 +2154,18 @@
                 
                 // Instruct the user
                 document.getElementById('reply-target-warning').innerHTML = "<b>Template Copied!</b> Simply hit <b>Reply</b> in Apple Mail and <b>Paste</b> your template!";
-                document.getElementById('reply-target-warning').classList.replace('bg-blue-100', 'bg-yellow-100');
+                document.getElementById('reply-target-warning').classList.replace('bg-[#d4ead8]', 'bg-yellow-100');
                 document.getElementById('reply-target-warning').classList.replace('text-blue-800', 'text-yellow-800');
                 
                 setTimeout(() => {
                     // Reset
                     activeReplyTarget = null;
                     document.getElementById('reply-target-warning').classList.add('hidden');
-                    document.getElementById('reply-target-warning').classList.replace('bg-yellow-100', 'bg-blue-100');
+                    document.getElementById('reply-target-warning').classList.replace('bg-yellow-100', 'bg-[#d4ead8]');
                     document.getElementById('reply-target-warning').classList.replace('text-yellow-800', 'text-blue-800');
                     btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> Open Mail App';
-                    btn.classList.replace('bg-emerald-600', 'bg-blue-600');
-                    btn.classList.replace('hover:bg-emerald-700', 'hover:bg-blue-700');
+                    btn.classList.replace('bg-emerald-600', 'bg-[#6B8C7A]');
+                    btn.classList.replace('hover:bg-emerald-700', 'hover:bg-[#4A6657]');
                     if (typeof lucide !== 'undefined') lucide.createIcons();
                     livePreviewEmail();
                 }, 6000);
@@ -2114,21 +2217,21 @@
 
             workflows.forEach(t => {
                 const label = document.createElement('label');
-                label.className = `flex justify-between items-start gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl cursor-pointer hover:bg-slate-100 transition group ${t.completed ? 'opacity-50' : ''}`;
+                label.className = `flex justify-between items-start gap-3 p-4 bg-[#FAF8F3] border border-slate-100 rounded-xl cursor-pointer hover:bg-[#F4F0E6] transition group ${t.completed ? 'opacity-50' : ''}`;
                 label.innerHTML = `
                     <div class="flex items-start gap-4 flex-grow">
-                        <input type="checkbox" onchange="toggleWorkflowTask('${t.id}', this.checked)" ${t.completed ? 'checked' : ''} class="mt-1 w-5 h-5 text-indigo-600 rounded border-slate-300">
-                        <span class="font-bold text-sm text-slate-800 ${t.completed ? 'line-through' : ''}">${t.title}</span>
+                        <input type="checkbox" onchange="toggleWorkflowTask('${t.id}', this.checked)" ${t.completed ? 'checked' : ''} class="mt-1 w-5 h-5 text-indigo-600 rounded border-[#D8D0C0]">
+                        <span class="font-bold text-sm text-[#3C3520] ${t.completed ? 'line-through' : ''}">${t.title}</span>
                     </div>
-                    <button onclick="removeWorkflowTask('${t.id}')" class="opacity-0 group-hover:opacity-100 text-rose-400 hover:text-rose-600 transition ml-4"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <button onclick="removeWorkflowTask('${t.id}')" class="opacity-0 group-hover:opacity-100 text-rose-400 hover:text-[#8C5353] transition ml-4"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 `;
                 
                 if(t.phase === 'pre' && preList) preList.appendChild(label);
                 if(t.phase === 'post' && postList) postList.appendChild(label);
             });
 
-            if(preList && preList.innerHTML === '') preList.innerHTML = '<p class="text-xs text-slate-400 italic">No pre-production tasks.</p>';
-            if(postList && postList.innerHTML === '') postList.innerHTML = '<p class="text-xs text-slate-400 italic">No post-production tasks.</p>';
+            if(preList && preList.innerHTML === '') preList.innerHTML = '<p class="text-xs text-[#9C8A7A] italic">No pre-production tasks.</p>';
+            if(postList && postList.innerHTML === '') postList.innerHTML = '<p class="text-xs text-[#9C8A7A] italic">No post-production tasks.</p>';
             
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
@@ -2202,63 +2305,249 @@
                 const isUrgent = remaining <= 12;
                 
                 leadsList.innerHTML += `
-                    <div class="flex flex-col p-4 bg-slate-50 border ${isUrgent ? 'border-rose-300' : 'border-slate-100'} rounded-xl relative group">
-                        <button onclick="deleteCRMLead('${l.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-rose-600 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    <div class="flex flex-col p-4 bg-[#FAF8F3] border ${isUrgent ? 'border-rose-300' : 'border-slate-100'} rounded-xl relative group">
+                        <button onclick="deleteCRMLead('${l.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-[#8C5353] transition"><i data-lucide="x" class="w-4 h-4"></i></button>
                         <div class="flex justify-between items-start mb-2 pr-6">
-                            <span class="font-bold text-sm text-slate-800">${l.name}</span>
-                            <span class="text-xs font-semibold ${isUrgent ? 'text-rose-600' : 'text-slate-500'} bg-${isUrgent ? 'rose' : 'slate'}-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <span class="font-bold text-sm text-[#3C3520]">${l.name}</span>
+                            <span class="text-xs font-semibold ${isUrgent ? 'text-[#8C5353]' : 'text-[#8A7A6A]'} bg-${isUrgent ? 'rose' : 'slate'}-100 px-2 py-0.5 rounded-md flex items-center gap-1">
                                 <i data-lucide="clock" class="w-3 h-3"></i> ${remaining}h left
                             </span>
                         </div>
-                        <p class="text-xs font-medium text-slate-500">${l.type}</p>
+                        <p class="text-xs font-medium text-[#8A7A6A]">${l.type}</p>
                     </div>
                 `;
             });
 
-            if(leads.length === 0) leadsList.innerHTML = '<p class="text-xs text-slate-400 italic">No active inquiries. You are at inbox zero!</p>';
+            if(leads.length === 0) leadsList.innerHTML = '<p class="text-xs text-[#9C8A7A] italic">No active inquiries. You are at inbox zero!</p>';
 
             clients.sort((a,b) => new Date(a.shootDate) - new Date(b.shootDate)).forEach(c => {
                 const retainer = c.pkgPrice * 0.5;
                 const balance = c.pkgPrice - retainer;
                 bookedList.innerHTML += `
-                    <div class="p-5 border border-slate-700 bg-slate-800 rounded-xl relative group">
-                        <button onclick="deleteBooking('${c.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-rose-600 transition"><i data-lucide="trash" class="w-4 h-4"></i></button>
+                    <div class="p-5 border border-slate-700 bg-[#3A3830] rounded-xl relative group">
+                        <button onclick="deleteBooking('${c.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-[#8C5353] transition"><i data-lucide="trash" class="w-4 h-4"></i></button>
                         <div class="flex justify-between items-center mb-4 pr-6">
                             <h5 class="font-bold text-sm text-white">${c.name}</h5>
-                            <span class="text-[10px] font-black tracking-widest uppercase text-slate-400 bg-slate-900 px-2 py-1 rounded shadow-sm border border-slate-700">${c.shootDate}</span>
+                            <span class="text-[10px] font-black tracking-widest uppercase text-[#9C8A7A] bg-[#2C2A22] px-2 py-1 rounded shadow-sm border border-slate-700">${c.shootDate}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <button onclick="toggleRetainer('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.retainerPaid ? 'bg-emerald-900/30 border-emerald-500/50' : 'bg-slate-900 border-slate-700 hover:border-slate-500'}">
+                            <button onclick="toggleRetainer('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.retainerPaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-slate-700 hover:border-slate-500'}">
                                 <div class="flex justify-between w-full items-center mb-1">
-                                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">50% Retainer</span>
-                                    <i data-lucide="check-circle" class="w-3 h-3 ${c.retainerPaid ? 'text-emerald-400' : 'text-slate-600'}"></i>
+                                    <span class="text-[9px] font-bold uppercase tracking-widest text-[#9C8A7A]">50% Retainer</span>
+                                    <i data-lucide="check-circle" class="w-3 h-3 ${c.retainerPaid ? 'text-[#6B8C7A]' : 'text-[#5C4A3A]'}"></i>
                                 </div>
-                                <span class="font-black text-sm ${c.retainerPaid ? 'text-emerald-400' : 'text-slate-300'}">$${retainer.toLocaleString()}</span>
+                                <span class="font-black text-sm ${c.retainerPaid ? 'text-[#6B8C7A]' : 'text-[#C0B0A0]'}">$${retainer.toLocaleString()}</span>
                             </button>
-                            <button onclick="toggleBalance('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.balancePaid ? 'bg-emerald-900/30 border-emerald-500/50' : 'bg-slate-900 border-slate-700 hover:border-slate-500'}">
+                            <button onclick="toggleBalance('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.balancePaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-slate-700 hover:border-slate-500'}">
                                 <div class="flex justify-between w-full items-center mb-1">
-                                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Final Balance</span>
-                                    <i data-lucide="check-circle" class="w-3 h-3 ${c.balancePaid ? 'text-emerald-400' : 'text-slate-600'}"></i>
+                                    <span class="text-[9px] font-bold uppercase tracking-widest text-[#9C8A7A]">Final Balance</span>
+                                    <i data-lucide="check-circle" class="w-3 h-3 ${c.balancePaid ? 'text-[#6B8C7A]' : 'text-[#5C4A3A]'}"></i>
                                 </div>
-                                <span class="font-black text-sm ${c.balancePaid ? 'text-emerald-400' : 'text-slate-300'}">$${balance.toLocaleString()}</span>
+                                <span class="font-black text-sm ${c.balancePaid ? 'text-[#6B8C7A]' : 'text-[#C0B0A0]'}">$${balance.toLocaleString()}</span>
                             </button>
                         </div>
                     </div>
                 `;
             });
 
-            if(clients.length === 0) bookedList.innerHTML = '<p class="text-xs text-slate-500 italic">No active bookings yet.</p>';
+            if(clients.length === 0) bookedList.innerHTML = '<p class="text-xs text-[#8A7A6A] italic">No active bookings yet.</p>';
             
             // Dynamic Header Inject
             const dashOpsList = document.querySelector('#crm-booked-list');
             // Update Dashboard Active Inquiries specifically (Phase 7 hardcoded UI map)
-            const openInquiriesCount = document.querySelector('#dashboard .border-blue-600 h3');
+            const openInquiriesCount = document.querySelector('#dashboard .border-[#4A6657] h3');
             if(openInquiriesCount) openInquiriesCount.innerText = leads.length;
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
+        // --- SETTINGS & ONBOARDING TOUR --- //
+
+        // ─── TOUR STEPS ──────────────────────────────────────────────────────────
+        const TOUR_STEPS = [
+            {
+                tab: 'dashboard',
+                title: '🐰 Welcome to Your Command Center!',
+                body: "This is the <strong>Dashboard</strong> — your daily home base. It shows your upcoming shoot dates, quarterly tax deadlines, and AZ tax savings at a glance. Everything updates automatically as you use the app.",
+                icon: 'layout-grid'
+            },
+            {
+                tab: 'taxes',
+                title: '📊 Tax Planner',
+                body: "Enter your annual revenue and expenses here for a fully calculated tax breakdown. Includes: SE tax, AZ flat tax, QBI deduction, SEP-IRA and health insurance deductions, and your marginal bracket. Click any <strong>ⓘ</strong> badge for the exact IRS source.",
+                icon: 'calculator'
+            },
+            {
+                tab: 'taxes',
+                title: '📅 Quarterly Estimated Tax Tracker',
+                body: "Scroll down in the Tax Planner to see your quarterly payment amounts and exact 2025 due dates for both Federal (1040-ES) and Arizona (Form 140ES). Check each quarter off as you pay it — it's saved permanently.",
+                icon: 'calendar'
+            },
+            {
+                tab: 'taxes',
+                title: '✅ Annual Compliance Checklist',
+                body: "The compliance checklist at the bottom of Tax Planner walks you through every important action across Q1–Q4 and annually — from 1099s to bank reconciliation to SEP-IRA deadlines. Check things off as you go.",
+                icon: 'shield-check'
+            },
+            {
+                tab: 'taxguide',
+                title: '📚 Write-Off Guide',
+                body: "Every deduction category shows its deductibility %, exact IRS authority, and what records you must keep to survive an audit. The Gray Zone section covers commonly misunderstood mixed-use expenses.",
+                icon: 'book-open'
+            },
+            {
+                tab: 'pricing',
+                title: '💰 Pricing & Margins',
+                body: "Enter your income goals and operating data to calculate your <strong>Minimum Viable Price</strong> — the floor you must charge per shoot to hit your take-home income target. Also includes the Destination Elopement ROI calculator.",
+                icon: 'tags'
+            },
+            {
+                tab: 'analyzer',
+                title: '🔬 Write-Off Analyzer',
+                body: "Enter any hypothetical expense to instantly see your true after-tax cost based on your actual marginal rate. Great for deciding whether to buy gear, renew software, or evaluate any business expense.",
+                icon: 'scan'
+            },
+            {
+                tab: 'emails',
+                title: '✉️ Email Templates',
+                body: "Your pre-loaded templates (Gallery Delivery, Booking Reminder, Pre-Wedding Touch Base) are ready to use. Connect your Gmail in Settings to read active client inquiry threads and send replies directly from the app.",
+                icon: 'mail'
+            },
+            {
+                tab: 'social',
+                title: '📱 Social Planner',
+                body: "Plan your Instagram Reels and TikTok posts on a Kanban board — Drafts, Needs Audio, Ready to Post, and Published. Keep your content pipeline moving so you stay consistent on social.",
+                icon: 'film'
+            },
+            {
+                tab: 'discounts',
+                title: '🏦 Vendor Perks',
+                body: "Curated accounts, cards, and tools specifically for photographers: Novo or Relay for zero-fee business banking, Amex BBP for 2x points on all purchases, B&H B2B for tax-free gear purchases, and more.",
+                icon: 'badge-percent'
+            },
+            {
+                tab: 'legal',
+                title: '🛡️ Legal Veil Health',
+                body: "Track your LLC compliance: separate bank account, signing correctly as Manager, statutory agent, TPT license, and operating agreement. Your veil score reflects how protected you are from personal liability.",
+                icon: 'shield'
+            },
+            {
+                tab: 'settings',
+                title: '⚙️ Settings',
+                body: "This is where you are now! Update your business profile, connect Gmail, export your data, or take this tour again anytime. Your app auto-updates from GitHub every 3 minutes — you never need to do anything to get new features.",
+                icon: 'settings'
+            },
+        ];
+
+        let tourStep = 0;
+
+        function startTour() {
+            tourStep = 0;
+            showTourStep();
+        }
+
+        function showTourStep() {
+            document.getElementById('tour-modal')?.remove();
+
+            const step = TOUR_STEPS[tourStep];
+            if (!step) { document.getElementById('tour-modal')?.remove(); return; }
+
+            switchTab(step.tab);
+
+            const modal = document.createElement('div');
+            modal.id = 'tour-modal';
+            modal.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:9999;width:370px;';
+            modal.innerHTML = `
+                <div style="background:white;border-radius:1.25rem;border:1px solid var(--border);box-shadow:0 20px 60px -10px rgba(74,82,64,0.22);overflow:hidden;animation:popIn 0.2s cubic-bezier(0.34,1.56,0.64,1);">
+                    <div style="background:linear-gradient(135deg,var(--sage),var(--sage-deep));padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;">
+                        <span style="color:white;font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;">Step ${tourStep+1} of ${TOUR_STEPS.length}</span>
+                        <button onclick="document.getElementById('tour-modal').remove()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:1.5rem;height:1.5rem;border-radius:9999px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;">×</button>
+                    </div>
+                    <div style="padding:1.25rem;">
+                        <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--charcoal);margin-bottom:0.625rem;">${step.title}</h4>
+                        <p style="font-size:0.82rem;line-height:1.6;color:var(--text-mid);">${step.body}</p>
+                    </div>
+                    <div style="padding:0.875rem 1.25rem;border-top:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;">
+                        <div style="display:flex;gap:0.25rem;">
+                            ${TOUR_STEPS.map((_,i) => `<div style="width:0.5rem;height:0.5rem;border-radius:9999px;background:${i===tourStep?'var(--sage)':'var(--border)'};transition:background 0.2s;"></div>`).join('')}
+                        </div>
+                        <div style="display:flex;gap:0.625rem;">
+                            ${tourStep > 0 ? `<button onclick="tourStep--;showTourStep()" style="padding:0.5rem 1rem;border-radius:0.625rem;border:1px solid var(--border);background:white;font-size:0.75rem;font-weight:700;cursor:pointer;color:var(--text-mid);">← Prev</button>` : ''}
+                            ${tourStep < TOUR_STEPS.length - 1
+                                ? `<button onclick="tourStep++;showTourStep()" style="padding:0.5rem 1rem;border-radius:0.625rem;background:var(--sage);color:white;border:none;font-size:0.75rem;font-weight:700;cursor:pointer;">Next →</button>`
+                                : `<button onclick="document.getElementById('tour-modal').remove()" style="padding:0.5rem 1rem;border-radius:0.625rem;background:var(--sage);color:white;border:none;font-size:0.75rem;font-weight:700;cursor:pointer;">Done 🐰</button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // ─── SETTINGS FUNCTIONS ───────────────────────────────────────────────────
+        function saveBusinessProfile() {
+            const profile = {
+                bizName:   document.getElementById('settings-biz-name')?.value || '',
+                ownerName: document.getElementById('settings-owner-name')?.value || '',
+                email:     document.getElementById('settings-email')?.value || '',
+                formed:    document.getElementById('settings-formed')?.value || '',
+                azcc:      document.getElementById('settings-azcc')?.value || '',
+            };
+            if (window.StateStore) {
+                window.StateStore.update('businessProfile', profile);
+                // Also sync to legacy llcName field
+                if (profile.bizName) window.StateStore.update('llcName', profile.bizName);
+            }
+            alert('Business profile saved!');
+        }
+
+        function saveGmailSettings() {
+            const gmail = document.getElementById('settings-gmail')?.value || '';
+            const pw    = document.getElementById('settings-gmail-pw')?.value || '';
+            if (window.StateStore) {
+                window.StateStore.update('emailSettings', { gmail, password: pw });
+            }
+            alert('Gmail settings saved. Refresh the Email Templates tab to connect.');
+        }
+
+        function exportData() {
+            if (!window.StateStore) return;
+            const data = JSON.stringify(window.StateStore.state, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            a.href     = url;
+            a.download = 'love-lens-command-center-backup.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function confirmReset() {
+            if (confirm('This will erase ALL your data and cannot be undone. Are you absolutely sure?')) {
+                if (window.electronAPI) window.electronAPI.setState({});
+                else localStorage.removeItem('azphoto_state');
+                location.reload();
+            }
+        }
+
+        function loadSettingsTab() {
+            if (!window.StateStore) return;
+            const p = window.StateStore.state.businessProfile || {};
+            const setV = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+            setV('settings-biz-name',   p.bizName   || window.StateStore.state.llcName);
+            setV('settings-owner-name', p.ownerName);
+            setV('settings-email',      p.email);
+            setV('settings-formed',     p.formed    || window.StateStore.state.dateFormed);
+            setV('settings-azcc',       p.azcc);
+            const es = window.StateStore.state.emailSettings || {};
+            setV('settings-gmail',    es.gmail);
+            setV('settings-gmail-pw', es.password);
+            const el = document.getElementById('last-update-check');
+            if (el) el.textContent = new Date().toLocaleTimeString();
+        }
+
         // --- PACKAGE PRICE PLANNER --- //
         function calcPackagePrice() {
+
             const income   = parseFloat(document.getElementById('pkg-target-income').value)    || 0;
             const shoots   = parseFloat(document.getElementById('pkg-shoots-per-year').value)  || 1;
             const hours    = parseFloat(document.getElementById('pkg-hours-per-shoot').value)  || 1;
@@ -2286,13 +2575,13 @@
                 const pctEl = document.getElementById('pkg-margin-pct');
                 if (pctEl) {
                     pctEl.innerText = `${marginPct}%`;
-                    pctEl.className = `text-xl font-black ${parseFloat(marginPct) >= 40 ? 'text-emerald-400' : parseFloat(marginPct) >= 20 ? 'text-amber-400' : 'text-rose-400'}`;
+                    pctEl.className = `text-xl font-black ${parseFloat(marginPct) >= 40 ? 'text-[#6B8C7A]' : parseFloat(marginPct) >= 20 ? 'text-amber-400' : 'text-rose-400'}`;
                 }
 
                 const verdictEl = document.getElementById('pkg-verdict');
                 if (verdictEl) {
                     if (surplus >= 500) {
-                        verdictEl.innerHTML = `<span class="text-emerald-400">Healthy — $${Math.round(surplus).toLocaleString()} above your minimum. Great room to offer discounts or add-ons.</span>`;
+                        verdictEl.innerHTML = `<span class="text-[#6B8C7A]">Healthy — $${Math.round(surplus).toLocaleString()} above your minimum. Great room to offer discounts or add-ons.</span>`;
                     } else if (surplus >= 0) {
                         verdictEl.innerHTML = `<span class="text-amber-400">Tight — only $${Math.round(surplus).toLocaleString()} above your minimum. Consider raising this package.</span>`;
                     } else {
@@ -2464,7 +2753,7 @@
                     <p class="text-xl font-black mb-2" style="color:var(--charcoal)">$${qPay.toLocaleString()}</p>
                     <p class="text-[10px]" style="color:var(--text-soft)"><strong>Federal:</strong> ${q.fed} (Form 1040-ES)</p>
                     <p class="text-[10px] mt-0.5" style="color:var(--text-soft)"><strong>AZ:</strong> ${q.az} (Form 140ES)</p>
-                    ${!paid && isPast  ? '<p class="text-[10px] font-bold text-red-500 mt-2">⚠️ Overdue</p>' : ''}
+                    ${!paid && isPast  ? '<p class="text-[10px] font-bold text-[#c0392b] mt-2">⚠️ Overdue</p>' : ''}
                     ${!paid && isSoon  ? '<p class="text-[10px] font-bold text-amber-600 mt-2">⏰ Due soon</p>' : ''}
                 </div>`;
             }).join('');
@@ -2592,26 +2881,26 @@
             Object.values(cols).forEach(c => { if(c) c.innerHTML = ''; });
 
             const platformLabel = { instagram: 'Instagram', tiktok: 'TikTok', both: 'Both' };
-            const platformColor = { instagram: 'text-rose-500', tiktok: 'text-slate-700', both: 'text-indigo-500' };
+            const platformColor = { instagram: 'text-[#b07070]', tiktok: 'text-[#4A4030]', both: 'text-[#6B8C7A]' };
             const nextLabel = { draft: 'Needs Audio', audio: 'Ready', ready: null };
-            const nextBg = { draft: 'bg-amber-400 hover:bg-amber-500 text-slate-900', audio: 'bg-emerald-500 hover:bg-emerald-600 text-white', ready: '' };
+            const nextBg = { draft: 'bg-amber-400 hover:bg-amber-500 text-[#2C2511]', audio: 'bg-emerald-500 hover:bg-emerald-600 text-white', ready: '' };
 
             cards.forEach(card => {
                 const col = cols[card.status];
                 if(!col) return;
                 const html = `
                     <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-4 relative group">
-                        <button onclick="deleteSocialCard('${card.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-                        <p class="font-bold text-sm text-slate-800 leading-snug mb-2 pr-4">${card.title}</p>
+                        <button onclick="deleteSocialCard('${card.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-[#C0B0A0] hover:text-[#b07070] transition"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                        <p class="font-bold text-sm text-[#3C3520] leading-snug mb-2 pr-4">${card.title}</p>
                         <p class="text-[10px] font-bold uppercase tracking-widest ${platformColor[card.platform]} mb-3">${platformLabel[card.platform]}</p>
-                        ${nextLabel[card.status] ? `<button onclick="advanceSocialCard('${card.id}')" class="w-full text-center text-[10px] font-bold py-1.5 rounded-lg transition ${nextBg[card.status]}">${nextLabel[card.status]} &rarr;</button>` : '<span class="w-full text-center text-[10px] font-bold text-emerald-600 block">Published!</span>'}
+                        ${nextLabel[card.status] ? `<button onclick="advanceSocialCard('${card.id}')" class="w-full text-center text-[10px] font-bold py-1.5 rounded-lg transition ${nextBg[card.status]}">${nextLabel[card.status]} &rarr;</button>` : '<span class="w-full text-center text-[10px] font-bold text-[#4A6657] block">Published!</span>'}
                     </div>
                 `;
                 col.innerHTML += html;
             });
 
             Object.entries(cols).forEach(([key, el]) => {
-                if(el && el.innerHTML === '') el.innerHTML = '<p class="text-xs text-center text-slate-400 italic pt-6">Empty</p>';
+                if(el && el.innerHTML === '') el.innerHTML = '<p class="text-xs text-center text-[#9C8A7A] italic pt-6">Empty</p>';
             });
 
             if(typeof lucide !== 'undefined') lucide.createIcons();
