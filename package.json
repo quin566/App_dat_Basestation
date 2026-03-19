@@ -31,9 +31,16 @@
         },
         {
           "name": "@electron-forge/maker-zip",
-          "platforms": ["darwin"]
+          "platforms": [
+            "darwin"
+          ]
         }
       ]
     }
+  },
+  "dependencies": {
+    "imap-simple": "^5.1.0",
+    "mailparser": "^3.9.4",
+    "nodemailer": "^8.0.3"
   }
 }

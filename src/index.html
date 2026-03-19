@@ -552,68 +552,88 @@
             <!-- Tab: Email Templates -->
             <div id="emails" class="tab-content space-y-10">
                 <header class="no-print">
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Email Engine</h2>
-                    <p class="text-slate-500 mt-2">Tokenized templates for rapid client handoffs.</p>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Email Engine & Inbox</h2>
+                    <p class="text-slate-500 mt-2">Tokenized templates wired directly into your active Gmail threads.</p>
                 </header>
                 
-                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+                    <!-- Inbox Scanner -->
+                    <div class="card p-6 bg-white xl:col-span-1 flex flex-col h-[750px]">
+                        <div class="flex justify-between items-center mb-4 border-b pb-4">
+                            <h4 class="font-black text-lg text-slate-900 flex items-center gap-2"><i data-lucide="inbox" class="w-5 h-5 text-blue-500"></i> Active Threads</h4>
+                            <button onclick="fetchLatestInbox()" id="btn-fetch-inbox" class="text-blue-600 hover:text-blue-800 p-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+                        </div>
+                        <div id="inbox-list" class="flex-1 overflow-y-auto space-y-2 pr-2">
+                            <p class="text-xs text-slate-400 italic text-center mt-10">Configure your Gmail App Password below and click refresh.</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t bg-slate-50 p-4 rounded-xl">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex justify-between items-center">Gmail Native Connection <i data-lucide="lock" class="w-3 h-3 text-emerald-500"></i></p>
+                            <input type="email" id="gmail-address" placeholder="Business Gmail Address" class="w-full px-3 py-2 text-xs border rounded-lg mb-2 font-medium" onchange="saveGmailSettings()">
+                            <input type="password" id="gmail-app-pass" placeholder="16-Digit App Password" class="w-full px-3 py-2 text-xs border rounded-lg font-medium" onchange="saveGmailSettings()">
+                        </div>
+                    </div>
+
                     <!-- Template Runner -->
-                    <div class="card p-8 bg-slate-50">
-                        <h4 class="font-black text-lg text-slate-900 mb-6">Fire a Template</h4>
+                    <div class="card p-6 bg-slate-50 xl:col-span-1 h-[750px] flex flex-col">
+                        <h4 class="font-black text-lg text-slate-900 mb-6 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-amber-500"></i> Execute Reply</h4>
                         
+                        <div id="reply-target-warning" class="bg-blue-100 text-blue-800 text-xs px-3 py-2 rounded-lg font-bold mb-4 hidden border border-blue-200">
+                            Replying to: <span id="reply-target-name">Unknown</span>
+                        </div>
+
                         <div class="mb-6">
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Select Template</label>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 shadow-sm">Select Template</label>
                             <select id="email-selector" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl" onchange="loadSelectedTemplate()">
                                 <option value="">-- Choose a template --</option>
                             </select>
                         </div>
                         
-                        <div id="email-dynamic-inputs" class="space-y-4 mb-6">
+                        <div id="email-dynamic-inputs" class="space-y-4 mb-6 flex-grow overflow-y-auto">
                             <!-- Injected dynamically via JS based on {{Tokens}} -->
                         </div>
 
-                        <div id="email-preview-box" class="hidden">
-                            <div class="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm mb-4">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 border-b pb-2">Subject</p>
-                                <p id="email-preview-subject" class="font-bold text-slate-800 mb-4"></p>
-                                
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 border-b pb-2">Body</p>
-                                <p id="email-preview-body" class="whitespace-pre-wrap text-sm text-slate-600 leading-relaxed"></p>
+                        <div id="email-preview-box" class="hidden mt-auto pt-4 border-t border-slate-200">
+                            <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm mb-4 max-h-[150px] overflow-y-auto">
+                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 border-b pb-1">Subject: <span id="email-preview-subject" class="font-bold text-slate-800"></span></p>
+                                <p id="email-preview-body" class="whitespace-pre-wrap text-xs text-slate-600 leading-relaxed mt-2"></p>
                             </div>
                             
-                            <div class="flex gap-4">
-                                <button onclick="copyEmailToClipboard()" class="flex-1 bg-white border border-slate-300 text-slate-700 px-6 py-3 rounded-xl font-bold hover:bg-slate-100 transition">Copy to Clipboard</button>
-                                <button onclick="sendViaMailApp()" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition flex items-center justify-center gap-2"><i data-lucide="send" class="w-4 h-4"></i> Open Mail App</button>
+                            <div class="flex gap-2">
+                                <button onclick="copyEmailToClipboard()" class="flex-1 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-100 transition" title="Copy to Clipboard"><i data-lucide="copy" class="w-4 h-4 mx-auto"></i></button>
+                                <button onclick="sendViaMailApp()" id="btn-native-reply" class="flex-[3] bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition flex items-center justify-center gap-2">
+                                    <i data-lucide="send" class="w-4 h-4"></i> Send Reply
+                                </button>
                             </div>
                         </div>
                     </div>
 
                     <!-- Template Editor -->
-                    <div class="card p-8">
-                        <h4 class="font-black text-lg text-slate-900 mb-6" id="email-editor-title">Create New Template</h4>
-                        <div class="space-y-4">
+                    <div class="card p-6 xl:col-span-1 h-[750px] flex flex-col">
+                        <h4 class="font-black text-lg text-slate-900 mb-6 flex items-center gap-2" id="email-editor-title"><i data-lucide="file-edit" class="w-5 h-5 text-indigo-500"></i> Create Template</h4>
+                        <div class="space-y-4 flex-grow flex flex-col">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Template Name</label>
-                                <input type="text" id="edit-tmpl-name" placeholder="e.g. Inquiry Response" class="w-full px-4 py-3 border rounded-xl font-medium">
+                                <input type="text" id="edit-tmpl-name" placeholder="e.g. Wedding Delivery" class="w-full px-4 py-3 border rounded-xl font-medium text-sm">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Subject Line</label>
-                                <input type="text" id="edit-tmpl-subject" placeholder="Availability for {{Date}}" class="w-full px-4 py-3 border rounded-xl font-medium">
+                                <input type="text" id="edit-tmpl-subject" placeholder="Your Wedding Gallery: {{Date}}" class="w-full px-4 py-3 border rounded-xl font-medium text-sm">
                             </div>
-                            <div>
+                            <div class="flex-grow flex flex-col">
                                 <div class="flex justify-between items-end mb-2">
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email Body</label>
-                                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Use <code class="bg-slate-100 text-slate-600 px-1 py-0.5 rounded text-[10px]">{{Variable_Name}}</code></span>
                                 </div>
-                                <textarea id="edit-tmpl-body" placeholder="Hi {{ClientName}},\n\nI am available on {{Date}}..." class="w-full px-4 py-3 border rounded-xl font-medium min-h-[300px] resize-y"></textarea>
+                                <textarea id="edit-tmpl-body" placeholder="Hi {{ClientName}},\n\nYour gallery is ready!" class="w-full px-4 py-3 border rounded-xl font-medium flex-grow resize-none text-sm"></textarea>
                             </div>
                             
-                            <div class="flex justify-between items-center pt-4">
-                                <button id="btn-delete-tmpl" onclick="deleteActiveTemplate()" class="text-rose-500 font-bold text-sm hidden hover:text-rose-700">Delete</button>
-                                <button onclick="saveTemplate()" class="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 ml-auto flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> Save Template</button>
+                            <div class="flex justify-between items-center pt-2">
+                                <button id="btn-delete-tmpl" onclick="deleteActiveTemplate()" class="text-rose-500 font-bold text-xs hidden hover:text-rose-700">Delete</button>
+                                <button onclick="saveTemplate()" class="bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-emerald-700 ml-auto flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> Save</button>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -662,7 +682,8 @@
             profile: {},
             clients: [], // Dormant post-V5
             workflows: [],
-            emailTemplates: []
+            emailTemplates: [],
+            emailSettings: { address: '', appPassword: '' }
         };
 
         window.StateStore = {
@@ -1072,20 +1093,114 @@
 
         // --- EMAIL TEMPLATE LOGIC --- //
         let activeTemplateId = null;
+        let activeReplyTarget = null; // Holds IMAP message metadata
 
         function renderEmailTemplates() {
             const templates = window.StateStore.state.emailTemplates || [];
             const select = document.getElementById('email-selector');
             if(!select) return;
 
+            const existingTmpl = select.value;
             select.innerHTML = '<option value="">-- Choose a template --</option>';
             templates.forEach(t => {
                 select.innerHTML += `<option value="${t.id}">${t.name}</option>`;
             });
+            if(existingTmpl) select.value = existingTmpl;
             
-            // Clear inputs inside the generator to keep things tidy
-            document.getElementById('email-dynamic-inputs').innerHTML = '';
-            document.getElementById('email-preview-box').classList.add('hidden');
+            if(!existingTmpl) {
+                document.getElementById('email-dynamic-inputs').innerHTML = '';
+                document.getElementById('email-preview-box').classList.add('hidden');
+            }
+
+            // Hydrate Settings
+            if(window.StateStore.state.emailSettings) {
+                document.getElementById('gmail-address').value = window.StateStore.state.emailSettings.address || '';
+                document.getElementById('gmail-app-pass').value = window.StateStore.state.emailSettings.appPassword || '';
+            }
+        }
+
+        function saveGmailSettings() {
+            const address = document.getElementById('gmail-address').value.trim();
+            const appPass = document.getElementById('gmail-app-pass').value.trim();
+            window.StateStore.update('emailSettings', { address, appPassword: appPass });
+        }
+
+        async function fetchLatestInbox() {
+            const creds = window.StateStore.state.emailSettings;
+            if(!creds || !creds.address || !creds.appPassword) {
+                return alert("Please configure your Gmail API settings below first.");
+            }
+
+            const btn = document.getElementById('btn-fetch-inbox');
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
+            btn.disabled = true;
+
+            const targetList = document.getElementById('inbox-list');
+            targetList.innerHTML = '<p class="text-xs text-slate-500 italic text-center mt-4">Syncing with Gmail...</p>';
+
+            if(!window.electronAPI || !window.electronAPI.fetchInbox) {
+                 targetList.innerHTML = '<p class="text-xs text-rose-500 italic text-center mt-4">Error: Electron Native MailAPI not bridged.</p>';
+                 btn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i>';
+                 btn.disabled = false;
+                 return;
+            }
+
+            const res = await window.electronAPI.fetchInbox(creds);
+            
+            btn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i>';
+            btn.disabled = false;
+            
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            if(!res.success) {
+                targetList.innerHTML = `<p class="text-xs text-rose-500 p-2 break-words">Failed: ${res.error}</p>`;
+                return;
+            }
+
+            if(res.emails.length === 0) {
+                targetList.innerHTML = '<p class="text-xs text-slate-400 italic mt-4">Inbox returned 0 results.</p>';
+                return;
+            }
+
+            targetList.innerHTML = '';
+            res.emails.forEach(email => {
+                const safeEmail = JSON.stringify(email).replace(/"/g, '&quot;');
+                const card = document.createElement('div');
+                card.className = "p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition border-slate-200";
+                card.onclick = () => selectReplyTarget(email);
+                
+                const dateClean = new Date(email.date).toLocaleDateString();
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <p class="font-bold text-xs text-slate-900 truncate pr-2 max-w-[70%]">${email.from}</p>
+                        <span class="text-[9px] text-slate-400 flex-shrink-0">${dateClean}</span>
+                    </div>
+                    <p class="text-[11px] text-slate-600 line-clamp-2">${email.subject}</p>
+                `;
+                targetList.appendChild(card);
+            });
+        }
+
+        function selectReplyTarget(emailObj) {
+            activeReplyTarget = emailObj;
+            document.getElementById('reply-target-warning').classList.remove('hidden');
+            document.getElementById('reply-target-name').innerText = emailObj.from + " (" + emailObj.subject + ")";
+            const btn = document.getElementById('btn-native-reply');
+            btn.innerHTML = '<i data-lucide="reply" class="w-4 h-4"></i> Inject Reply';
+            btn.classList.replace('bg-blue-600', 'bg-indigo-600');
+            btn.classList.replace('hover:bg-blue-700', 'hover:bg-indigo-700');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            
+            // Auto inject subject line wrapper "Re: " if not there.
+            let sub = emailObj.subject;
+            if(!sub.toLowerCase().startsWith('re:')) sub = "Re: " + sub;
+            
+            // Try to auto-load loadSelectedTemplate to force preview refresh
+            loadSelectedTemplate();
+            
+            // Optional: Override preview subject entirely since replies lock the subject
+            document.getElementById('email-preview-subject').innerText = sub;
         }
 
         function saveTemplate() {
@@ -1112,10 +1227,11 @@
             document.getElementById('edit-tmpl-subject').value = '';
             document.getElementById('edit-tmpl-body').value = '';
             activeTemplateId = null;
-            document.getElementById('email-editor-title').innerText = "Create New Template";
+            document.getElementById('email-editor-title').innerHTML = '<i data-lucide="file-edit" class="w-5 h-5 text-indigo-500"></i> Create Template';
             document.getElementById('btn-delete-tmpl').classList.add('hidden');
             
             renderEmailTemplates();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function loadSelectedTemplate() {
@@ -1131,8 +1247,9 @@
                 document.getElementById('edit-tmpl-subject').value = '';
                 document.getElementById('edit-tmpl-body').value = '';
                 activeTemplateId = null;
-                document.getElementById('email-editor-title').innerText = "Create New Template";
+                document.getElementById('email-editor-title').innerHTML = '<i data-lucide="file-edit" class="w-5 h-5 text-indigo-500"></i> Create Template';
                 document.getElementById('btn-delete-tmpl').classList.add('hidden');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
                 return;
             }
 
@@ -1145,8 +1262,9 @@
             document.getElementById('edit-tmpl-subject').value = tmpl.subject;
             document.getElementById('edit-tmpl-body').value = tmpl.body;
             activeTemplateId = tmpl.id;
-            document.getElementById('email-editor-title').innerText = "Edit Template";
+            document.getElementById('email-editor-title').innerHTML = '<i data-lucide="edit-3" class="w-5 h-5 text-emerald-500"></i> Edit Template';
             document.getElementById('btn-delete-tmpl').classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
 
             // Find tokens
             const regex = /\{\{(.*?)\}\}/g;
@@ -1163,12 +1281,12 @@
                     container.innerHTML += `
                         <div>
                             <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-3 mb-1 shadow-sm">${token}</label>
-                            <input type="text" id="token-${token}" placeholder="Value for ${token}" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl tmpl-input" oninput="livePreviewEmail()">
+                            <input type="text" id="token-${token}" placeholder="Value for ${token}" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl tmpl-input text-sm" oninput="livePreviewEmail()">
                         </div>
                     `;
                 });
             } else {
-                container.innerHTML = `<p class="text-xs text-slate-400 italic">No {{Tokens}} detected in this template.</p>`;
+                container.innerHTML = `<p class="text-xs text-slate-400 italic border rounded-lg p-4 bg-white text-center">No {{Tokens}} detected in this template.</p>`;
             }
 
             document.getElementById('email-preview-box').classList.remove('hidden');
@@ -1209,7 +1327,15 @@
                 finalBody = finalBody.replace(regex, val);
             });
 
-            document.getElementById('email-preview-subject').innerText = finalSub;
+            // If we have an active threaded target, we ALWAYS lock the subject line to Re: [Original Subject]
+            if (activeReplyTarget) {
+                let overrideSub = activeReplyTarget.subject;
+                if(!overrideSub.toLowerCase().startsWith('re:')) overrideSub = "Re: " + overrideSub;
+                document.getElementById('email-preview-subject').innerText = overrideSub;
+            } else {
+                document.getElementById('email-preview-subject').innerText = finalSub;
+            }
+            
             document.getElementById('email-preview-body').innerText = finalBody;
         }
 
@@ -1220,11 +1346,56 @@
             });
         }
 
-        function sendViaMailApp() {
+        async function sendViaMailApp() {
             const finalSub = document.getElementById('email-preview-subject').innerText;
             const finalBody = document.getElementById('email-preview-body').innerText;
-            const link = `mailto:?subject=${encodeURIComponent(finalSub)}&body=${encodeURIComponent(finalBody)}`;
-            window.location.href = link;
+            
+            if(activeReplyTarget) {
+                // Phase 6 Native SMTP Pipeline Deployment
+                const creds = window.StateStore.state.emailSettings;
+                if(!creds || !creds.address || !creds.appPassword) return alert("Fatal Logic Error: No AppPassword state found.");
+
+                const btn = document.getElementById('btn-native-reply');
+                const htmlBackup = btn.innerHTML;
+                btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                btn.disabled = true;
+
+                const payload = {
+                    creds,
+                    to: activeReplyTarget.fromEmail || activeReplyTarget.from,
+                    subject: finalSub,
+                    body: finalBody,
+                    inReplyTo: activeReplyTarget.messageId
+                };
+
+                const res = await window.electronAPI.sendReply(payload);
+                btn.disabled = false;
+                
+                if(res.success) {
+                    btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Sent Natively!';
+                    btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+                    btn.classList.replace('hover:bg-indigo-700', 'hover:bg-emerald-700');
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    setTimeout(() => {
+                        // Reset thread injection state
+                        activeReplyTarget = null;
+                        document.getElementById('reply-target-warning').classList.add('hidden');
+                        btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> Open Mail App';
+                        btn.classList.replace('bg-emerald-600', 'bg-blue-600');
+                        btn.classList.replace('hover:bg-emerald-700', 'hover:bg-blue-700');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                        livePreviewEmail(); // unlock subject line
+                    }, 3000);
+                } else {
+                    alert("SMTP Submission Failed: " + res.error);
+                    btn.innerHTML = htmlBackup;
+                }
+            } else {
+                // Fallback Phase 5 Local Handoff
+                const link = `mailto:?subject=${encodeURIComponent(finalSub)}&body=${encodeURIComponent(finalBody)}`;
+                window.location.href = link;
+            }
         }
 
         // --- OPERATIONS LOGIC --- //

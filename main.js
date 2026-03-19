@@ -2,8 +2,92 @@ const { app, BrowserWindow, net, ipcMain } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 
+const imaps = require('imap-simple');
+const { simpleParser } = require('mailparser');
+const nodemailer = require('nodemailer');
+
 // Remote UI/Tax logic payload
 const PAYLOAD_URL = 'https://raw.githubusercontent.com/quin566/App_dat_Basestation/main/latest.html';
+
+// --- GMAIL IMAP/SMTP INTEGRATION ---
+ipcMain.handle('fetch-inbox', async (event, creds) => {
+  if (!creds || !creds.address || !creds.appPassword) return { success: false, error: "No credentials provided." };
+  try {
+    const config = {
+      imap: {
+        user: creds.address,
+        password: creds.appPassword,
+        host: 'imap.gmail.com',
+        port: 993,
+        tls: true,
+        authTimeout: 10000,
+        tlsOptions: { rejectUnauthorized: false }
+      }
+    };
+    
+    const connection = await imaps.connect(config);
+    await connection.openBox('INBOX');
+    
+    const searchCriteria = ['ALL'];
+    const fetchOptions = { bodies: ['HEADER', 'TEXT'], struct: true, markSeen: false };
+    
+    let results = await connection.search(searchCriteria, fetchOptions);
+    results = results.slice(-20).reverse(); // Last 20 emails
+    
+    const emails = [];
+    for (let item of results) {
+      const all = item.parts.find(p => p.which === 'TEXT');
+      const headerPart = item.parts.find(p => p.which === 'HEADER');
+      const bodyStr = headerPart.body + (all ? all.body : '');
+      const parsed = await simpleParser(bodyStr);
+      emails.push({
+        id: item.attributes.uid,
+        messageId: parsed.messageId,
+        subject: parsed.subject || '(No Subject)',
+        from: parsed.from ? parsed.from.text : 'Unknown',
+        fromEmail: parsed.from && parsed.from.value[0] ? parsed.from.value[0].address : '',
+        date: parsed.date,
+        text: parsed.text || ''
+      });
+    }
+    
+    await connection.end();
+    return { success: true, emails };
+  } catch (err) {
+    console.error('IMAP Error:', err);
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('send-reply', async (event, payload) => {
+  try {
+    const { creds, to, subject, body, inReplyTo } = payload;
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: creds.address,
+        pass: creds.appPassword
+      }
+    });
+
+    const mailOptions = {
+      from: creds.address,
+      to,
+      subject,
+      text: body,
+      inReplyTo: inReplyTo,
+      references: [inReplyTo]
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return { success: true, info };
+  } catch (err) {
+    console.error('SMTP Error:', err);
+    return { success: false, error: err.message };
+  }
+});
 
 ipcMain.handle('get-state', (event) => {
   const statePath = path.join(app.getPath('userData'), 'azphoto_store.json');
