@@ -92,11 +92,8 @@
                     <i data-lucide="shield-check" class="w-5 h-5"></i> <span class="font-semibold text-sm">Legal Health</span>
                 </button>
                 <div class="h-px bg-slate-800 my-2"></div>
-                <button onclick="switchTab('crm')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-crm">
-                    <i data-lucide="users" class="w-5 h-5"></i> <span class="font-semibold text-sm">CRM Pipeline</span>
-                </button>
-                <button onclick="switchTab('invoices')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-invoices">
-                    <i data-lucide="receipt" class="w-5 h-5"></i> <span class="font-semibold text-sm">Invoices</span>
+                <button onclick="switchTab('emails')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-emails">
+                    <i data-lucide="mail" class="w-5 h-5"></i> <span class="font-semibold text-sm">Email Templates</span>
                 </button>
                 <button onclick="switchTab('operations')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-operations">
                     <i data-lucide="list-checks" class="w-5 h-5"></i> <span class="font-semibold text-sm">Shoot Operations</span>
@@ -552,125 +549,70 @@
                 </div>
             </div>
 
-            <!-- Tab: CRM Pipeline -->
-            <div id="crm" class="tab-content space-y-10">
-                <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Client Pipeline</h2>
-                    <p class="text-slate-500 mt-2">Active leads and booked sessions.</p>
-                </header>
-                <div id="crm-container" class="space-y-8">
-                    <!-- Add Client Form -->
-                    <div class="card p-6 bg-slate-50 border-dashed">
-                        <h4 class="font-bold text-sm mb-4">Add New Lead or Booking</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                            <input type="text" id="new-client-name" placeholder="Client Name" class="px-4 py-2 border rounded-xl w-full">
-                            <input type="email" id="new-client-email" placeholder="Email" class="px-4 py-2 border rounded-xl w-full">
-                            <input type="text" id="new-client-event" placeholder="Event Type (e.g. Wedding)" class="px-4 py-2 border rounded-xl w-full">
-                            <input type="date" id="new-client-date" class="px-4 py-2 border rounded-xl w-full text-slate-500">
-                            <button onclick="addClient()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700 w-full">Add Client</button>
-                        </div>
-                    </div>
-
-                    <!-- Pipeline Kanban -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Inquiry Column -->
-                        <div class="flex flex-col bg-slate-100 rounded-2xl p-4 min-h-[400px]">
-                            <h5 class="font-black text-slate-700 uppercase tracking-widest text-xs mb-4 px-2">1. Inquiry / Consult</h5>
-                            <div id="pipeline-inquiry" class="space-y-3 flex-grow"></div>
-                        </div>
-                        <!-- Booked Column -->
-                        <div class="flex flex-col bg-blue-50 rounded-2xl p-4 min-h-[400px]">
-                            <h5 class="font-black text-blue-700 uppercase tracking-widest text-xs mb-4 px-2">2. Booked & Retained</h5>
-                            <div id="pipeline-booked" class="space-y-3 flex-grow"></div>
-                        </div>
-                        <!-- Delivered Column -->
-                        <div class="flex flex-col bg-emerald-50 rounded-2xl p-4 min-h-[400px]">
-                            <h5 class="font-black text-emerald-700 uppercase tracking-widest text-xs mb-4 px-2">3. Delivered / Closed</h5>
-                            <div id="pipeline-delivered" class="space-y-3 flex-grow"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab: Invoices -->
-            <div id="invoices" class="tab-content space-y-10">
+            <!-- Tab: Email Templates -->
+            <div id="emails" class="tab-content space-y-10">
                 <header class="no-print">
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Smart Invoicing</h2>
-                    <p class="text-slate-500 mt-2">Generate PDF invoices and collect retainers.</p>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Email Engine</h2>
+                    <p class="text-slate-500 mt-2">Tokenized templates for rapid client handoffs.</p>
                 </header>
-                <div id="invoice-container" class="space-y-8 no-print">
-                    <div class="card p-6 bg-slate-50 border-dashed">
-                        <h4 class="font-bold text-sm mb-4">Invoice Builder</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Select Client</label>
-                                <select id="invoice-client-select" class="px-4 py-2 border rounded-xl w-full" onchange="previewInvoice()"></select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Invoice Title</label>
-                                <input type="text" id="invoice-title" placeholder="e.g. Wedding Photography Collection 1" value="Wedding Photography Package" class="px-4 py-2 border rounded-xl w-full" oninput="previewInvoice()">
-                            </div>
+                
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <!-- Template Runner -->
+                    <div class="card p-8 bg-slate-50">
+                        <h4 class="font-black text-lg text-slate-900 mb-6">Fire a Template</h4>
+                        
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Select Template</label>
+                            <select id="email-selector" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl" onchange="loadSelectedTemplate()">
+                                <option value="">-- Choose a template --</option>
+                            </select>
+                        </div>
+                        
+                        <div id="email-dynamic-inputs" class="space-y-4 mb-6">
+                            <!-- Injected dynamically via JS based on {{Tokens}} -->
                         </div>
 
-                        <div class="border-t pt-4 mb-4">
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Line Items</label>
-                            <div class="flex gap-4 mb-2">
-                                <input type="text" id="inv-item-desc" placeholder="Service description" class="px-4 py-2 border rounded-xl flex-grow">
-                                <input type="number" id="inv-item-price" placeholder="Price ($)" class="px-4 py-2 border rounded-xl w-32">
-                                <button onclick="addInvoiceItem()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700">Add Item</button>
+                        <div id="email-preview-box" class="hidden">
+                            <div class="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm mb-4">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 border-b pb-2">Subject</p>
+                                <p id="email-preview-subject" class="font-bold text-slate-800 mb-4"></p>
+                                
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 border-b pb-2">Body</p>
+                                <p id="email-preview-body" class="whitespace-pre-wrap text-sm text-slate-600 leading-relaxed"></p>
                             </div>
-                            <div id="invoice-draft-items" class="space-y-2 mt-4 text-sm"></div>
-                        </div>
-
-                        <div class="border-t pt-4 flex justify-end gap-4">
-                            <button onclick="clearInvoiceDraft()" class="text-slate-500 hover:text-rose-500 font-bold px-4 py-2">Clear Draft</button>
-                            <button onclick="window.print()" class="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-slate-800 shadow-xl flex items-center gap-2">
-                                <i data-lucide="printer" class="w-4 h-4"></i> Generate PDF
-                            </button>
+                            
+                            <div class="flex gap-4">
+                                <button onclick="copyEmailToClipboard()" class="flex-1 bg-white border border-slate-300 text-slate-700 px-6 py-3 rounded-xl font-bold hover:bg-slate-100 transition">Copy to Clipboard</button>
+                                <button onclick="sendViaMailApp()" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition flex items-center justify-center gap-2"><i data-lucide="send" class="w-4 h-4"></i> Open Mail App</button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- The Printable Document Area -->
-                <div class="card p-12 invoice-print-wrapper bg-white min-h-[800px] hidden" id="live-invoice-preview">
-                    <div class="flex justify-between items-start mb-16 border-b pb-8">
-                        <div>
-                            <h1 class="text-3xl font-black tracking-tighter" id="print-biz-name">PHOTOGRAPHY LLC</h1>
-                            <p class="text-slate-500 text-sm mt-1">INVOICE</p>
+                    <!-- Template Editor -->
+                    <div class="card p-8">
+                        <h4 class="font-black text-lg text-slate-900 mb-6" id="email-editor-title">Create New Template</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Template Name</label>
+                                <input type="text" id="edit-tmpl-name" placeholder="e.g. Inquiry Response" class="w-full px-4 py-3 border rounded-xl font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Subject Line</label>
+                                <input type="text" id="edit-tmpl-subject" placeholder="Availability for {{Date}}" class="w-full px-4 py-3 border rounded-xl font-medium">
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-end mb-2">
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email Body</label>
+                                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Use <code class="bg-slate-100 text-slate-600 px-1 py-0.5 rounded text-[10px]">{{Variable_Name}}</code></span>
+                                </div>
+                                <textarea id="edit-tmpl-body" placeholder="Hi {{ClientName}},\n\nI am available on {{Date}}..." class="w-full px-4 py-3 border rounded-xl font-medium min-h-[300px] resize-y"></textarea>
+                            </div>
+                            
+                            <div class="flex justify-between items-center pt-4">
+                                <button id="btn-delete-tmpl" onclick="deleteActiveTemplate()" class="text-rose-500 font-bold text-sm hidden hover:text-rose-700">Delete</button>
+                                <button onclick="saveTemplate()" class="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 ml-auto flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> Save Template</button>
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <p class="font-bold text-slate-800">Billed To:</p>
-                            <p class="text-slate-500" id="print-client-name">Select a Client</p>
-                            <p class="text-slate-400 text-sm" id="print-client-email"></p>
-                            <p class="text-slate-400 text-sm mt-2">Date: <span id="print-date"></span></p>
-                        </div>
-                    </div>
-                    
-                    <h3 class="text-xl font-bold text-slate-800 mb-6" id="print-inv-title">Invoice Title</h3>
-
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b-2 border-slate-900">
-                                <th class="py-3 font-bold text-slate-500 uppercase text-xs tracking-wider w-3/4">Description</th>
-                                <th class="py-3 font-bold text-slate-500 uppercase text-xs tracking-wider text-right">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="print-inv-tbody">
-                            <tr class="border-b border-slate-100">
-                                <td class="py-4 text-slate-500 text-sm italic">No items added.</td>
-                                <td class="py-4 text-right text-slate-800 font-bold">$0.00</td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td class="py-6 text-right font-bold text-slate-500">Total Due:</td>
-                                <td class="py-6 text-right font-black text-2xl text-slate-900" id="print-inv-total">$0.00</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    
-                    <div class="mt-16 pt-8 border-t border-slate-100 text-center">
-                        <p class="text-slate-400 text-sm font-bold">Thank you for your business!</p>
                     </div>
                 </div>
             </div>
@@ -718,9 +660,9 @@
             customPerks: [],
             customChecks: [],
             profile: {},
-            clients: [],
-            invoices: [],
-            workflows: []
+            clients: [], // Dormant post-V5
+            workflows: [],
+            emailTemplates: []
         };
 
         window.StateStore = {
@@ -800,8 +742,8 @@
             // Create compliance calendar
             renderComplianceCalendar();
 
-            // Load CRM & Ops
-            renderCRM();
+            // Load Email Templates & Ops
+            renderEmailTemplates();
             renderWorkflows();
 
             switchTab('dashboard');
@@ -1128,202 +1070,161 @@
             `;
         }
 
-        // --- CRM PIPELINE LOGIC --- //
-        function addClient() {
-            const name = document.getElementById('new-client-name').value.trim();
-            const email = document.getElementById('new-client-email').value.trim();
-            const eventType = document.getElementById('new-client-event').value.trim();
-            const eventDate = document.getElementById('new-client-date').value;
+        // --- EMAIL TEMPLATE LOGIC --- //
+        let activeTemplateId = null;
 
-            if(!name) return alert("Client name is required.");
+        function renderEmailTemplates() {
+            const templates = window.StateStore.state.emailTemplates || [];
+            const select = document.getElementById('email-selector');
+            if(!select) return;
 
-            const clients = window.StateStore.state.clients || [];
-            clients.push({
-                id: Date.now().toString(),
-                name,
-                email,
-                eventType,
-                eventDate,
-                stage: 'inquiry' // inquiry, booked, delivered
+            select.innerHTML = '<option value="">-- Choose a template --</option>';
+            templates.forEach(t => {
+                select.innerHTML += `<option value="${t.id}">${t.name}</option>`;
             });
-
-            window.StateStore.update('clients', clients);
             
-            // Clear fields
-            document.getElementById('new-client-name').value = '';
-            document.getElementById('new-client-email').value = '';
-            document.getElementById('new-client-event').value = '';
-            document.getElementById('new-client-date').value = '';
-            
-            renderCRM();
+            // Clear inputs inside the generator to keep things tidy
+            document.getElementById('email-dynamic-inputs').innerHTML = '';
+            document.getElementById('email-preview-box').classList.add('hidden');
         }
 
-        function moveClientStage(id, newStage) {
-            const clients = window.StateStore.state.clients || [];
-            const client = clients.find(c => c.id === id);
-            if(client) {
-                client.stage = newStage;
-                window.StateStore.update('clients', clients);
-                renderCRM();
-            }
-        }
-
-        function removeClient(id) {
-            if(!confirm("Are you sure you want to delete this client?")) return;
-            let clients = window.StateStore.state.clients || [];
-            clients = clients.filter(c => c.id !== id);
-            window.StateStore.update('clients', clients);
-            renderCRM();
-        }
-
-        function renderCRM() {
-            const clients = window.StateStore.state.clients || [];
+        function saveTemplate() {
+            const name = document.getElementById('edit-tmpl-name').value.trim();
+            const subject = document.getElementById('edit-tmpl-subject').value.trim();
+            const body = document.getElementById('edit-tmpl-body').value.trim();
             
-            const cols = {
-                'inquiry': document.getElementById('pipeline-inquiry'),
-                'booked': document.getElementById('pipeline-booked'),
-                'delivered': document.getElementById('pipeline-delivered')
-            };
+            if(!name || !body) return alert("Template Name and Body are required.");
 
-            // Clear boards
-            if(cols.inquiry) cols.inquiry.innerHTML = '';
-            if(cols.booked) cols.booked.innerHTML = '';
-            if(cols.delivered) cols.delivered.innerHTML = '';
-
-            clients.forEach(c => {
-                const card = document.createElement('div');
-                card.className = "bg-white p-4 rounded-xl shadow-sm border border-slate-200 relative group";
-                
-                // Format Date nicely if exists
-                let dateDisplay = '<span class="text-[10px] text-slate-400">TBD</span>';
-                if(c.eventDate) {
-                    const parts = c.eventDate.split('-');
-                    if(parts.length === 3) {
-                        const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-                        dateDisplay = `<span class="text-[10px] font-bold text-slate-500 flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> ${dateObj.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</span>`;
-                    }
+            const templates = window.StateStore.state.emailTemplates || [];
+            if(activeTemplateId) {
+                const idx = templates.findIndex(t => t.id === activeTemplateId);
+                if(idx > -1) {
+                    templates[idx] = { id: activeTemplateId, name, subject, body };
                 }
-
-                let actions = '';
-                if(c.stage === 'inquiry') {
-                    actions = `<button onclick="moveClientStage('${c.id}', 'booked')" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100">Move to Booked</button>`;
-                } else if(c.stage === 'booked') {
-                    actions = `<button onclick="moveClientStage('${c.id}', 'delivered')" class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded hover:bg-emerald-100">Mark Delivered</button>`;
-                } else if(c.stage === 'delivered') {
-                    actions = `<span class="text-[10px] font-bold text-slate-400">Complete</span>`;
-                }
-
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <h6 class="font-bold text-sm text-slate-900 leading-tight">${c.name}</h6>
-                        <button onclick="removeClient('${c.id}')" class="opacity-0 group-hover:opacity-100 text-rose-400 hover:text-rose-600 transition"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
-                    </div>
-                    <div class="space-y-1 mb-3">
-                        ${c.eventType ? `<p class="text-xs text-slate-600">${c.eventType}</p>` : ''}
-                        ${c.email ? `<p class="text-xs text-slate-500 truncate"><a href="mailto:${c.email}" class="hover:text-blue-500">${c.email}</a></p>` : ''}
-                        ${dateDisplay}
-                    </div>
-                    <div class="flex justify-between items-center border-t border-slate-100 pt-2 mt-2">
-                        ${actions}
-                    </div>
-                `;
-                
-                if(cols[c.stage]) {
-                    cols[c.stage].appendChild(card);
-                }
-            });
-
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            
-            // Sync clients to invoice dropdown
-            const select = document.getElementById('invoice-client-select');
-            if(select) {
-                select.innerHTML = '<option value="">-- Choose Booked Client --</option>';
-                clients.filter(c => c.stage === 'booked' || c.stage === 'delivered').forEach(c => {
-                    select.innerHTML += `<option value="${c.id}">${c.name} (${c.email || 'No email'})</option>`;
-                });
-            }
-        }
-
-        // --- INVOICE LOGIC --- //
-        let draftItems = [];
-        
-        function addInvoiceItem() {
-            const desc = document.getElementById('inv-item-desc').value.trim();
-            const price = parseFloat(document.getElementById('inv-item-price').value);
-            if(!desc || isNaN(price)) return;
-            
-            draftItems.push({ desc, price });
-            document.getElementById('inv-item-desc').value = '';
-            document.getElementById('inv-item-price').value = '';
-            previewInvoice();
-        }
-
-        function removeInvoiceItem(idx) {
-            draftItems.splice(idx, 1);
-            previewInvoice();
-        }
-
-        function clearInvoiceDraft() {
-            draftItems = [];
-            previewInvoice();
-        }
-
-        function previewInvoice() {
-            const previewEl = document.getElementById('live-invoice-preview');
-            previewEl.classList.remove('hidden');
-
-            // Header Biz Info
-            const profile = window.StateStore.state.profile;
-            document.getElementById('print-biz-name').innerText = (profile && profile.name) ? profile.name.toUpperCase() : 'LLC COMMAND SUMMARY';
-            document.getElementById('print-date').innerText = new Date().toLocaleDateString();
-
-            // Client Info
-            const clientId = document.getElementById('invoice-client-select').value;
-            const clients = window.StateStore.state.clients || [];
-            const client = clients.find(c => c.id === clientId);
-            
-            if(client) {
-                document.getElementById('print-client-name').innerText = client.name;
-                document.getElementById('print-client-email').innerText = client.email || '';
             } else {
-                document.getElementById('print-client-name').innerText = 'External Client';
-                document.getElementById('print-client-email').innerText = '';
+                templates.push({ id: Date.now().toString(), name, subject, body });
             }
 
-            document.getElementById('print-inv-title').innerText = document.getElementById('invoice-title').value || 'Invoice';
-
-            // Items
-            const draftList = document.getElementById('invoice-draft-items');
-            const tbody = document.getElementById('print-inv-tbody');
-            draftList.innerHTML = '';
-            tbody.innerHTML = '';
+            window.StateStore.update('emailTemplates', templates);
             
-            let total = 0;
+            // Reset form
+            document.getElementById('edit-tmpl-name').value = '';
+            document.getElementById('edit-tmpl-subject').value = '';
+            document.getElementById('edit-tmpl-body').value = '';
+            activeTemplateId = null;
+            document.getElementById('email-editor-title').innerText = "Create New Template";
+            document.getElementById('btn-delete-tmpl').classList.add('hidden');
+            
+            renderEmailTemplates();
+        }
 
-            if(draftItems.length === 0) {
-                tbody.innerHTML = `<tr><td class="py-4 text-slate-500 text-sm italic">No items added.</td><td class="py-4 text-right text-slate-800 font-bold">$0.00</td></tr>`;
-            } else {
-                draftItems.forEach((item, idx) => {
-                    total += item.price;
-                    // Build backend draft UI
-                    draftList.innerHTML += `
-                        <div class="flex justify-between items-center bg-white p-2 border rounded">
-                            <span><span class="font-bold text-slate-700">${item.desc}</span> <span class="text-slate-400 ml-2">--- $${item.price.toFixed(2)}</span></span>
-                            <button onclick="removeInvoiceItem(${idx})" class="text-rose-500 font-bold hover:text-rose-700 text-xs uppercase px-2">X</button>
+        function loadSelectedTemplate() {
+            const tmplId = document.getElementById('email-selector').value;
+            const container = document.getElementById('email-dynamic-inputs');
+            container.innerHTML = '';
+            
+            if(!tmplId) {
+                document.getElementById('email-preview-box').classList.add('hidden');
+                
+                // Clear Editor
+                document.getElementById('edit-tmpl-name').value = '';
+                document.getElementById('edit-tmpl-subject').value = '';
+                document.getElementById('edit-tmpl-body').value = '';
+                activeTemplateId = null;
+                document.getElementById('email-editor-title').innerText = "Create New Template";
+                document.getElementById('btn-delete-tmpl').classList.add('hidden');
+                return;
+            }
+
+            const templates = window.StateStore.state.emailTemplates || [];
+            const tmpl = templates.find(t => t.id === tmplId);
+            if(!tmpl) return;
+
+            // Load into editor so user can modify it later
+            document.getElementById('edit-tmpl-name').value = tmpl.name;
+            document.getElementById('edit-tmpl-subject').value = tmpl.subject;
+            document.getElementById('edit-tmpl-body').value = tmpl.body;
+            activeTemplateId = tmpl.id;
+            document.getElementById('email-editor-title').innerText = "Edit Template";
+            document.getElementById('btn-delete-tmpl').classList.remove('hidden');
+
+            // Find tokens
+            const regex = /\{\{(.*?)\}\}/g;
+            const fullText = tmpl.subject + '\n' + tmpl.body;
+            let match;
+            const tokens = new Set();
+            while ((match = regex.exec(fullText)) !== null) {
+                tokens.add(match[1].trim());
+            }
+
+            // Generate inputs for each token
+            if(tokens.size > 0) {
+                tokens.forEach(token => {
+                    container.innerHTML += `
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-3 mb-1 shadow-sm">${token}</label>
+                            <input type="text" id="token-${token}" placeholder="Value for ${token}" class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl tmpl-input" oninput="livePreviewEmail()">
                         </div>
                     `;
-                    // Build Print UI
-                    tbody.innerHTML += `
-                        <tr class="border-b border-slate-100">
-                            <td class="py-4 text-slate-800 font-medium">${item.desc}</td>
-                            <td class="py-4 text-right text-slate-800 font-bold">$${item.price.toFixed(2)}</td>
-                        </tr>
-                    `;
                 });
+            } else {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic">No {{Tokens}} detected in this template.</p>`;
             }
 
-            document.getElementById('print-inv-total').innerText = `$${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('email-preview-box').classList.remove('hidden');
+            livePreviewEmail();
+        }
+
+        function deleteActiveTemplate() {
+            if(!activeTemplateId) return;
+            if(!confirm("Delete this template?")) return;
+            
+            let templates = window.StateStore.state.emailTemplates || [];
+            templates = templates.filter(t => t.id !== activeTemplateId);
+            window.StateStore.update('emailTemplates', templates);
+            
+            // Reset
+            document.getElementById('email-selector').value = '';
+            loadSelectedTemplate();
+        }
+
+        function livePreviewEmail() {
+            const tmplId = document.getElementById('email-selector').value;
+            const templates = window.StateStore.state.emailTemplates || [];
+            const tmpl = templates.find(t => t.id === tmplId);
+            if(!tmpl) return;
+
+            let finalSub = tmpl.subject || "";
+            let finalBody = tmpl.body || "";
+            
+            const inputs = document.querySelectorAll('.tmpl-input');
+            inputs.forEach(input => {
+                const token = input.id.replace('token-', '');
+                const val = input.value || `[${token}]`;
+                // Escape tokens for dynamic regex
+                const safeToken = token.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const regex = new RegExp(`\\{\\{\\s*${safeToken}\\s*\\}\\}`, 'g');
+                
+                finalSub = finalSub.replace(regex, val);
+                finalBody = finalBody.replace(regex, val);
+            });
+
+            document.getElementById('email-preview-subject').innerText = finalSub;
+            document.getElementById('email-preview-body').innerText = finalBody;
+        }
+
+        function copyEmailToClipboard() {
+            const finalBody = document.getElementById('email-preview-body').innerText;
+            navigator.clipboard.writeText(finalBody).then(() => {
+                alert("Email body copied to clipboard!");
+            });
+        }
+
+        function sendViaMailApp() {
+            const finalSub = document.getElementById('email-preview-subject').innerText;
+            const finalBody = document.getElementById('email-preview-body').innerText;
+            const link = `mailto:?subject=${encodeURIComponent(finalSub)}&body=${encodeURIComponent(finalBody)}`;
+            window.location.href = link;
         }
 
         // --- OPERATIONS LOGIC --- //
