@@ -7,22 +7,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-        /* ===== LOVE LENS BRAND PALETTE ===== */
+        /* ===== LOVE LENS — SOFT FEMININE PALETTE ===== */
         :root {
-            --cream:       #F2E9E0;
-            --cream-light: #F8F2EC;
-            --blush:       #C9939E;
-            --blush-light: #F4DBE4;
-            --burgundy:    #6B2D3E;
-            --burg-deep:   #4B0201;
-            --ocean:       #5B8FA8;
-            --ocean-light: #A8C3BC;
-            --ocean-deep:  #1B3F52;
-            --text-dark:   #1A1A1A;
-            --text-mid:    #603030;
-            --text-soft:   #8a6a6a;
+            --cream:        #FAF6F1;
+            --paper:        #F5EDE3;
+            --blush:        #D4A5A5;
+            --blush-soft:   #EDD5D5;
+            --blush-pale:   #F7EDED;
+            --rose:         #B07070;
+            --rose-deep:    #8C5353;
+            --ocean:        #7BAAB8;
+            --ocean-soft:   #B8D4DC;
+            --ocean-deep:   #3D7080;
+            --sage:         #9BB5A0;
+            --mushroom:     #8B7B74;
+            --text-dark:    #2C1E1E;
+            --text-mid:     #5C4040;
+            --text-soft:    #9C8080;
+            --border:       #E8D8D0;
+            --sidebar-bg:   #3D2E2E;
+            --sidebar-mid:  #2E3A40;
+            --sidebar-dark: #1E2A30;
         }
 
         body {
@@ -31,81 +38,66 @@
             color: var(--text-dark);
         }
 
-        /* Headings use the editorial serif */
-        h1, h2, h3 { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.01em; }
+        h1, h2, h3, h4 {
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.01em;
+        }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Cards: warm parchment feel */
+        /* Cards */
         .card {
-            background: #FEFAF6;
-            border-radius: 1.25rem;
-            border: 1px solid #E8D8CC;
-            box-shadow: 0 2px 12px rgba(107,45,62,0.06);
+            background: #FEFAF8;
+            border-radius: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 16px rgba(180,130,130,0.07);
         }
 
-        /* Sidebar nav buttons */
-        .nav-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-btn.active-tab {
-            background: rgba(201,147,158,0.18) !important;
-            color: #F4DBE4 !important;
-        }
-        .nav-btn:hover { background: rgba(201,147,158,0.10); color: #F4DBE4; }
+        /* Nav */
+        .nav-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 0.875rem; }
+        .nav-btn:hover { background: rgba(212,165,165,0.15); color: #F7EDED; }
+        .nav-btn.active-tab { background: rgba(212,165,165,0.22) !important; color: #F7EDED !important; }
 
         /* Inputs */
         input, select, textarea {
-            background: #FAF5F0 !important;
-            border-color: #DDD0C8 !important;
+            background: #FAF5F2 !important;
+            border-color: #E0CECE !important;
             color: var(--text-dark) !important;
+            border-radius: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--blush) !important;
-            box-shadow: 0 0 0 3px rgba(201,147,158,0.15);
+            box-shadow: 0 0 0 3px rgba(212,165,165,0.2) !important;
         }
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-        /* Primary buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--blush) 0%, var(--burgundy) 100%);
-            color: white; border: none; border-radius: 0.875rem; font-weight: 700;
-            padding: 0.75rem 1.5rem; transition: all 0.2s; cursor: pointer;
-        }
-        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(107,45,62,0.3); }
-
-        /* Ocean accent elements */
-        .ocean-accent { color: var(--ocean); }
-        .bg-ocean { background: linear-gradient(135deg, var(--ocean) 0%, var(--ocean-deep) 100%); }
+        /* Buttons */
+        button { border-radius: 0.875rem; }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: var(--cream); }
-        ::-webkit-scrollbar-thumb { background: var(--blush-light); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb { background: var(--blush-soft); border-radius: 9999px; }
 
         /* Tooltip */
-        .tax-tooltip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 1.125rem; height: 1.125rem; background: #E8D8CC; border-radius: 9999px; color: var(--text-soft); font-weight: bold; font-size: 0.7rem; cursor: help; margin-left: 0.5rem; transition: background 0.2s; }
-        .tax-tooltip:hover { background: var(--blush-light); color: var(--burgundy); }
-        .tax-tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 140%; left: 50%; width: 220px; padding: 0.75rem; background: var(--burg-deep); color: white; border-radius: 0.75rem; font-size: 0.75rem; line-height: 1.5; transform: translateX(-50%); z-index: 50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); pointer-events: none; text-transform: none; font-weight: normal; }
-        .tax-tooltip:hover::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: var(--burg-deep) transparent transparent transparent; pointer-events: none; z-index: 50; }
+        .tax-tooltip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 1.125rem; height: 1.125rem; background: var(--blush-pale); border-radius: 9999px; color: var(--rose); font-weight: bold; font-size: 0.7rem; cursor: help; margin-left: 0.5rem; transition: background 0.2s; }
+        .tax-tooltip:hover { background: var(--blush-soft); color: var(--rose-deep); }
+        .tax-tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 140%; left: 50%; width: 220px; padding: 0.75rem; background: var(--text-dark); color: white; border-radius: 0.75rem; font-size: 0.75rem; line-height: 1.5; transform: translateX(-50%); z-index: 50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); pointer-events: none; text-transform: none; font-weight: normal; }
+        .tax-tooltip:hover::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: var(--text-dark) transparent transparent transparent; pointer-events: none; z-index: 50; }
 
-        /* Canon gradient (keep) */
-        .canon-gradient { background: linear-gradient(135deg, #cc0000 0%, #8b0000 100%); }
+        /* Canon — soften the red to a muted rose */
+        .canon-gradient { background: linear-gradient(135deg, var(--rose) 0%, var(--rose-deep) 100%); }
 
         /* Resource links */
-        .resource-link { color: var(--ocean); font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem; transition: color 0.2s; }
-        .resource-link:hover { color: var(--ocean-deep); }
+        .resource-link { color: var(--ocean-deep); font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem; transition: color 0.2s; }
+        .resource-link:hover { color: var(--ocean); }
 
-        /* Bunny & wave decorative accents */
-        .bunny-accent::before { content: "🐰 "; font-size: 0.85em; }
-        .wave-divider {
-            height: 3px;
-            background: linear-gradient(90deg, var(--blush-light), var(--ocean-light), var(--blush-light));
-            border-radius: 9999px;
-            opacity: 0.6;
-            margin: 1.5rem 0;
-        }
+        /* Wave divider */
+        .wave-divider { height: 2px; background: linear-gradient(90deg, var(--blush-soft), var(--ocean-soft), var(--blush-soft)); border-radius: 9999px; opacity: 0.7; margin: 1.5rem 0; }
 
         @media print {
             body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -147,14 +139,14 @@
     <!-- Main Content -->
     <div id="app-content" class="min-h-screen flex flex-col md:flex-row hidden" style="background: var(--cream);">
         <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-80 text-white p-8 flex-shrink-0 flex flex-col border-r" style="background: linear-gradient(180deg, #2D0A18 0%, #1B1A2E 40%, #0D2C3E 100%); border-color: rgba(201,147,158,0.2);">
+        <aside class="w-full md:w-80 text-white p-8 flex-shrink-0 flex flex-col border-r" style="background: linear-gradient(160deg, #4A3535 0%, #2E3D45 60%, #1E2D35 100%); border-color: rgba(212,165,165,0.15);">
             <div class="flex items-center gap-4 mb-12">
-                <div class="p-2.5 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #C9939E 0%, #6B2D3E 100%); box-shadow: 0 4px 12px rgba(107,45,62,0.4)">
+                <div class="p-2.5 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #D4A5A5 0%, #7BAAB8 100%); box-shadow: 0 4px 12px rgba(123,170,184,0.3);">
                     <i data-lucide="camera" class="w-6 h-6 text-white"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-xl tracking-tight leading-none" style="font-family: Cormorant Garamond, serif; font-size:1.3rem;">The Love Lens</h1>
-                    <p class="text-[10px] uppercase font-black tracking-widest mt-1" style="color: #C9939E;">Command Center</p>
+                    <h1 class="font-extrabold tracking-tight leading-none" style="font-family: Cormorant Garamond, serif; font-size:1.35rem; font-style:italic; font-weight:600;">The Love Lens</h1>
+                    <p class="text-[10px] uppercase font-black tracking-widest mt-1" style="color: #D4A5A5; letter-spacing: 0.15em;">Command Center</p>
                 </div>
             </div>
 
@@ -227,7 +219,7 @@
                     <div class="flex flex-col md:flex-row gap-4">
                         <input type="text" id="new-lead-name" placeholder="Client Name (e.g. Sarah & John)" class="px-4 py-3 border rounded-xl flex-grow text-sm font-medium">
                         <input type="text" id="new-lead-type" placeholder="Shoot Type (e.g. Desert Elopement)" class="px-4 py-3 border rounded-xl flex-grow text-sm font-medium">
-                        <button onclick="addCRMLead()" class="bg-rose-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-rose-700 text-sm shadow-md">Start 48hr SLA Timer</button>
+                        <button onclick="addCRMLead()" class="text-white px-6 py-3 rounded-xl font-bold" style="background: linear-gradient(135deg, #D4A5A5, #7BAAB8);" class=" text-sm shadow-md">Start 48hr SLA Timer</button>
                     </div>
                 </div>
 
@@ -988,7 +980,7 @@
                             <option value="tiktok">TikTok</option>
                             <option value="both">Both Platforms</option>
                         </select>
-                        <button onclick="addSocialCard()" class="bg-rose-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-rose-700 text-sm shadow-md">+ Add Card</button>
+                        <button onclick="addSocialCard()" class="text-white px-6 py-3 rounded-xl font-bold" style="background: linear-gradient(135deg, #D4A5A5, #7BAAB8);" class=" text-sm shadow-md">+ Add Card</button>
                     </div>
                 </div>
 
@@ -1096,9 +1088,11 @@
                     const stored = await window.electronAPI.getState();
                     if (stored && Object.keys(stored).length > 0) {
                         this.state = { ...defaultState, ...stored };
-                        // Seed pre-loaded templates for existing users who have an empty array saved
-                        if (!this.state.emailTemplates || this.state.emailTemplates.length === 0) {
-                            this.state.emailTemplates = defaultState.emailTemplates;
+                        // Merge pre-loaded templates — add any missing pre-loaded ones
+                        const existingIds = (this.state.emailTemplates || []).map(t => t.id);
+                        const missing = defaultState.emailTemplates.filter(t => !existingIds.includes(t.id));
+                        if (missing.length > 0) {
+                            this.state.emailTemplates = [...missing, ...(this.state.emailTemplates || [])];
                         }
                     }
                 } else {
@@ -1107,8 +1101,10 @@
                     if (stored) {
                         try {
                             this.state = { ...defaultState, ...JSON.parse(stored) };
-                            if (!this.state.emailTemplates || this.state.emailTemplates.length === 0) {
-                                this.state.emailTemplates = defaultState.emailTemplates;
+                            const existingIdsLS = (this.state.emailTemplates || []).map(t => t.id);
+                            const missingLS = defaultState.emailTemplates.filter(t => !existingIdsLS.includes(t.id));
+                            if (missingLS.length > 0) {
+                                this.state.emailTemplates = [...missingLS, ...(this.state.emailTemplates || [])];
                             }
                         } catch (e) {}
                     }
@@ -1122,9 +1118,11 @@
                 } else {
                     localStorage.setItem('azphoto_state', JSON.stringify(this.state));
                 }
-                // Always ensure templates are seeded if empty
-                if (!this.state.emailTemplates || this.state.emailTemplates.length === 0) {
-                    this.state.emailTemplates = defaultState.emailTemplates;
+                // Always ensure pre-loaded templates exist (merge, don't replace)
+                const postIds = (this.state.emailTemplates || []).map(t => t.id);
+                const postMissing = defaultState.emailTemplates.filter(t => !postIds.includes(t.id));
+                if (postMissing.length > 0) {
+                    this.state.emailTemplates = [...postMissing, ...(this.state.emailTemplates || [])];
                     this.save();
                 }
             },
