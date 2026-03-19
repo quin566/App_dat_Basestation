@@ -7,20 +7,106 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        /* ===== LOVE LENS BRAND PALETTE ===== */
+        :root {
+            --cream:       #F2E9E0;
+            --cream-light: #F8F2EC;
+            --blush:       #C9939E;
+            --blush-light: #F4DBE4;
+            --burgundy:    #6B2D3E;
+            --burg-deep:   #4B0201;
+            --ocean:       #5B8FA8;
+            --ocean-light: #A8C3BC;
+            --ocean-deep:  #1B3F52;
+            --text-dark:   #1A1A1A;
+            --text-mid:    #603030;
+            --text-soft:   #8a6a6a;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-dark);
+        }
+
+        /* Headings use the editorial serif */
+        h1, h2, h3 { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.01em; }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .card { background: white; border-radius: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+        /* Cards: warm parchment feel */
+        .card {
+            background: #FEFAF6;
+            border-radius: 1.25rem;
+            border: 1px solid #E8D8CC;
+            box-shadow: 0 2px 12px rgba(107,45,62,0.06);
+        }
+
+        /* Sidebar nav buttons */
         .nav-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        .resource-link { @apply text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1 transition-colors; }
+        .nav-btn.active-tab {
+            background: rgba(201,147,158,0.18) !important;
+            color: #F4DBE4 !important;
+        }
+        .nav-btn:hover { background: rgba(201,147,158,0.10); color: #F4DBE4; }
+
+        /* Inputs */
+        input, select, textarea {
+            background: #FAF5F0 !important;
+            border-color: #DDD0C8 !important;
+            color: var(--text-dark) !important;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--blush) !important;
+            box-shadow: 0 0 0 3px rgba(201,147,158,0.15);
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* Primary buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blush) 0%, var(--burgundy) 100%);
+            color: white; border: none; border-radius: 0.875rem; font-weight: 700;
+            padding: 0.75rem 1.5rem; transition: all 0.2s; cursor: pointer;
+        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(107,45,62,0.3); }
+
+        /* Ocean accent elements */
+        .ocean-accent { color: var(--ocean); }
+        .bg-ocean { background: linear-gradient(135deg, var(--ocean) 0%, var(--ocean-deep) 100%); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--cream); }
+        ::-webkit-scrollbar-thumb { background: var(--blush-light); border-radius: 9999px; }
+
+        /* Tooltip */
+        .tax-tooltip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 1.125rem; height: 1.125rem; background: #E8D8CC; border-radius: 9999px; color: var(--text-soft); font-weight: bold; font-size: 0.7rem; cursor: help; margin-left: 0.5rem; transition: background 0.2s; }
+        .tax-tooltip:hover { background: var(--blush-light); color: var(--burgundy); }
+        .tax-tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 140%; left: 50%; width: 220px; padding: 0.75rem; background: var(--burg-deep); color: white; border-radius: 0.75rem; font-size: 0.75rem; line-height: 1.5; transform: translateX(-50%); z-index: 50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); pointer-events: none; text-transform: none; font-weight: normal; }
+        .tax-tooltip:hover::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: var(--burg-deep) transparent transparent transparent; pointer-events: none; z-index: 50; }
+
+        /* Canon gradient (keep) */
         .canon-gradient { background: linear-gradient(135deg, #cc0000 0%, #8b0000 100%); }
-        .tax-tooltip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 1.125rem; height: 1.125rem; background: #e2e8f0; border-radius: 9999px; color: #64748b; font-weight: bold; font-size: 0.7rem; cursor: help; margin-left: 0.5rem; transition: background 0.2s; }
-        .tax-tooltip:hover { background: #cbd5e1; color: #0f172a; }
-        .tax-tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 140%; left: 50%; width: 220px; padding: 0.75rem; background: #1e293b; color: white; border-radius: 0.75rem; font-size: 0.75rem; line-height: 1.5; transform: translateX(-50%); z-index: 50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); pointer-events: none; text-transform: none; font-weight: normal; }
-        .tax-tooltip:hover::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: #1e293b transparent transparent transparent; pointer-events: none; z-index: 50; }
-        
+
+        /* Resource links */
+        .resource-link { color: var(--ocean); font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem; transition: color 0.2s; }
+        .resource-link:hover { color: var(--ocean-deep); }
+
+        /* Bunny & wave decorative accents */
+        .bunny-accent::before { content: "🐰 "; font-size: 0.85em; }
+        .wave-divider {
+            height: 3px;
+            background: linear-gradient(90deg, var(--blush-light), var(--ocean-light), var(--blush-light));
+            border-radius: 9999px;
+            opacity: 0.6;
+            margin: 1.5rem 0;
+        }
+
         @media print {
             body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             aside { display: none !important; }
@@ -59,16 +145,16 @@
     </div>
 
     <!-- Main Content -->
-    <div id="app-content" class="min-h-screen flex flex-col md:flex-row hidden">
+    <div id="app-content" class="min-h-screen flex flex-col md:flex-row hidden" style="background: var(--cream);">
         <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-80 bg-slate-950 text-white p-8 flex-shrink-0 flex flex-col border-r border-slate-800">
+        <aside class="w-full md:w-80 text-white p-8 flex-shrink-0 flex flex-col border-r" style="background: linear-gradient(180deg, #2D0A18 0%, #1B1A2E 40%, #0D2C3E 100%); border-color: rgba(201,147,158,0.2);">
             <div class="flex items-center gap-4 mb-12">
-                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 p-2.5 rounded-xl shadow-lg shadow-blue-900/20">
+                <div class="p-2.5 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #C9939E 0%, #6B2D3E 100%); box-shadow: 0 4px 12px rgba(107,45,62,0.4)">
                     <i data-lucide="camera" class="w-6 h-6 text-white"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-xl tracking-tight leading-none">AZ Photo LLC</h1>
-                    <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mt-1">Management Suite</p>
+                    <h1 class="font-extrabold text-xl tracking-tight leading-none" style="font-family: Cormorant Garamond, serif; font-size:1.3rem;">The Love Lens</h1>
+                    <p class="text-[10px] uppercase font-black tracking-widest mt-1" style="color: #C9939E;">Command Center</p>
                 </div>
             </div>
 
@@ -1021,6 +1107,9 @@
                     if (stored) {
                         try {
                             this.state = { ...defaultState, ...JSON.parse(stored) };
+                            if (!this.state.emailTemplates || this.state.emailTemplates.length === 0) {
+                                this.state.emailTemplates = defaultState.emailTemplates;
+                            }
                         } catch (e) {}
                     }
                 }
@@ -1032,6 +1121,11 @@
                     window.electronAPI.setState(this.state);
                 } else {
                     localStorage.setItem('azphoto_state', JSON.stringify(this.state));
+                }
+                // Always ensure templates are seeded if empty
+                if (!this.state.emailTemplates || this.state.emailTemplates.length === 0) {
+                    this.state.emailTemplates = defaultState.emailTemplates;
+                    this.save();
                 }
             },
 
