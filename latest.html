@@ -526,6 +526,8 @@
             </div>
 
 
+            <!-- Tab: Write-Off Analyzer -->
+            <div id="analyzer" class="tab-content space-y-10">
                 <header>
                     <h2 class="text-4xl font-black text-[#2C2511] tracking-tight">Write-Off Analyzer</h2>
                     <p class="text-[#8A7A6A] mt-2">Deductibility and True Cost calculated via your live Marginal Rate.</p>
@@ -605,6 +607,8 @@
                 </div>
 
             </div>
+            </div>
+
 
             <!-- Tab: Pricing & Margins -->
             <div id="pricing" class="tab-content space-y-12">
@@ -744,172 +748,6 @@
                         </div>
                     </div>
                 </section>
-            </div>
-
-            <!-- Tab: Tax Planner -->
-            <div id="taxes" class="tab-content space-y-10">
-                <header>
-                    <h2 class="text-4xl font-black tracking-tight">Arizona Tax Engine</h2>
-                    <p style="color:var(--text-soft)" class="mt-2">Personalized for Single-Member LLCs — 2024/25 IRS &amp; AZ rules. All figures are sourced and verifiable.</p>
-                </header>
-
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                    <!-- Inputs Column -->
-                    <div class="xl:col-span-1 space-y-5">
-                        <div class="card p-7">
-                            <h4 class="font-bold text-base mb-5">Financial Inputs</h4>
-                            <div class="space-y-5">
-                                <div>
-                                    <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">Annual Gross Revenue</label>
-                                    <input type="number" id="gross-income" value="95000" class="w-full px-4 py-3 border rounded-xl font-bold text-lg" oninput="calcTaxes()">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-black uppercase tracking-widest mb-2" style="color:var(--sage)">Total Business Expenses</label>
-                                    <input type="number" id="expenses" value="25000" class="w-full px-4 py-3 border rounded-xl font-bold text-lg" oninput="calcTaxes()">
-                                    <p class="text-[10px] mt-1" style="color:var(--text-soft)">Camera gear, software, travel, marketing, etc.</p>
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-black uppercase tracking-widest mb-2 flex items-center" style="color:var(--sage)">SE Health Insurance Premium
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Self-Employed Health Insurance Deduction" data-body="If you pay for your own health, dental, or vision insurance and are not eligible for employer-sponsored coverage, you can deduct 100% of those premiums above-the-line — directly reducing your AGI." data-ref="IRC §162(l) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
-                                    </label>
-                                    <input type="number" id="health-insurance" value="0" placeholder="e.g. 4800" class="w-full px-4 py-3 border rounded-xl font-bold" oninput="calcTaxes()">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-black uppercase tracking-widest mb-2 flex items-center" style="color:var(--sage)">SEP-IRA / Solo 401(k) Contribution
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Self-Employed Retirement Deduction" data-body="Contributions to a SEP-IRA or Solo 401(k) are deductible above-the-line. SEP-IRA limit: 25% of net self-employment income, max $69,000 in 2024. This is one of the most powerful tax reduction tools for self-employed photographers." data-ref="IRC §404(a)(3) | IRS Pub 560" data-az="" data-link="https://www.irs.gov/publications/p560">ⓘ</span>
-                                    </label>
-                                    <input type="number" id="retirement" value="0" placeholder="e.g. 10000" class="w-full px-4 py-3 border rounded-xl font-bold" oninput="calcTaxes()">
-                                    <p id="sep-max-hint" class="text-[10px] mt-1 font-bold" style="color:var(--sage)"></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="rounded-2xl p-7 text-white" style="background:linear-gradient(135deg,var(--sage-deep),var(--ocean-deep))">
-                            <p class="text-[11px] font-black uppercase tracking-widest mb-1" style="color:rgba(255,255,255,0.6)">Est. Net Take-Home / Month</p>
-                            <h3 id="monthly-takehome" class="text-4xl font-black" style="color:#a8f0d0">$0</h3>
-                            <p class="text-[10px] mt-3" style="color:rgba(255,255,255,0.5)">After all federal, AZ, and SE taxes</p>
-                        </div>
-
-                        <!-- AZ TPT Toggle -->
-                        <div class="card p-6 border-l-4" style="border-color:var(--ocean)">
-                            <h4 class="font-bold text-sm mb-3 flex items-center">AZ Transaction Privilege Tax (TPT)
-                                <span class="info-badge" onclick="showInfo(this)" data-title="Arizona Transaction Privilege Tax (TPT)" data-body="Arizona's version of sales tax is called TPT and is imposed on the seller, not the buyer. Photography services in AZ may be subject to TPT under the retail classification (ARS §42-5061) if you sell physical prints or albums. Digital-only delivery is generally NOT subject to TPT, but you should confirm with AZDOR for your specific situation." data-ref="ARS §42-5061 | AZ DOR TPT Guide" data-az="Check your TPT license status at azdor.gov. Filing is monthly or quarterly depending on annual volume." data-link="https://azdor.gov/transaction-privilege-tax">ⓘ</span>
-                            </h4>
-                            <label class="flex items-center gap-3 cursor-pointer">
-                                <input type="checkbox" id="tpt-toggle" onchange="calcTaxes()" class="w-4 h-4" style="accent-color:var(--ocean)">
-                                <span class="text-sm font-medium">I sell physical prints / albums</span>
-                            </label>
-                            <div id="tpt-detail" class="hidden mt-4 space-y-2 text-xs" style="color:var(--text-mid)">
-                                <p>State TPT rate: <strong>5.6%</strong> + local surcharge (varies by city, typically 1.5–2.5%)</p>
-                                <p>Common AZ city totals: Phoenix ~8.6%, Scottsdale ~8.05%, Tempe ~8.1%</p>
-                                <a href="https://azdor.gov/transaction-privilege-tax/tpt-license" target="_blank" class="resource-link text-[10px] uppercase tracking-wider mt-2 block">Manage TPT License →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Results Column -->
-                    <div class="xl:col-span-2 space-y-6">
-                        <div class="card p-8">
-                            <h4 class="text-xl font-bold mb-6">Liability Breakdown</h4>
-                            <div class="space-y-3">
-                                <!-- SE Tax -->
-                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
-                                    <span class="flex items-center font-medium text-sm" style="color:var(--text-mid)">
-                                        Self-Employment Tax (15.3%)
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Federal Self-Employment Tax" data-body="SE tax covers Social Security (12.4%) and Medicare (2.9%) on your net self-employment earnings. You pay both the employee and employer share. However, you can deduct half of this tax above-the-line on Schedule 1 of your 1040." data-ref="IRC §1401 | IRC §164(f) | IRS Pub 334" data-az="" data-link="https://www.irs.gov/publications/p334">ⓘ</span>
-                                    </span>
-                                    <span id="tax-se" class="font-black text-base" style="color:#b45309">$0</span>
-                                </div>
-                                <!-- SE Deduction -->
-                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
-                                    <span class="flex items-center font-medium text-sm" style="color:var(--sage-deep)">
-                                        ↳ SE Tax Deduction (Half)
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Deductible Half of SE Tax" data-body="The IRS allows you to deduct 50% of your SE tax as an above-the-line deduction on Schedule 1, Line 15. This reduces your adjusted gross income (AGI) and therefore your federal income tax — even if you don't itemize." data-ref="IRC §164(f) | Schedule 1, Line 15" data-az="" data-link="https://www.irs.gov/instructions/i1040s1">ⓘ</span>
-                                    </span>
-                                    <span id="tax-se-ded" class="font-black text-sm" style="color:var(--sage)">-$0</span>
-                                </div>
-                                <!-- Health -->
-                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
-                                    <span class="flex items-center font-medium text-sm" style="color:var(--sage-deep)">
-                                        ↳ Health Insurance Deduction
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="SE Health Insurance Deduction" data-body="100% of your health, dental, and vision premiums are deductible above-the-line if you are not eligible for employer-sponsored coverage. This deduction cannot exceed your net profit from self-employment." data-ref="IRC §162(l) | IRS Pub 535, Ch. 6" data-az="" data-link="https://www.irs.gov/publications/p535">ⓘ</span>
-                                    </span>
-                                    <span id="tax-health-ded" class="font-black text-sm" style="color:var(--sage)">-$0</span>
-                                </div>
-                                <!-- Retirement -->
-                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
-                                    <span class="flex items-center font-medium text-sm" style="color:var(--sage-deep)">
-                                        ↳ Retirement Contribution Deduction
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="SEP-IRA / Solo 401(k) Deduction" data-body="Contributions to your SEP-IRA or Solo 401(k) are fully deductible, capped at the lesser of 25% of net SE income or $69,000 (2024). This is an above-the-line deduction — no itemizing required." data-ref="IRC §404(a) | IRS Pub 560" data-az="" data-link="https://www.irs.gov/publications/p560">ⓘ</span>
-                                    </span>
-                                    <span id="tax-retire-ded" class="font-black text-sm" style="color:var(--sage)">-$0</span>
-                                </div>
-                                <!-- Federal Income -->
-                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
-                                    <span class="flex items-center font-medium text-sm" style="color:var(--text-mid)">
-                                        Federal Income Tax (Est.)
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Federal Income Tax" data-body="Calculated using 2024 single-filer progressive brackets after the $14,600 standard deduction, SE deduction, health insurance deduction, and retirement deduction. Marginal rate shown is your top bracket." data-ref="IRC §1 | Rev. Proc. 2023-34 | IRS Pub 505" data-az="" data-link="https://www.irs.gov/publications/p505">ⓘ</span>
-                                        <span id="marginal-bracket" class="ml-2 text-[10px] font-black px-2 py-0.5 rounded-full" style="background:var(--sage-pale);color:var(--sage-deep)"></span>
-                                    </span>
-                                    <span id="tax-fed" class="font-black text-base" style="color:#b45309">$0</span>
-                                </div>
-                                <!-- AZ State -->
-                                <div class="flex justify-between items-center py-3.5 border-b" style="border-color:var(--border-soft)">
-                                    <span class="flex items-center font-medium text-sm" style="color:var(--text-mid)">
-                                        AZ State Income Tax (2.5% flat)
-                                        <span class="info-badge" onclick="showInfo(this)" data-title="Arizona State Income Tax" data-body="Arizona taxes all individual income at a flat 2.5% rate as of January 1, 2023 — the result of Prop 132 (2022). This replaced the former graduated bracket system. File Form 140 annually." data-ref="ARS §43-1011 | AZ Prop 132 (2022)" data-az="Arizona has no graduated brackets. Every dollar of income is taxed at exactly 2.5%." data-link="https://azdor.gov/individual-income-tax">ⓘ</span>
-                                    </span>
-                                    <span id="tax-az" class="font-black text-base" style="color:#b45309">$0</span>
-                                </div>
-                                <!-- QBI -->
-                                <div class="p-5 rounded-2xl flex justify-between items-center" style="background:#f0faf4;border:1px solid #c6e8d2">
-                                    <div>
-                                        <p class="font-bold text-sm flex items-center" style="color:#166534">
-                                            QBI Deduction (20% of Net Income)
-                                            <span class="info-badge" onclick="showInfo(this)" data-title="Qualified Business Income (QBI) Deduction" data-body="Under IRC §199A, pass-through businesses (including single-member LLCs) can deduct up to 20% of qualified business income. For 2024, the income phaseout begins at $191,950 (single filers). Photography is NOT a specified service trade, so you are not excluded." data-ref="IRC §199A | IRS Pub 535, Ch. 12 | Rev. Proc. 2019-38" data-az="" data-link="https://www.irs.gov/newsroom/tax-cuts-and-jobs-act-provision-11011-section-199a-qualified-business-income-deduction-faqs">ⓘ</span>
-                                        </p>
-                                        <p class="text-xs mt-1" style="color:#166534">Slashes 20% off your taxable business profit</p>
-                                    </div>
-                                    <span id="tax-qbi" class="text-xl font-black" style="color:#166534">-$0</span>
-                                </div>
-                            </div>
-
-                            <div class="mt-6 grid grid-cols-3 gap-3">
-                                <div class="p-4 rounded-xl text-center" style="background:var(--parchment);border:1px solid var(--border-soft)">
-                                    <p class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--text-soft)">Net Profit</p>
-                                    <p id="net-profit-display" class="font-black text-lg mt-1">$0</p>
-                                </div>
-                                <div class="p-4 rounded-xl text-center" style="background:var(--parchment);border:1px solid var(--border-soft)">
-                                    <p class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--text-soft)">Effective Rate</p>
-                                    <p id="effective-rate" class="font-black text-lg mt-1">0%</p>
-                                </div>
-                                <div class="p-4 rounded-xl text-center" style="background:var(--parchment);border:1px solid var(--border-soft)">
-                                    <p class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--text-soft)">Total Tax Saved</p>
-                                    <p id="total-tax-saved" class="font-black text-lg mt-1" style="color:var(--sage)">$0</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Quarterly Estimated Tax Tracker -->
-                        <div class="card p-8">
-                            <h4 class="text-xl font-bold mb-2 flex items-center">Quarterly Estimated Tax Tracker
-                                <span class="info-badge" onclick="showInfo(this)" data-title="Quarterly Estimated Taxes" data-body="As a self-employed person, you must pay estimated taxes 4 times per year or face an underpayment penalty. The safe harbor rule: pay at least 90% of this year's tax OR 100% of last year's liability (110% if last year's AGI exceeded $150,000)." data-ref="IRC §6654 | IRS Form 1040-ES | IRS Pub 505" data-az="AZ estimated taxes are due on the same federal dates. Use AZ Form 140ES." data-link="https://www.irs.gov/businesses/small-businesses-self-employed/estimated-taxes">ⓘ</span>
-                            </h4>
-                            <p class="text-xs mb-6" style="color:var(--text-soft)">Recommended payment = Total annual liability ÷ 4. Pay both federal (1040-ES) and AZ (Form 140ES).</p>
-                            <div id="quarterly-tracker" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Annual Compliance Checklist -->
-                <div class="card p-8">
-                    <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
-                        <i data-lucide="shield-check" class="w-5 h-5" style="color:var(--sage)"></i>
-                        Annual Tax Compliance Checklist
-                        <span class="info-badge" onclick="showInfo(this)" data-title="Why Track Compliance?" data-body="Staying compliant throughout the year prevents penalties, keeps your LLC in good standing, and makes tax filing dramatically easier. Check off each item as you complete it — your progress is saved automatically." data-ref="IRS Pub 583 | AZ ACC | AZ DOR" data-az="Arizona LLCs do NOT require an annual report (unlike most states). However, you must maintain your registered agent and renew your TPT license annually." data-link="https://azsos.gov/business">ⓘ</span>
-                    </h4>
-                    <div id="compliance-checklist" class="space-y-8"></div>
-                </div>
             </div>
 
             <!-- Tab: Write-Off Guide -->
