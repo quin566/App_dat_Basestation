@@ -1521,16 +1521,16 @@
             
             const profile = window.StateStore.state.profile;
             if (profile && profile.name) {
-                // Rehydrate inputs from local state
-                const grossInput = document.getElementById('tax-revenue');
-                const expensesInput = document.getElementById('tax-expenses');
-                if (grossInput) grossInput.value = window.StateStore.state.grossRevenue || profile.rev || 95000;
-            const healthInput = document.getElementById('tax-health');
-            const retireInput = document.getElementById('tax-sep-ira');
-            if (healthInput) healthInput.value = window.StateStore.state.healthInsurance || 0;
-            if (retireInput) retireInput.value = window.StateStore.state.retirementContrib || 0;
-                if (expensesInput) expensesInput.value = window.StateStore.state.bizExpenses || 25000;
-                
+                // Rehydrate inputs — use current IDs matching the restored HTML
+                const grossInput    = document.getElementById('gross-income');
+                const expensesInput = document.getElementById('expenses');
+                const healthInput   = document.getElementById('health-insurance');
+                const retireInput   = document.getElementById('retirement');
+                if (grossInput)    grossInput.value    = window.StateStore.state.grossRevenue       || profile.rev || 95000;
+                if (expensesInput) expensesInput.value = window.StateStore.state.bizExpenses        || 25000;
+                if (healthInput)   healthInput.value   = window.StateStore.state.healthInsurance    || 0;
+                if (retireInput)   retireInput.value   = window.StateStore.state.retirementContrib  || 0;
+
                 document.getElementById('setup-wizard').classList.add('hidden');
                 document.getElementById('app-content').classList.remove('hidden');
             } else {
@@ -2445,7 +2445,7 @@
                 title: '📊 Tax Planner',
                 body: "Enter your annual revenue and expenses here for a fully calculated tax breakdown. Includes: SE tax, AZ flat tax, QBI deduction, SEP-IRA and health insurance deductions, and your marginal bracket. Click any <strong><i data-lucide='info' class='w-3.5 h-3.5 inline-block'></i></strong> badge for the exact IRS source.",
                 icon: 'calculator',
-                scrollTo: 'tax-revenue'
+                scrollTo: 'gross-income'
             },
             {
                 tab: 'taxes',
