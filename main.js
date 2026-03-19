@@ -31,7 +31,10 @@ ipcMain.handle('set-state', (event, newState) => {
 const downloadPayload = async () => {
   return new Promise((resolve) => {
     try {
-      const request = net.request(PAYLOAD_URL);
+      const buster = '?t=' + Date.now();
+      const request = net.request(PAYLOAD_URL + buster);
+      request.setHeader('User-Agent', 'Electron/AZ-Command-Center');
+      request.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       let body = '';
       
       request.on('response', (response) => {
