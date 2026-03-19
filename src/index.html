@@ -245,14 +245,12 @@
                 <div class="p-2.5 rounded-xl" style="background: linear-gradient(135deg, #6B8C7A 0%, #4A6657 100%); box-shadow: 0 4px 12px rgba(74,102,87,0.4);">
                     
                 <div class="p-2.5 rounded-xl flex items-center justify-center" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                    <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#D4E4DC;">
-                        <path d="M10 5a2 2 0 1 1 4 0c0 2.5-2 2.5-2 5"/>
-                        <path d="M12 10v4"/>
-                        <path d="M14 14a2 2 0 1 1-4 0c0-2.5 2-2.5 2-5"/>
-                        <circle cx="12" cy="17" r="3"/>
-                        <path d="M9 19c-1 1-2 1-3 0s-1-2 0-3"/>
-                        <path d="M15 19c1 1 2 1 3 0s1-2 0-3"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#D4E4DC;"><path d="M10 5c0-3 1.5-3 2-3s2 0 2 3c0 2.5-2 2.5-2 5" />
+<path d="M14 5c0-3-1.5-3-2-3s-2 0-2 3c0 2.5 2 2.5 2 5" />
+<path d="M12 10v4" />
+<circle cx="12" cy="17" r="3" />
+<path d="M9 19c-1 1-2 1-3 0s-1-2 0-3" />
+<path d="M15 19c1 1 2 1 3 0s1-2 0-3" /></svg>
                 </div>
                 </div>
                 <div>
@@ -318,64 +316,76 @@
                         <h2 class="text-5xl font-black text-[#2C2511] tracking-tight mb-2">Executive Dashboard</h2>
                         <p class="text-[#8A7A6A] mt-2">LLC Status: <strong>Operating (Arizona)</strong> • Tax Year: <strong>2026</strong></p>
                     <div class="absolute top-0 right-0 opacity-[0.03] pointer-events-none hidden lg:block" style="transform: translate(20%, -20%);">
-                        <svg width="400" height="400" viewBox="0 0 24 24" fill="var(--sage)">
-                            <path d="M10 5a2 2 0 1 1 4 0c0 2.5-2 2.5-2 5m0 0v4m2 0a2 2 0 1 1-4 0c0-2.5 2-2.5 2-5m-3 10c-1 1-2 1-3 0s-1-2 0-3m9 3c1 1 2 1 3 0s1-2 0-3"/>
-                        </svg>
+                        <svg width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sage);"><path d="M10 5c0-3 1.5-3 2-3s2 0 2 3c0 2.5-2 2.5-2 5" />
+<path d="M14 5c0-3-1.5-3-2-3s-2 0-2 3c0 2.5 2 2.5 2 5" />
+<path d="M12 10v4" />
+<circle cx="12" cy="17" r="3" />
+<path d="M9 19c-1 1-2 1-3 0s-1-2 0-3" />
+<path d="M15 19c1 1 2 1 3 0s1-2 0-3" /></svg>
                     </div>
                     </div>
                 </header>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                     <!-- Primary Financials -->
-                    <div class="card p-8 text-white xl:col-span-1 h-full flex flex-col justify-between" style="background: linear-gradient(135deg, var(--sage-deep), var(--ocean-deep)); border: none; box-shadow: 0 20px 40px -10px rgba(61,112,128,0.25);">
+                    <div class="card p-10 text-white flex flex-col justify-between" style="background: linear-gradient(135deg, var(--sage-deep), var(--ocean-deep)); border: none; box-shadow: 0 20px 40px -10px rgba(61,112,128,0.25);">
                         <div>
-                            <p class="text-[11px] font-black text-[#9C8A7A] uppercase tracking-widest mb-1">Annual Take-Home (Est)</p>
-                            <h3 id="dash-takehome" class="text-4xl font-black text-[#6B8C7A]">$0</h3>
-                            <p class="text-xs text-[#9C8A7A] mt-4 leading-relaxed">Tracking toward your $100,000 net profit baseline for Section 199A QBI maximization.</p>
+                            <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Annual Take-Home (Est)</p>
+                            <h3 id="dash-takehome" class="text-5xl font-black text-[var(--sage-pale)]">$0</h3>
+                            <p class="text-xs text-white/50 mt-6 leading-relaxed">Tracking toward your $100,000 net profit goal. Optimized for Section 199A QBI maximization.</p>
                         </div>
-                        <div class="mt-6">
-                            <div class="flex justify-between text-xs mb-1"><span class="text-[#9C8A7A]">Profit Target</span><span id="profit-target-percent" class="font-bold text-[#6B8C7A]">0%</span></div>
-                            <div class="w-full bg-[#3A3830] h-2 rounded-full overflow-hidden">
-                                <div id="profit-progress" class="bg-[var(--sage)] h-full transition-all duration-1000" style="width: 0%"></div>
+                        <div class="mt-10">
+                            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2"><span class="text-white/40">Profit Target</span><span id="profit-target-percent" class="text-[var(--sage-pale)]">0%</span></div>
+                            <div class="w-full bg-black/20 h-2 rounded-full overflow-hidden">
+                                <div id="profit-progress" class="bg-[var(--sage-pale)] h-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Compliance / Tax Deadlines -->
-                    <div class="card p-8 border-t-4 border-[var(--ocean)] shadow-md h-full flex flex-col justify-between cursor-pointer hover:shadow-lg transition-all" onclick="switchTab('taxes')">
+                    <div class="card p-10 flex flex-col justify-between cursor-pointer hover:shadow-2xl transition-all group" onclick="switchTab('taxes')">
                         <div>
-                            <div class="flex justify-between items-start mb-4">
-                                <p class="text-[11px] font-black text-[var(--text-soft)] uppercase tracking-widest">Next Tax Milestone</p>
-                                <i data-lucide="calendar-check" class="w-5 h-5 text-[var(--ocean)]"></i>
+                            <div class="flex justify-between items-start mb-6">
+                                <p class="text-[10px] font-black text-[var(--text-soft)] uppercase tracking-widest">Next Tax Milestone</p>
+                                <div class="w-10 h-10 rounded-full bg-[var(--ocean-soft)]/20 flex items-center justify-center text-[var(--ocean)] group-hover:bg-[var(--ocean)] group-hover:text-white transition-colors">
+                                    <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                                </div>
                             </div>
-                            <h3 id="dash-milestone-date" class="text-3xl font-black text-[#2C2511] mb-1">...</h3>
-                            <p id="dash-milestone-label" class="text-sm font-bold text-[#5C4A3A]">Calculating...</p>
+                            <h3 id="dash-milestone-date" class="text-4xl font-black text-[var(--charcoal)] mb-1">...</h3>
+                            <p id="dash-milestone-label" class="text-sm font-bold text-[var(--text-mid)]">Calculating...</p>
                         </div>
-                        <div class="mt-6 p-4 rounded-xl bg-[var(--ocean-soft)]/20 border border-[var(--ocean)]/20">
-                            <p class="text-[10px] font-bold text-[var(--ocean-deep)] uppercase tracking-wider mb-2">Quarterly Action</p>
-                            <p id="dash-milestone-action" class="text-xs font-semibold text-[var(--charcoal)] lowercase leading-relaxed">Select to view your compliance checklist and estimated payments.</p>
+                        <div class="mt-8 p-5 rounded-2xl bg-[var(--linen)] border border-[var(--border-soft)]">
+                            <p class="text-[10px] font-bold text-[var(--ocean-deep)] uppercase tracking-widest mb-2">Quarterly Action</p>
+                            <p id="dash-milestone-action" class="text-xs font-medium text-[var(--text-mid)] leading-relaxed">Select to view your compliance checklist and estimated payments.</p>
                         </div>
-                    </div>
-                            <h3 class="text-3xl font-black text-[#2C2511] mb-1">April 15th</h3>
-                            <p class="text-sm font-bold text-[#5C4A3A]">Q1 Estimated Tax Payment</p>
-                        </div>
-                        <ul class="text-[11px] font-bold text-[#8A7A6A] mt-6 space-y-3">
-                            <li class="flex gap-3 items-center"><i data-lucide="circle-check" class="w-4 h-4 text-[#4A6657]"></i> Annual Report Filed (AZCC)</li>
-                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-[#C0B0A0]"></i> Prepare CPA Profit/Loss</li>
-                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-[#C0B0A0]"></i> Audit Equipment Depreciation</li>
-                        </ul>
                     </div>
 
-                    </div>
-                        <div class="space-y-3 mt-4">
-                            <div class="flex justify-between text-xs p-2.5 bg-[#FAF8F3] rounded-lg"><span class="font-bold text-[#4A4030]">Retainers Pending</span><span class="text-[#8A7A6A] font-bold">2</span></div>
-                            <div class="flex justify-between text-xs p-2.5 bg-[#FAF8F3] rounded-lg"><span class="font-bold text-[#4A4030]">Contract Signatures</span><span class="text-[#8A7A6A] font-bold">1</span></div>
-                            <div class="flex justify-between text-xs p-2.5 bg-[#FAF8F3] rounded-lg"><span class="font-bold text-[#4A4030]">Upcoming Shoots</span><span class="text-[#8A7A6A] font-bold">3</span></div>
+                    <!-- Operational Health -->
+                    <div class="card p-10 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-6">
+                                <p class="text-[10px] font-black text-[var(--text-soft)] uppercase tracking-widest">Legal Veil Status</p>
+                                <div class="w-10 h-10 rounded-full bg-[var(--sage-pale)] flex items-center justify-center text-[var(--sage-deep)]">
+                                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <h3 id="dash-protection" class="text-5xl font-black text-[var(--sage-deep)] tracking-tighter">0%</h3>
+                                <p class="text-xs font-bold text-[var(--text-soft)] uppercase tracking-widest">Protected</p>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <p class="text-xs font-medium text-[var(--text-mid)] mb-4">Complete your <span class="font-bold underline cursor-pointer" onclick="switchTab('taxes')">Compliance Checklist</span> to strengthen your corporate veil.</p>
+                            <div class="flex -space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-[var(--sage-pale)] border-2 border-white flex items-center justify-center text-[8px] font-bold">AZ</div>
+                                <div class="w-8 h-8 rounded-full bg-[var(--ocean-soft)] border-2 border-white flex items-center justify-center text-[8px] font-bold">IRS</div>
+                                <div class="w-8 h-8 rounded-full bg-[var(--parchment)] border-2 border-white flex items-center justify-center text-[8px] font-bold opacity-50">+</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <section class="card p-8">
                         <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
                             <i data-lucide="zap" class="w-5 h-5 text-amber-500 fill-amber-500"></i> Operational Priorities
@@ -430,7 +440,7 @@
                     </div>
                     
                     <div class="card p-8 bg-[#2C2A22] text-white flex flex-col justify-center">
-                        <div class="mb-6 pb-6 border-b border-slate-700">
+                        <div class="mb-6 pb-6 border-b border-var(--border)">
                             <p class="text-[10px] text-[#9C8A7A] font-bold uppercase mb-1">Estimated Tax Savings</p>
                             <h3 id="analyze-savings" class="text-3xl font-black text-[#6B8C7A]">+$0</h3>
                             <p id="analyze-warning" class="text-xs text-rose-400 mt-2 hidden">⚠️ This category is not deductible.</p>
@@ -536,7 +546,7 @@
                                 <h3 id="pkg-mvp" class="text-5xl font-black text-indigo-400">$0</h3>
                                 <p class="text-xs text-[#9C8A7A] mt-2">The floor you must charge to hit your income goal after all overhead.</p>
                             </div>
-                            <div class="border-t border-slate-700 pt-5 grid grid-cols-2 gap-4">
+                            <div class="border-t border-var(--border) pt-5 grid grid-cols-2 gap-4">
                                 <div>
                                     <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Effective Hourly Rate</p>
                                     <h4 id="pkg-hourly" class="text-2xl font-black text-amber-400">$0/hr</h4>
@@ -546,7 +556,7 @@
                                     <h4 id="pkg-overhead-per-shoot" class="text-2xl font-black text-rose-400">$0</h4>
                                 </div>
                             </div>
-                            <div id="pkg-eval-section" class="border-t border-slate-700 pt-5 hidden">
+                            <div id="pkg-eval-section" class="border-t border-var(--border) pt-5 hidden">
                                 <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-3">Package Evaluation</p>
                                 <div class="grid grid-cols-2 gap-3">
                                     <div class="bg-[#3A3830] rounded-xl p-3">
@@ -605,12 +615,12 @@
                                 <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Total Travel Cost</p>
                                 <h4 id="dest-total-cost" class="text-3xl font-black text-rose-400">$0</h4>
                             </div>
-                            <div class="border-t border-slate-700 pt-6">
+                            <div class="border-t border-var(--border) pt-6">
                                 <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Travel Write-Off Value (Est.)</p>
                                 <h4 id="dest-writeoff" class="text-2xl font-black text-amber-400">$0</h4>
                                 <p class="text-xs text-[#9C8A7A] mt-1">Flights, hotel &amp; car: 100% deductible. Meals: 50%.</p>
                             </div>
-                            <div class="border-t border-slate-700 pt-6">
+                            <div class="border-t border-var(--border) pt-6">
                                 <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">True Take-Home Margin</p>
                                 <h4 id="dest-net-margin" class="text-4xl font-black text-[#6B8C7A]">$0</h4>
                                 <p id="dest-margin-pct" class="text-xs text-[#9C8A7A] mt-1">&mdash;</p>
@@ -1034,7 +1044,7 @@
 
                 <h3 class="text-xl font-black text-[#3C3520] border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="credit-card" class="w-5 h-5 text-[#4A6657]"></i> Tax-Optimized Credit Lines</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div class="card p-6 border-l-4 border-slate-900 bg-[#2C2A22] text-white flex flex-col shadow-md">
+                    <div class="card p-6 border-l-4 border-var(--charcoal) bg-[#2C2A22] text-white flex flex-col shadow-md">
                         <h4 class="font-black text-lg flex items-center justify-between">Amex Blue Business Plus <i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i></h4>
                         <p class="text-sm text-[#9C8A7A] mt-2 leading-relaxed">The holy grail of photography cards. An un-capped 2X points on every single purchase up to $50k/yr, perfectly subsidizing your destination travel.</p>
                         <a href="https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/american-express-blue-business-plus-credit-card-amex/" target="_blank" class="mt-auto mt-6 block text-center py-3 bg-[#6B8C7A] text-white rounded-xl text-xs font-bold hover:bg-[#4A6657] transition">Apply for BBP</a>
@@ -1246,9 +1256,9 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Drafting -->
-                    <div class="bg-[#FAF8F3] rounded-2xl p-6 border border-slate-100">
+                    <div class="bg-[#FAF8F3] rounded-2xl p-6 border border-var(--border-soft)">
                         <h4 class="text-[11px] font-black uppercase tracking-widest text-[#8A7A6A] mb-4 flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span> Drafting / Concept
+                            <span class="w-2.5 h-2.5 rounded-full bg-var(--text-soft) inline-block"></span> Drafting / Concept
                         </h4>
                         <div id="social-col-draft" class="space-y-3 min-h-[200px]"></div>
                     </div>
@@ -1967,7 +1977,7 @@
                     <h5 class="font-bold text-lg ${comp.tptLicense ? 'text-[#6B8C7A]' : 'text-rose-400'} mb-1">Due: ${tptDueStr}</h5>
                     ${tptNote}
                 </div>
-                <div class="p-5 bg-[#3A3830] rounded-2xl border border-slate-700">
+                <div class="p-5 bg-[#3A3830] rounded-2xl border border-var(--border)">
                     <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Q1 Estimated Taxes</p>
                     <h5 class="font-bold text-lg text-rose-400 mb-1">Due: Apr 15, ${new Date().getFullYear()}</h5>
                     <p class="text-xs text-[#C0B0A0]">IRS Form 1040-ES due if you expect to owe >$1,000 this year.</p>
@@ -2318,7 +2328,7 @@
 
             workflows.forEach(t => {
                 const label = document.createElement('label');
-                label.className = `flex justify-between items-start gap-3 p-4 bg-[#FAF8F3] border border-slate-100 rounded-xl cursor-pointer hover:bg-[#F4F0E6] transition group ${t.completed ? 'opacity-50' : ''}`;
+                label.className = `flex justify-between items-start gap-3 p-4 bg-[#FAF8F3] border border-var(--border-soft) rounded-xl cursor-pointer hover:bg-[#F4F0E6] transition group ${t.completed ? 'opacity-50' : ''}`;
                 label.innerHTML = `
                     <div class="flex items-start gap-4 flex-grow">
                         <input type="checkbox" onchange="toggleWorkflowTask('${t.id}', this.checked)" ${t.completed ? 'checked' : ''} class="mt-1 w-5 h-5 text-indigo-600 rounded border-[#D8D0C0]">
@@ -2406,7 +2416,7 @@
                 const isUrgent = remaining <= 12;
                 
                 leadsList.innerHTML += `
-                    <div class="flex flex-col p-4 bg-[#FAF8F3] border ${isUrgent ? 'border-rose-300' : 'border-slate-100'} rounded-xl relative group">
+                    <div class="flex flex-col p-4 bg-[#FAF8F3] border ${isUrgent ? 'border-rose-300' : 'border-var(--border-soft)'} rounded-xl relative group">
                         <button onclick="deleteCRMLead('${l.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-[#8C5353] transition"><i data-lucide="x" class="w-4 h-4"></i></button>
                         <div class="flex justify-between items-start mb-2 pr-6">
                             <span class="font-bold text-sm text-[#3C3520]">${l.name}</span>
@@ -2425,21 +2435,21 @@
                 const retainer = c.pkgPrice * 0.5;
                 const balance = c.pkgPrice - retainer;
                 bookedList.innerHTML += `
-                    <div class="p-5 border border-slate-700 bg-[#3A3830] rounded-xl relative group">
+                    <div class="p-5 border border-var(--border) bg-[#3A3830] rounded-xl relative group">
                         <button onclick="deleteBooking('${c.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-[#8C5353] transition"><i data-lucide="trash" class="w-4 h-4"></i></button>
                         <div class="flex justify-between items-center mb-4 pr-6">
                             <h5 class="font-bold text-sm text-white">${c.name}</h5>
-                            <span class="text-[10px] font-black tracking-widest uppercase text-[#9C8A7A] bg-[#2C2A22] px-2 py-1 rounded shadow-sm border border-slate-700">${c.shootDate}</span>
+                            <span class="text-[10px] font-black tracking-widest uppercase text-[#9C8A7A] bg-[#2C2A22] px-2 py-1 rounded shadow-sm border border-var(--border)">${c.shootDate}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <button onclick="toggleRetainer('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.retainerPaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-slate-700 hover:border-slate-500'}">
+                            <button onclick="toggleRetainer('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.retainerPaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-var(--border) hover:border-var(--text-soft)'}">
                                 <div class="flex justify-between w-full items-center mb-1">
                                     <span class="text-[9px] font-bold uppercase tracking-widest text-[#9C8A7A]">50% Retainer</span>
                                     <i data-lucide="check-circle" class="w-3 h-3 ${c.retainerPaid ? 'text-[#6B8C7A]' : 'text-[#5C4A3A]'}"></i>
                                 </div>
                                 <span class="font-black text-sm ${c.retainerPaid ? 'text-[#6B8C7A]' : 'text-[#C0B0A0]'}">$${retainer.toLocaleString()}</span>
                             </button>
-                            <button onclick="toggleBalance('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.balancePaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-slate-700 hover:border-slate-500'}">
+                            <button onclick="toggleBalance('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.balancePaid ? 'bg-emerald-900/30 border-[#4A6657]/50' : 'bg-[#2C2A22] border-var(--border) hover:border-var(--text-soft)'}">
                                 <div class="flex justify-between w-full items-center mb-1">
                                     <span class="text-[9px] font-bold uppercase tracking-widest text-[#9C8A7A]">Final Balance</span>
                                     <i data-lucide="check-circle" class="w-3 h-3 ${c.balancePaid ? 'text-[#6B8C7A]' : 'text-[#5C4A3A]'}"></i>
