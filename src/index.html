@@ -239,6 +239,42 @@
                         </div>
                     </div>
                 </div>
+
+                <h3 class="text-2xl font-black text-slate-900 mt-12 mb-6 tracking-tight">IRS 2025 Fast Track Calculators</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Section 179 -->
+                    <div class="card p-6 border-t-4 border-indigo-600">
+                        <h4 class="font-black text-slate-800 mb-2">📸 Section 179</h4>
+                        <p class="text-xs text-slate-500 mb-4">100% deduction on camera gear placed in service in 2025.</p>
+                        <input type="number" id="gear-cost" placeholder="Total Cost ($)" class="w-full px-4 py-3 bg-slate-50 border rounded-xl mb-4" oninput="calcSec179()">
+                        <div class="bg-indigo-50 p-4 rounded-xl text-indigo-900 text-center">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-700/70">Est. Tax Cash Saved</p>
+                            <h5 id="sec179-saved" class="text-3xl font-black mt-1">$0</h5>
+                        </div>
+                    </div>
+
+                    <!-- Mileage -->
+                    <div class="card p-6 border-t-4 border-emerald-600">
+                        <h4 class="font-black text-slate-800 mb-2">🚗 2025 IRS Mileage</h4>
+                        <p class="text-xs text-slate-500 mb-4">Automatically multiply recorded gig miles by $0.70/mile.</p>
+                        <input type="number" id="mileage-input" placeholder="Total Miles Driven" class="w-full px-4 py-3 bg-slate-50 border rounded-xl mb-4" oninput="calcMileage()">
+                        <div class="bg-emerald-50 p-4 rounded-xl text-emerald-900 text-center">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-700/70">Total Write-Off</p>
+                            <h5 id="mileage-deduction" class="text-3xl font-black mt-1">$0</h5>
+                        </div>
+                    </div>
+
+                    <!-- Home Office -->
+                    <div class="card p-6 border-t-4 border-rose-600">
+                        <h4 class="font-black text-slate-800 mb-2">🏠 Home Office</h4>
+                        <p class="text-xs text-slate-500 mb-4">Simplified Method: $6 per sq. ft. (Max 300 sq. ft / $1,800).</p>
+                        <input type="number" id="office-sqft" placeholder="Square Footage" max="300" class="w-full px-4 py-3 bg-slate-50 border rounded-xl mb-4" oninput="calcHomeOffice()">
+                        <div class="bg-rose-50 p-4 rounded-xl text-rose-900 text-center">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-rose-700/70">Total Write-Off</p>
+                            <h5 id="office-deduction" class="text-3xl font-black mt-1">$0</h5>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Tab: Tax Planner -->
@@ -483,9 +519,23 @@
                         </div>
                         
                         <div class="mt-8 border-t pt-8">
+                            <h5 class="font-bold text-sm mb-4">Arizona Compliance Registry</h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" id="tpt-license" placeholder="TPT License No." class="px-4 py-3 border rounded-xl" oninput="saveComplianceInfo()">
+                                <select id="tpt-freq" class="px-4 py-3 border rounded-xl" onchange="saveComplianceInfo()">
+                                    <option value="monthly">Monthly Filing</option>
+                                    <option value="quarterly">Quarterly Filing</option>
+                                    <option value="annual">Annual Filing</option>
+                                </select>
+                                <input type="text" id="stat-agent" placeholder="Statutory Agent Name" class="px-4 py-3 border rounded-xl" oninput="saveComplianceInfo()">
+                                <input type="date" id="agent-renewal" class="px-4 py-3 border rounded-xl text-slate-500" onchange="saveComplianceInfo()">
+                            </div>
+                        </div>
+
+                        <div class="mt-8 border-t pt-8">
                             <h5 class="font-bold text-sm mb-4">Add Custom Compliance Task</h5>
                             <div class="flex gap-4">
-                                <input type="text" id="new-check-title" placeholder="Requirement (e.g., Annual Report)" class="px-4 py-2 border rounded-xl flex-grow">
+                                <input type="text" id="new-check-title" placeholder="Requirement (e.g., Renew domain)" class="px-4 py-2 border rounded-xl flex-grow">
                                 <button onclick="addCustomCheck()" class="bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-emerald-700">Add</button>
                             </div>
                         </div>
@@ -734,6 +784,19 @@
                 document.getElementById('app-content').classList.add('hidden');
             }
 
+            // Restore Compliance Data
+            const comp = window.StateStore.state.compliance || {};
+            if(comp.tptLicense) document.getElementById('tpt-license').value = comp.tptLicense;
+            if(comp.tptFilingFrequency) document.getElementById('tpt-freq').value = comp.tptFilingFrequency;
+            if(comp.statutoryAgentName) document.getElementById('stat-agent').value = comp.statutoryAgentName;
+            if(comp.agentRenewalDate) document.getElementById('agent-renewal').value = comp.agentRenewalDate;
+
+            // Restore Write-Off Sub-calculators
+            const wo = window.StateStore.state.writeoffs || {};
+            if(wo.gearCost) { document.getElementById('gear-cost').value = wo.gearCost; setTimeout(calcSec179, 100); }
+            if(wo.miles) { document.getElementById('mileage-input').value = wo.miles; calcMileage(); }
+            if(wo.sqft) { document.getElementById('office-sqft').value = wo.sqft; calcHomeOffice(); }
+
             // Create compliance calendar
             renderComplianceCalendar();
 
@@ -747,6 +810,22 @@
                 c.addEventListener('change', updateVeilScore);
             });
             updateVeilScore();
+        }
+
+        function saveComplianceInfo() {
+            const tptLicense = document.getElementById('tpt-license').value.trim();
+            const tptFilingFrequency = document.getElementById('tpt-freq').value;
+            const statutoryAgentName = document.getElementById('stat-agent').value.trim();
+            const agentRenewalDate = document.getElementById('agent-renewal').value;
+
+            window.StateStore.update('compliance', {
+                tptLicense,
+                tptFilingFrequency,
+                statutoryAgentName,
+                agentRenewalDate
+            });
+
+            renderComplianceCalendar();
         }
 
         function finishSetup() {
@@ -960,6 +1039,36 @@
             }
         }
 
+        function saveWriteoffs() {
+            window.StateStore.update('writeoffs', {
+                gearCost: document.getElementById('gear-cost').value,
+                miles: document.getElementById('mileage-input').value,
+                sqft: document.getElementById('office-sqft').value
+            });
+        }
+
+        function calcSec179() {
+            const cost = parseFloat(document.getElementById('gear-cost').value) || 0;
+            // Best effort grab of dynamic marginal rate, default to 25% if unseen
+            const rateStr = document.getElementById('effective-rate').innerText.replace('%', '');
+            const marginalRate = (parseFloat(rateStr) / 100) || 0.25; 
+            document.getElementById('sec179-saved').innerText = `+$${Math.round(cost * marginalRate).toLocaleString()}`;
+            saveWriteoffs();
+        }
+
+        function calcMileage() {
+            const miles = parseFloat(document.getElementById('mileage-input').value) || 0;
+            document.getElementById('mileage-deduction').innerText = `$${Math.round(miles * 0.70).toLocaleString()}`;
+            saveWriteoffs();
+        }
+
+        function calcHomeOffice() {
+            let sqft = parseFloat(document.getElementById('office-sqft').value) || 0;
+            if (sqft > 300) sqft = 300; // IRS Cap is 300 sq ft for simplified method
+            document.getElementById('office-deduction').innerText = `$${Math.round(sqft * 6).toLocaleString()}`;
+            saveWriteoffs();
+        }
+
         function renderComplianceCalendar() {
             const container = document.getElementById('compliance-calendar');
             if(!container) return;
@@ -981,11 +1090,35 @@
 
             const options = { month: 'short', day: 'numeric', year: 'numeric' };
 
+            const comp = window.StateStore.state.compliance || {};
+            let tptNote = `<p class="text-xs text-slate-300">Set your TPT License and frequency in the Legal tab.</p>`;
+            let tptDueStr = 'Pending Setup';
+
+            // AZ TPT Deadlines calculation
+            if (comp.tptFilingFrequency) {
+                const now = new Date();
+                let nextTptDue = new Date(now.getFullYear(), now.getMonth() + 1, 20); // Default monthly: 20th of next month
+                
+                if (comp.tptFilingFrequency === 'quarterly') {
+                    // Q1: Apr 20, Q2: Jul 20, Q3: Oct 20, Q4: Jan 20
+                    const m = now.getMonth();
+                    if (m <= 2) nextTptDue = new Date(now.getFullYear(), 3, 20);
+                    else if (m <= 5) nextTptDue = new Date(now.getFullYear(), 6, 20);
+                    else if (m <= 8) nextTptDue = new Date(now.getFullYear(), 9, 20);
+                    else nextTptDue = new Date(now.getFullYear() + 1, 0, 20);
+                } else if (comp.tptFilingFrequency === 'annual') {
+                    nextTptDue = new Date(now.getFullYear() + 1, 0, 20); // Jan 20 of next year
+                }
+
+                tptDueStr = nextTptDue.toLocaleDateString('en-US', options);
+                tptNote = `<p class="text-xs text-slate-300">License: <span class="text-white font-mono">${comp.tptLicense || 'Missing'}</span> | AZ Dept. of Revenue TPT Return.</p>`;
+            }
+
             container.innerHTML = `
-                <div class="p-5 bg-slate-800 rounded-2xl border border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">State Compliance Review</p>
-                    <h5 class="font-bold text-lg text-emerald-400 mb-1">Due: ${nextAnniversary.toLocaleDateString('en-US', options)}</h5>
-                    <p class="text-xs text-slate-300">Annual entity review and state fee checks (Anniversary of formation).</p>
+                <div class="p-5 bg-slate-800 rounded-2xl border ${comp.tptLicense ? 'border-emerald-600/50' : 'border-rose-600/50'}">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">AZ TPT (Sales Tax) Return</p>
+                    <h5 class="font-bold text-lg ${comp.tptLicense ? 'text-emerald-400' : 'text-rose-400'} mb-1">Due: ${tptDueStr}</h5>
+                    ${tptNote}
                 </div>
                 <div class="p-5 bg-slate-800 rounded-2xl border border-slate-700">
                     <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Q1 Estimated Taxes</p>
