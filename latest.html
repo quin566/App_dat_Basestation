@@ -1351,48 +1351,43 @@
             const finalBody = document.getElementById('email-preview-body').innerText;
             
             if(activeReplyTarget) {
-                // Phase 6 Native SMTP Pipeline Deployment
-                const creds = window.StateStore.state.emailSettings;
-                if(!creds || !creds.address || !creds.appPassword) return alert("Fatal Logic Error: No AppPassword state found.");
-
                 const btn = document.getElementById('btn-native-reply');
                 const htmlBackup = btn.innerHTML;
-                btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...';
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                btn.disabled = true;
-
-                const payload = {
-                    creds,
-                    to: activeReplyTarget.fromEmail || activeReplyTarget.from,
-                    subject: finalSub,
-                    body: finalBody,
-                    inReplyTo: activeReplyTarget.messageId
-                };
-
-                const res = await window.electronAPI.sendReply(payload);
-                btn.disabled = false;
                 
-                if(res.success) {
-                    btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Sent Natively!';
-                    btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
-                    btn.classList.replace('hover:bg-indigo-700', 'hover:bg-emerald-700');
+                // Strip any existing brackets
+                const cleanId = activeReplyTarget.messageId.replace(/[<>]/g, '');
+                
+                // Invisibly copy the generated template to the user's clipboard
+                await navigator.clipboard.writeText(finalBody);
+                
+                // Deep-link Apple Mail to force the specific email thread to pop open on the screen
+                const messageUrl = `message://%3c${cleanId}%3e`;
+                window.location.href = messageUrl;
+
+                btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Opened in Mail!';
+                btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+                btn.classList.replace('hover:bg-indigo-700', 'hover:bg-emerald-700');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                
+                // Instruct the user
+                document.getElementById('reply-target-warning').innerHTML = "<b>Template Copied!</b> Simply hit <b>Reply</b> in Apple Mail and <b>Paste</b> your template!";
+                document.getElementById('reply-target-warning').classList.replace('bg-blue-100', 'bg-yellow-100');
+                document.getElementById('reply-target-warning').classList.replace('text-blue-800', 'text-yellow-800');
+                
+                setTimeout(() => {
+                    // Reset
+                    activeReplyTarget = null;
+                    document.getElementById('reply-target-warning').classList.add('hidden');
+                    document.getElementById('reply-target-warning').classList.replace('bg-yellow-100', 'bg-blue-100');
+                    document.getElementById('reply-target-warning').classList.replace('text-yellow-800', 'text-blue-800');
+                    btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> Open Mail App';
+                    btn.classList.replace('bg-emerald-600', 'bg-blue-600');
+                    btn.classList.replace('hover:bg-emerald-700', 'hover:bg-blue-700');
                     if (typeof lucide !== 'undefined') lucide.createIcons();
-                    setTimeout(() => {
-                        // Reset thread injection state
-                        activeReplyTarget = null;
-                        document.getElementById('reply-target-warning').classList.add('hidden');
-                        btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> Open Mail App';
-                        btn.classList.replace('bg-emerald-600', 'bg-blue-600');
-                        btn.classList.replace('hover:bg-emerald-700', 'hover:bg-blue-700');
-                        if (typeof lucide !== 'undefined') lucide.createIcons();
-                        livePreviewEmail(); // unlock subject line
-                    }, 3000);
-                } else {
-                    alert("SMTP Submission Failed: " + res.error);
-                    btn.innerHTML = htmlBackup;
-                }
+                    livePreviewEmail();
+                }, 6000);
+
             } else {
-                // Fallback Phase 5 Local Handoff
                 const link = `mailto:?subject=${encodeURIComponent(finalSub)}&body=${encodeURIComponent(finalBody)}`;
                 window.location.href = link;
             }

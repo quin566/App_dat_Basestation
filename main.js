@@ -21,7 +21,7 @@ ipcMain.handle('fetch-inbox', async (event, creds) => {
         port: 993,
         tls: true,
         authTimeout: 10000,
-        tlsOptions: { rejectUnauthorized: false }
+        tlsOptions: { servername: 'imap.gmail.com' }
       }
     };
     
@@ -29,20 +29,19 @@ ipcMain.handle('fetch-inbox', async (event, creds) => {
     await connection.openBox('INBOX');
     
     const searchCriteria = ['ALL'];
-    const fetchOptions = { bodies: ['HEADER', 'TEXT'], struct: true, markSeen: false };
+    const fetchOptions = { bodies: [''], markSeen: false };
     
     let results = await connection.search(searchCriteria, fetchOptions);
     results = results.slice(-20).reverse(); // Last 20 emails
     
     const emails = [];
     for (let item of results) {
-      const all = item.parts.find(p => p.which === 'TEXT');
-      const headerPart = item.parts.find(p => p.which === 'HEADER');
-      const bodyStr = headerPart.body + (all ? all.body : '');
-      const parsed = await simpleParser(bodyStr);
+      const rawPayload = item.parts.find(p => p.which === '');
+      const parsed = await simpleParser(rawPayload.body);
       emails.push({
         id: item.attributes.uid,
         messageId: parsed.messageId,
+        references: parsed.references || [],
         subject: parsed.subject || '(No Subject)',
         from: parsed.from ? parsed.from.text : 'Unknown',
         fromEmail: parsed.from && parsed.from.value[0] ? parsed.from.value[0].address : '',
@@ -59,32 +58,52 @@ ipcMain.handle('fetch-inbox', async (event, creds) => {
   }
 });
 
-ipcMain.handle('send-reply', async (event, payload) => {
+const cp = require('node:child_process');
+const util = require('node:util');
+const execPromise = util.promisify(cp.exec);
+
+ipcMain.handle('open-apple-mail-reply', async (event, payload) => {
   try {
-    const { creds, to, subject, body, inReplyTo } = payload;
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: creds.address,
-        pass: creds.appPassword
-      }
-    });
+    const { inReplyTo, body } = payload;
+    if (!inReplyTo) return { success: false, error: "No Message-ID targeted." };
+    
+    // Apple Mail uses raw Message-IDs without angle brackets
+    const cleanId = inReplyTo.replace(/[<>]/g, '');
+    
+    // Escape template body for AppleScript injection
+    const escapedBody = body.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
 
-    const mailOptions = {
-      from: creds.address,
-      to,
-      subject,
-      text: body,
-      inReplyTo: inReplyTo,
-      references: [inReplyTo]
-    };
+    const script = `
+tell application "Mail"
+    try
+        -- Tell Mail to natively search the Inbox for the specific thread
+        set targetMessage to (first message of inbox whose message id is "${cleanId}")
+        
+        -- Spawn the reply draft window
+        set theReply to reply targetMessage with opening window
+        
+        -- Inject the Template at the top while appending the original thread history below
+        tell theReply
+            set content to "${escapedBody}\\n\\n" & content
+        end tell
+        
+        activate
+        return "success"
+    on error errMsg
+        return errMsg
+    end try
+end tell
+    `;
 
-    const info = await transporter.sendMail(mailOptions);
-    return { success: true, info };
+    const { stdout } = await execPromise(`osascript -e '${script.replace(/'/g, "'\\''")}'`);
+    
+    if (stdout.includes('success')) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Could not find that message in your local Apple Mail Inbox. Make sure Apple Mail is fully synced." };
+    }
   } catch (err) {
-    console.error('SMTP Error:', err);
+    console.error('AppleScript Error:', err);
     return { success: false, error: err.message };
   }
 });
@@ -115,10 +134,10 @@ ipcMain.handle('set-state', (event, newState) => {
 const downloadPayload = async () => {
   return new Promise((resolve) => {
     try {
-      const buster = '?t=' + Date.now();
-      const request = net.request(PAYLOAD_URL + buster);
+      const request = net.request(PAYLOAD_URL);
       request.setHeader('User-Agent', 'Electron/AZ-Command-Center');
-      request.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      request.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+      request.setHeader('Pragma', 'no-cache');
       let body = '';
       
       request.on('response', (response) => {
