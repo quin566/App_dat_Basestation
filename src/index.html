@@ -7,97 +7,120 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600;700&display=swap');
 
-        /* ===== LOVE LENS — SOFT FEMININE PALETTE ===== */
+        /* ===== THE LOVE LENS — EXACT SITE PALETTE ===== */
         :root {
-            --cream:        #FAF6F1;
-            --paper:        #F5EDE3;
-            --blush:        #D4A5A5;
-            --blush-soft:   #EDD5D5;
-            --blush-pale:   #F7EDED;
-            --rose:         #B07070;
-            --rose-deep:    #8C5353;
-            --ocean:        #7BAAB8;
-            --ocean-soft:   #B8D4DC;
-            --ocean-deep:   #3D7080;
-            --sage:         #9BB5A0;
-            --mushroom:     #8B7B74;
-            --text-dark:    #2C1E1E;
-            --text-mid:     #5C4040;
-            --text-soft:    #9C8080;
-            --border:       #E8D8D0;
-            --sidebar-bg:   #3D2E2E;
-            --sidebar-mid:  #2E3A40;
-            --sidebar-dark: #1E2A30;
+            --linen:       #EDE8DA;   /* site background */
+            --linen-deep:  #E2DBС9;
+            --parchment:   #F4F0E6;   /* card background */
+            --paper:       #FAF8F3;   /* lightest surface */
+            --sage:        #6B8C7A;   /* primary CTA & accents */
+            --sage-light:  #94B5A3;
+            --sage-deep:   #4A6657;
+            --sage-pale:   #D4E4DC;
+            --olive:       #4A5240;   /* logo / brand text */
+            --charcoal:    #2C2511;   /* headings */
+            --text-mid:    #5A5040;
+            --text-soft:   #8A8070;
+            --border:      #D8D0C0;
+            --border-soft: #E8E0D0;
+            /* ocean personal accent */
+            --ocean:       #7BAAB8;
+            --ocean-soft:  #B8D4DC;
+            --ocean-deep:  #3D7080;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--cream);
-            color: var(--text-dark);
+            font-family: 'Jost', sans-serif;
+            background-color: var(--linen);
+            color: var(--charcoal);
+            font-weight: 400;
         }
 
-        h1, h2, h3, h4 {
+        /* Headings — editorial serif matching site */
+        h1, h2, h3 {
             font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
             letter-spacing: 0.01em;
+            color: var(--charcoal);
+        }
+
+        h4 {
+            font-family: 'Jost', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.03em;
         }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Cards */
+        /* Cards — light parchment */
         .card {
-            background: #FEFAF8;
-            border-radius: 1.5rem;
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 16px rgba(180,130,130,0.07);
+            background: var(--parchment);
+            border-radius: 1.25rem;
+            border: 1px solid var(--border-soft);
+            box-shadow: 0 2px 16px rgba(74,82,64,0.06);
         }
 
-        /* Nav */
-        .nav-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 0.875rem; }
-        .nav-btn:hover { background: rgba(212,165,165,0.15); color: #F7EDED; }
-        .nav-btn.active-tab { background: rgba(212,165,165,0.22) !important; color: #F7EDED !important; }
+        /* Nav buttons — subtle sage on hover */
+        .nav-btn { transition: all 0.2s cubic-bezier(0.4,0,0.2,1); border-radius: 0.75rem; }
+        .nav-btn:hover { background: rgba(107,140,122,0.18); color: #E8F0EC; }
+        .nav-btn.active-tab { background: rgba(107,140,122,0.25) !important; color: var(--parchment) !important; }
 
         /* Inputs */
         input, select, textarea {
-            background: #FAF5F2 !important;
-            border-color: #E0CECE !important;
-            color: var(--text-dark) !important;
-            border-radius: 0.875rem;
+            background: var(--paper) !important;
+            border-color: var(--border) !important;
+            color: var(--charcoal) !important;
+            border-radius: 0.75rem;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--blush) !important;
-            box-shadow: 0 0 0 3px rgba(212,165,165,0.2) !important;
+            border-color: var(--sage) !important;
+            box-shadow: 0 0 0 3px rgba(107,140,122,0.18) !important;
         }
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-        /* Buttons */
-        button { border-radius: 0.875rem; }
+        /* Primary button style — sage green pill (exact site CTA) */
+        .btn-brand {
+            background: var(--sage);
+            color: white;
+            border-radius: 9999px;
+            font-family: 'Jost', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.75rem 1.75rem;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .btn-brand:hover { background: var(--sage-deep); transform: translateY(-1px); }
 
-        /* Scrollbar */
+        /* Scrollbar — sage */
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--cream); }
-        ::-webkit-scrollbar-thumb { background: var(--blush-soft); border-radius: 9999px; }
+        ::-webkit-scrollbar-track { background: var(--linen); }
+        ::-webkit-scrollbar-thumb { background: var(--sage-pale); border-radius: 9999px; }
 
         /* Tooltip */
-        .tax-tooltip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 1.125rem; height: 1.125rem; background: var(--blush-pale); border-radius: 9999px; color: var(--rose); font-weight: bold; font-size: 0.7rem; cursor: help; margin-left: 0.5rem; transition: background 0.2s; }
-        .tax-tooltip:hover { background: var(--blush-soft); color: var(--rose-deep); }
-        .tax-tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 140%; left: 50%; width: 220px; padding: 0.75rem; background: var(--text-dark); color: white; border-radius: 0.75rem; font-size: 0.75rem; line-height: 1.5; transform: translateX(-50%); z-index: 50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); pointer-events: none; text-transform: none; font-weight: normal; }
-        .tax-tooltip:hover::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: var(--text-dark) transparent transparent transparent; pointer-events: none; z-index: 50; }
+        .tax-tooltip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 1.125rem; height: 1.125rem; background: var(--sage-pale); border-radius: 9999px; color: var(--sage-deep); font-weight: bold; font-size: 0.7rem; cursor: help; margin-left: 0.5rem; transition: background 0.2s; }
+        .tax-tooltip:hover { background: var(--sage); color: white; }
+        .tax-tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 140%; left: 50%; width: 220px; padding: 0.75rem; background: var(--olive); color: white; border-radius: 0.75rem; font-size: 0.75rem; line-height: 1.5; transform: translateX(-50%); z-index: 50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15); pointer-events: none; text-transform: none; font-weight: normal; }
+        .tax-tooltip:hover::before { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: var(--olive) transparent transparent transparent; pointer-events: none; z-index: 50; }
 
-        /* Canon — soften the red to a muted rose */
-        .canon-gradient { background: linear-gradient(135deg, var(--rose) 0%, var(--rose-deep) 100%); }
+        /* Canon gradient — keep as muted sage for any remaining uses */
+        .canon-gradient { background: linear-gradient(135deg, var(--sage) 0%, var(--sage-deep) 100%); }
 
         /* Resource links */
-        .resource-link { color: var(--ocean-deep); font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem; transition: color 0.2s; }
-        .resource-link:hover { color: var(--ocean); }
+        .resource-link { color: var(--sage-deep); font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem; transition: color 0.2s; }
+        .resource-link:hover { color: var(--ocean-deep); }
 
         /* Wave divider */
-        .wave-divider { height: 2px; background: linear-gradient(90deg, var(--blush-soft), var(--ocean-soft), var(--blush-soft)); border-radius: 9999px; opacity: 0.7; margin: 1.5rem 0; }
+        .wave-divider { height: 2px; background: linear-gradient(90deg, var(--sage-pale), var(--ocean-soft), var(--sage-pale)); border-radius: 9999px; opacity: 0.6; margin: 1.5rem 0; }
 
         @media print {
             body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -137,16 +160,16 @@
     </div>
 
     <!-- Main Content -->
-    <div id="app-content" class="min-h-screen flex flex-col md:flex-row hidden" style="background: var(--cream);">
+    <div id="app-content" class="min-h-screen flex flex-col md:flex-row hidden" style="background: var(--linen);">
         <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-80 text-white p-8 flex-shrink-0 flex flex-col border-r" style="background: linear-gradient(160deg, #4A3535 0%, #2E3D45 60%, #1E2D35 100%); border-color: rgba(212,165,165,0.15);">
+        <aside class="w-full md:w-80 text-white p-8 flex-shrink-0 flex flex-col border-r" style="background: linear-gradient(175deg, #2C2A22 0%, #2A3428 55%, #1E2A24 100%); border-color: rgba(107,140,122,0.2);">
             <div class="flex items-center gap-4 mb-12">
-                <div class="p-2.5 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #D4A5A5 0%, #7BAAB8 100%); box-shadow: 0 4px 12px rgba(123,170,184,0.3);">
+                <div class="p-2.5 rounded-xl" style="background: linear-gradient(135deg, #6B8C7A 0%, #4A6657 100%); box-shadow: 0 4px 12px rgba(74,102,87,0.4);">
                     <i data-lucide="camera" class="w-6 h-6 text-white"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold tracking-tight leading-none" style="font-family: Cormorant Garamond, serif; font-size:1.35rem; font-style:italic; font-weight:600;">The Love Lens</h1>
-                    <p class="text-[10px] uppercase font-black tracking-widest mt-1" style="color: #D4A5A5; letter-spacing: 0.15em;">Command Center</p>
+                    <h1 style="font-family: 'Cormorant Garamond', serif; font-size:1.4rem; font-style:italic; font-weight:600; line-height:1.1;">The Love Lens</h1>
+                    <p class="text-[10px] uppercase font-black tracking-widest mt-1" style="color: #94B5A3; letter-spacing: 0.15em;">Command Center</p>
                 </div>
             </div>
 
@@ -188,18 +211,13 @@
             </nav>
 
             <div class="mt-8 space-y-4">
-                <div class="bg-red-600/10 border border-red-500/20 p-5 rounded-2xl">
-                    <div class="flex items-center gap-2 text-red-400 mb-2">
-                        <i data-lucide="focus" class="w-4 h-4"></i>
-                        <span class="text-[10px] font-bold uppercase tracking-wider">Canon CPS Tracker</span>
-                    </div>
-                    <p class="text-xs text-slate-300 leading-relaxed">
+                <p class="text-xs text-slate-300 leading-relaxed">
                         Platinum Tier: <strong>2-day repair</strong> & $100 service credit.
                     </p>
                 </div>
-                <div class="bg-blue-600/10 border border-blue-500/20 p-5 rounded-2xl">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">AZ TPT Savings</p>
-                    <p class="text-xs text-blue-400 font-bold" id="sidebar-savings">$0 Saved</p>
+                <div class="p-5 rounded-2xl" style="background: rgba(107,140,122,0.12); border: 1px solid rgba(107,140,122,0.25);">
+                    <p class="text-[10px] uppercase font-bold mb-1" style="color: #94B5A3; letter-spacing:0.1em;">AZ Tax Savings</p>
+                    <p class="text-xs font-bold" style="color: #6B8C7A;" id="sidebar-savings">$0 Saved</p>
                 </div>
             </div>
         </aside>
@@ -330,17 +348,6 @@
                                 <span class="text-sm font-semibold">Export Q1 Gross Receipts to CPA</span>
                             </label>
                         </div>
-                    </section>
-                    <section class="card p-8 canon-gradient text-white flex flex-col justify-center shadow-md">
-                         <div class="flex justify-between items-end mb-4">
-                            <div>
-                                <h4 class="text-xl font-bold">Canon Pro Status</h4>
-                                <p class="text-sm text-red-100 mt-1">Target: Platinum Membership</p>
-                            </div>
-                            <span class="text-red-200 font-black text-2xl"><i data-lucide="award" class="w-8 h-8"></i></span>
-                         </div>
-                         <p class="text-sm leading-relaxed mb-6">Get a $100 service voucher and 2-day turnaround on all EOS R bodies and RF glass repairs with your EIN-verified CPS account.</p>
-                         <a href="https://www.usa.canon.com/pro/canon-professional-services" target="_blank" class="bg-white text-red-700 text-center py-3 rounded-xl font-bold text-sm hover:bg-red-50 transition drop-shadow">Access CPS Portal</a>
                     </section>
                 </div>
             </div>
