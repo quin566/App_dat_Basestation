@@ -264,20 +264,6 @@
                 </div>
             </div>
 
-            <!-- 72-Hour Sneak Peek Engine (Batch 33) -->
-            <section id="sneak-peek-engine" class="card p-8 border-l-4 border-amber-400">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <h4 class="text-xl font-black flex items-center gap-2">
-                            <i data-lucide="timer" class="w-5 h-5 text-amber-500"></i> 72-Hour Sneak Peek Engine
-                        </h4>
-                        <p class="text-xs text-slate-500 mt-1">Log a shoot date to start your 72-hour gallery preview delivery countdown.</p>
-                    </div>
-                    <button onclick="promptSneakPeekShoot()" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-sm">+ Log Shoot</button>
-                </div>
-                <div id="sneak-peek-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                </div>
-            </section>
 
             <div id="analyzer" class="tab-content space-y-10">
                 <header>
@@ -930,6 +916,10 @@
                     const stored = await window.electronAPI.getState();
                     if (stored && Object.keys(stored).length > 0) {
                         this.state = { ...defaultState, ...stored };
+                        // Seed pre-loaded templates for existing users who have an empty array saved
+                        if (!this.state.emailTemplates || this.state.emailTemplates.length === 0) {
+                            this.state.emailTemplates = defaultState.emailTemplates;
+                        }
                     }
                 } else {
                     console.warn("Electron IPC unavailable. Falling back to localStorage for dev rendering.");
@@ -1003,9 +993,7 @@
             renderEmailTemplates();
             renderCRM();
             renderSocial();
-            renderSneakPeeks();
             setInterval(renderCRM, 60000);
-            setInterval(renderSneakPeeks, 60000);
             renderWorkflows();
 
             switchTab('dashboard');
@@ -1855,50 +1843,6 @@
         }
 
         // --- 72-HR SNEAK PEEK ENGINE --- //
-        function promptSneakPeekShoot() {
-            const name = prompt('Couple / Client Name (e.g. Sarah & John):');
-            if(!name) return;
-            const dateStr = prompt('Shoot Date (YYYY-MM-DD):');
-            if(!dateStr) return;
-            const shoots = window.StateStore.state.sneakPeeks || [];
-            shoots.push({ id: Date.now().toString(), name, shootDate: dateStr, shootTimestamp: new Date(dateStr).getTime() });
-            window.StateStore.update('sneakPeeks', shoots);
-            renderSneakPeeks();
-        }
-
-        function deleteSneakPeek(id) {
-            let shoots = window.StateStore.state.sneakPeeks || [];
-            shoots = shoots.filter(s => s.id !== id);
-            window.StateStore.update('sneakPeeks', shoots);
-            renderSneakPeeks();
-        }
-
-        function renderSneakPeeks() {
-            const shoots = window.StateStore.state.sneakPeeks || [];
-            const container = document.getElementById('sneak-peek-list');
-            if(!container) return;
-            container.innerHTML = '';
-            const now = Date.now();
-            shoots.forEach(s => {
-                const msSinceShoot = now - s.shootTimestamp;
-                const hoursLeft = Math.max(0, 72 - msSinceShoot / (1000 * 60 * 60)).toFixed(1);
-                const isDone = hoursLeft <= 0;
-                const isUrgent = !isDone && hoursLeft <= 12;
-                container.innerHTML += `
-                    <div class="relative p-5 rounded-2xl border group ${isDone ? 'bg-emerald-50 border-emerald-200' : isUrgent ? 'bg-rose-50 border-rose-300' : 'bg-white border-slate-200'}">
-                        <button onclick="deleteSneakPeek('${s.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-500 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
-                        <p class="font-black text-sm text-slate-800 mb-1">${s.name}</p>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-3">${s.shootDate}</p>
-                        ${isDone
-                            ? '<span class="text-xs font-black text-emerald-600 flex items-center gap-1"><i data-lucide="check-circle" class="w-4 h-4"></i> Sneak Peek Window Passed</span>'
-                            : `<span class="text-xs font-black ${isUrgent ? 'text-rose-600' : 'text-amber-600'} flex items-center gap-1"><i data-lucide="timer" class="w-4 h-4"></i> ${hoursLeft}h remaining</span>`
-                        }
-                    </div>
-                `;
-            });
-            if(shoots.length === 0) container.innerHTML = '<p class="text-xs text-slate-400 italic col-span-3 text-center py-8">No active shoot timers. Click "+ Log Shoot" to start your first 72-hour preview countdown.</p>';
-            if(typeof lucide !== 'undefined') lucide.createIcons();
-        }
 
         // --- SOCIAL MEDIA KANBAN --- //
         function addSocialCard() {
