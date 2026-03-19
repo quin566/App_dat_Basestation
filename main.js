@@ -216,22 +216,17 @@ const getLocalPayloadHash = () => {
 
 const checkForUpdates = async () => {
   console.log('[AutoUpdate] Checking GitHub for new version...');
-  const previousHash = getLocalPayloadHash();
   const success = await downloadPayload();
   if (!success) {
     console.log('[AutoUpdate] Could not reach GitHub. Staying on current version.');
     return;
   }
-  const newHash = getLocalPayloadHash();
-  if (previousHash !== newHash) {
-    console.log('[AutoUpdate] New version detected! Reloading window...');
-    if (mainWindowRef && !mainWindowRef.isDestroyed()) {
-      const userDataPath = app.getPath('userData');
-      const payloadPath = path.join(userDataPath, 'current_payload.html');
-      mainWindowRef.loadFile(payloadPath);
-    }
-  } else {
-    console.log('[AutoUpdate] Already on latest version.');
+  // Always reload after a successful download to guarantee latest version
+  console.log('[AutoUpdate] Downloaded latest version. Reloading window...');
+  if (mainWindowRef && !mainWindowRef.isDestroyed()) {
+    const userDataPath = app.getPath('userData');
+    const payloadPath = path.join(userDataPath, 'current_payload.html');
+    mainWindowRef.loadFile(payloadPath);
   }
 };
 
