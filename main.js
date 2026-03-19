@@ -239,24 +239,18 @@ const createWindow = async () => {
     },
   });
 
-  const payloadSuccess = await downloadPayload();
-  const userDataPath = app.getPath('userData');
-  const payloadPath = path.join(userDataPath, 'current_payload.html');
+  // Always load from src/index.html on startup - this is always the correct, bundled version.
+  // The auto-updater will switch to the downloaded payload when a new version arrives from GitHub.
+  console.log('Launch path: Loading bundled src/index.html');
+  mainWindowRef.loadFile('src/index.html');
 
-  if (payloadSuccess && fs.existsSync(payloadPath)) {
-    console.log('Launch path: Loading dynamic payload from userData');
-    mainWindowRef.loadFile(payloadPath);
-  } else if (fs.existsSync(payloadPath)) {
-    console.log('Launch path: Loading CACHED dynamic payload (offline/failed update)');
-    mainWindowRef.loadFile(payloadPath);
-  } else {
-    console.log('Launch path: Loading baseline static local payload');
-    mainWindowRef.loadFile('src/index.html');
-  }
-
-  // Start the background auto-update daemon
-  setInterval(checkForUpdates, CHECK_INTERVAL_MS);
-  console.log(`[AutoUpdate] Daemon started. Checking every ${CHECK_INTERVAL_MS / 60000} minutes.`);
+  // Kick off update check after a short delay so the window is fully ready
+  setTimeout(() => {
+    checkForUpdates();
+    // Continue checking every 3 minutes
+    setInterval(checkForUpdates, CHECK_INTERVAL_MS);
+    console.log(`[AutoUpdate] Daemon started. Checking every ${CHECK_INTERVAL_MS / 60000} minutes.`);
+  }, 3000);
 };
 
 app.whenReady().then(() => {
