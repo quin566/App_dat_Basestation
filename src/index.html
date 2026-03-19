@@ -1429,6 +1429,7 @@
             sneakPeeks: [],
             socialCards: [],
             complianceChecks: {},
+            totalTax: 12000,
             businessProfile: {},
             compliancePaid: {},
             workflows: [],
@@ -1552,7 +1553,9 @@
             if(wo.sqft) { document.getElementById('office-sqft').value = wo.sqft; calcHomeOffice(); }
 
             // Create compliance calendar
-            renderComplianceCalendar();
+            // Set initial tracker & checklists
+            renderQuarterlyTracker(window.StateStore.state.totalTax || 0);
+            renderComplianceChecklist();
 
             // Load Email Templates & Ops
             renderEmailTemplates();
@@ -1583,7 +1586,8 @@
                 agentRenewalDate
             });
 
-            renderComplianceCalendar();
+            renderQuarterlyTracker(window.StateStore.state.totalTax || 0);
+            renderComplianceChecklist();
         }
 
         function finishSetup() {
@@ -1722,6 +1726,10 @@
             set('fed-bracket',    Math.round(marginalRate * 100) + '%');
             set('sidebar-savings', fmt(totalSaved) + ' Saved');
             set('dash-takehome',  fmt(takehome));
+
+            // Store for tracker and persistence
+            if (window.StateStore) window.StateStore.update('totalTax', totalTax);
+            renderQuarterlyTracker(totalTax);
 
             const mileVal = parseFloat(document.getElementById('mileage-input')?.value) || 0;
             const offVal  = parseFloat(document.getElementById('office-sqft')?.value) || 0;
@@ -1884,63 +1892,102 @@
             saveWriteoffs();
         }
 
-        function renderComplianceCalendar() {
-            const container = document.getElementById('compliance-calendar');
-            if(!container) return;
-            
-            const profile = window.StateStore.state.profile;
-            if(!profile || !profile.date) {
-                container.innerHTML = `<p class="text-sm text-[#8A7A6A]">Awaiting profile initialization...</p>`;
-                return;
-            }
+        // ─── QUARTERLY TRACKER ───────────────────────────────────────────────────
+        function renderQuarterlyTracker(annualTax) {
+            const qPay = Math.round(annualTax / 4);
+            const quarters = [
+                { q: 'Q1 2025', fed: 'April 15, 2025', az: 'April 15, 2025', period: '2025-04-15' },
+                { q: 'Q2 2025', fed: 'June 16, 2025',  az: 'June 16, 2025',  period: '2025-06-16' },
+                { q: 'Q3 2025', fed: 'Sept 15, 2025',  az: 'Sept 15, 2025',  period: '2025-09-15' },
+                { q: 'Q4 2025', fed: 'Jan 15, 2026',   az: 'Jan 15, 2026',   period: '2026-01-15' },
+            ];
+            const container = document.getElementById('quarterly-tracker');
+            if (!container) return;
+            const now = new Date();
 
-            // Split the date string manually to avoid timezone shift bugs (e.g., "2024-03-18")
-            const parts = profile.date.split('-');
-            if(parts.length < 3) return;
-            const formedDate = new Date(parts[0], parts[1] - 1, parts[2]);
-            
-            const nextAnniversary = new Date(formedDate);
-            nextAnniversary.setFullYear(new Date().getFullYear());
-            if (nextAnniversary < new Date()) nextAnniversary.setFullYear(new Date().getFullYear() + 1);
+            container.innerHTML = quarters.map((q, i) => {
+                const due = new Date(q.period);
+                const isPast    = due < now;
+                const isSoon    = !isPast && (due - now) < 30 * 24 * 3600 * 1000;
+                const stateKey  = `q-paid-${i}`;
+                const paid      = (window.StateStore?.state?.compliancePaid || {})[stateKey];
+                const urgency   = !paid && isPast ? 'overdue' : !paid && isSoon ? 'due-soon' : '';
+                return `<div class="card p-5 ${urgency}" style="border:1px solid var(--border-soft); background: white;">
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="q-badge">${q.q}</span>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" ${paid?'checked':''} onchange="markQPaid(${i},this.checked)" class="w-4 h-4" style="accent-color:var(--sage)">
+                            <span class="text-[10px] font-bold" style="color:var(--sage-deep)">Paid</span>
+                        </label>
+                    </div>
+                    <p class="text-xl font-black mb-2" style="color:var(--charcoal)">$${qPay.toLocaleString()}</p>
+                    <p class="text-[10px]" style="color:var(--text-soft)"><strong>Federal:</strong> ${q.fed} (Form 1040-ES)</p>
+                    <p class="text-[10px] mt-0.5" style="color:var(--text-soft)"><strong>AZ:</strong> ${q.az} (Form 140ES)</p>
+                    ${!paid && isPast  ? '<p class="text-[10px] font-bold text-[#c0392b] mt-2">⚠️ Overdue</p>' : ''}
+                    ${!paid && isSoon  ? '<p class="text-[10px] font-bold text-amber-600 mt-2">⏰ Due soon</p>' : ''}
+                </div>`;
+            }).join('');
+        }
 
-            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+        function markQPaid(idx, checked) {
+            if (!window.StateStore) return;
+            const paid = window.StateStore.state.compliancePaid || {};
+            paid[`q-paid-${idx}`] = checked;
+            window.StateStore.update('compliancePaid', paid);
+        }
 
-            const comp = window.StateStore.state.compliance || {};
-            let tptNote = `<p class="text-xs text-[#C0B0A0]">Set your TPT License and frequency in the Legal tab.</p>`;
-            let tptDueStr = 'Pending Setup';
+        // ─── COMPLIANCE CHECKLIST ────────────────────────────────────────────────
+        const COMPLIANCE_ITEMS = [
+            { id:'c1',  q:'Q1 (Jan–Mar)',   text:'Pay Q4 2024 estimated taxes',           sub:'Federal: Jan 15 | AZ: Jan 15 (Form 1040-ES & AZ 140ES)' },
+            { id:'c2',  q:'Q1 (Jan–Mar)',   text:'Reconcile January bank statement',      sub:'Match every transaction to a receipt or invoice' },
+            { id:'c3',  q:'Q1 (Jan–Mar)',   text:'Issue 1099-NEC to any contractors paid $600+', sub:'Due January 31 — use IRS FIRE system or payroll software' },
+            { id:'c4',  q:'Q2 (Apr–Jun)',   text:'File 2024 tax return (or extension)',   sub:'Federal Form 1040 + AZ Form 140 — due April 15' },
+            { id:'c5',  q:'Q2 (Apr–Jun)',   text:'Pay Q1 2025 estimated taxes',           sub:'Federal: April 15 | AZ: April 15' },
+            { id:'c6',  q:'Q2 (Apr–Jun)',   text:'Reconcile Q1 bank statements',         sub:'January, February, March' },
+            { id:'c7',  q:'Q3 (Jul–Sep)',   text:'Pay Q2 2025 estimated taxes',           sub:'Federal: June 16 | AZ: June 16' },
+            { id:'c8',  q:'Q3 (Jul–Sep)',   text:'Reconcile Q2 bank statements',         sub:'April, May, June' },
+            { id:'c9',  q:'Q3 (Jul–Sep)',   text:'Renew TPT license if selling prints',   sub:'Annual renewal at azdor.gov — usually $12' },
+            { id:'c10', q:'Q4 (Oct–Dec)',   text:'Pay Q3 2025 estimated taxes',           sub:'Federal: Sept 15 | AZ: Sept 15' },
+            { id:'c11', q:'Q4 (Oct–Dec)',   text:'Reconcile Q3 bank statements',         sub:'July, August, September' },
+            { id:'c12', q:'Annual',         text:'Confirm statutory agent is current',    sub:'Check AZ ACC (azcc.gov) — no annual report required in AZ ✅' },
+            { id:'c13', q:'Annual',         text:'Review and update LLC Operating Agreement', sub:'Especially if income or business structure changed this year' },
+            { id:'c14', q:'Annual',         text:'Max out SEP-IRA before April 15',      sub:'Deadline to contribute for prior year — most powerful tax lever you have' },
+        ];
 
-            // AZ TPT Deadlines calculation
-            if (comp.tptFilingFrequency) {
-                const now = new Date();
-                let nextTptDue = new Date(now.getFullYear(), now.getMonth() + 1, 20); // Default monthly: 20th of next month
-                
-                if (comp.tptFilingFrequency === 'quarterly') {
-                    // Q1: Apr 20, Q2: Jul 20, Q3: Oct 20, Q4: Jan 20
-                    const m = now.getMonth();
-                    if (m <= 2) nextTptDue = new Date(now.getFullYear(), 3, 20);
-                    else if (m <= 5) nextTptDue = new Date(now.getFullYear(), 6, 20);
-                    else if (m <= 8) nextTptDue = new Date(now.getFullYear(), 9, 20);
-                    else nextTptDue = new Date(now.getFullYear() + 1, 0, 20);
-                } else if (comp.tptFilingFrequency === 'annual') {
-                    nextTptDue = new Date(now.getFullYear() + 1, 0, 20); // Jan 20 of next year
-                }
-
-                tptDueStr = nextTptDue.toLocaleDateString('en-US', options);
-                tptNote = `<p class="text-xs text-[#C0B0A0]">License: <span class="text-white font-mono">${comp.tptLicense || 'Missing'}</span> | AZ Dept. of Revenue TPT Return.</p>`;
-            }
-
-            container.innerHTML = `
-                <div class="p-5 bg-[#3A3830] rounded-2xl border ${comp.tptLicense ? 'border-emerald-600/50' : 'border-rose-600/50'}">
-                    <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">AZ TPT (Sales Tax) Return</p>
-                    <h5 class="font-bold text-lg ${comp.tptLicense ? 'text-[#6B8C7A]' : 'text-rose-400'} mb-1">Due: ${tptDueStr}</h5>
-                    ${tptNote}
+        function renderComplianceChecklist() {
+            const container = document.getElementById('compliance-checklist');
+            if (!container) return;
+            const saved  = window.StateStore?.state?.complianceChecks || {};
+            const groups = {};
+            COMPLIANCE_ITEMS.forEach(item => {
+                if (!groups[item.q]) groups[item.q] = [];
+                groups[item.q].push(item);
+            });
+            container.innerHTML = Object.entries(groups).map(([q, items]) => `
+                <div>
+                    <span class="q-badge">${q}</span>
+                    <div class="mt-2 space-y-2">
+                        ${items.map(item => {
+                            const done = saved[item.id];
+                            return `<label class="compliance-item ${done?'done':''} cursor-pointer">
+                                <input type="checkbox" ${done?'checked':''} onchange="saveCheckItem('${item.id}',this.checked,this.closest('.compliance-item'))" class="w-4 h-4 flex-shrink-0">
+                                <div>
+                                    <p class="font-bold text-sm" ${done?'style="text-decoration:line-through;color:var(--text-soft)"':''}>${item.text}</p>
+                                    <p class="text-[11px] mt-0.5" style="color:var(--text-soft)">${item.sub}</p>
+                                </div>
+                            </label>`;
+                        }).join('')}
+                    </div>
                 </div>
-                <div class="p-5 bg-[#3A3830] rounded-2xl border border-slate-700">
-                    <p class="text-[10px] text-[#9C8A7A] font-bold uppercase tracking-widest mb-1">Q1 Estimated Taxes</p>
-                    <h5 class="font-bold text-lg text-rose-400 mb-1">Due: Apr 15, ${new Date().getFullYear()}</h5>
-                    <p class="text-xs text-[#C0B0A0]">IRS Form 1040-ES due if you expect to owe >$1,000 this year.</p>
-                </div>
-            `;
+            `).join('');
+        }
+
+        function saveCheckItem(id, checked, labelEl) {
+            if (!window.StateStore) return;
+            const checks = window.StateStore.state.complianceChecks || {};
+            checks[id] = checked;
+            window.StateStore.update('complianceChecks', checks);
+            if (checked) labelEl.classList.add('done'); else labelEl.classList.remove('done');
         }
 
         // --- EMAIL TEMPLATE LOGIC --- //
