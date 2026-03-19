@@ -76,6 +76,9 @@
                 <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-dashboard">
                     <i data-lucide="layout-grid" class="w-5 h-5"></i> <span class="font-semibold text-sm">Dashboard</span>
                 </button>
+                <button onclick="switchTab('crm')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-crm">
+                    <i data-lucide="users" class="w-5 h-5"></i> <span class="font-semibold text-sm">Client Pipeline</span>
+                </button>
                 <button onclick="switchTab('taxes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-taxes">
                     <i data-lucide="calculator" class="w-5 h-5"></i> <span class="font-semibold text-sm">Tax Planner</span>
                 </button>
@@ -94,6 +97,9 @@
                 <div class="h-px bg-slate-800 my-2"></div>
                 <button onclick="switchTab('emails')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-emails">
                     <i data-lucide="mail" class="w-5 h-5"></i> <span class="font-semibold text-sm">Email Templates</span>
+                </button>
+                <button onclick="switchTab('social')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-social">
+                    <i data-lucide="film" class="w-5 h-5"></i> <span class="font-semibold text-sm">Social Planner</span>
                 </button>
                 <button onclick="switchTab('operations')" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white" id="btn-operations">
                     <i data-lucide="list-checks" class="w-5 h-5"></i> <span class="font-semibold text-sm">Shoot Operations</span>
@@ -120,6 +126,48 @@
         <!-- Main Content Area -->
         <main class="flex-grow p-6 md:p-12 lg:p-16 overflow-y-auto">
             
+            <!-- Tab: Client CRM Pipeline -->
+            <div id="crm" class="tab-content space-y-10">
+                <header>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Client Pipeline & Retainers</h2>
+                    <p class="text-slate-500 mt-2">Manage your 48-hour lead SLAs, active bookings, and non-refundable retainers.</p>
+                </header>
+                <!-- Add new Lead -->
+                <div class="card p-6 border-dashed bg-slate-50">
+                    <h4 class="font-bold text-sm mb-4">Log New Inquiry (Lead)</h4>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <input type="text" id="new-lead-name" placeholder="Client Name (e.g. Sarah & John)" class="px-4 py-3 border rounded-xl flex-grow text-sm font-medium">
+                        <input type="text" id="new-lead-type" placeholder="Shoot Type (e.g. Desert Elopement)" class="px-4 py-3 border rounded-xl flex-grow text-sm font-medium">
+                        <button onclick="addCRMLead()" class="bg-rose-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-rose-700 text-sm shadow-md">Start 48hr SLA Timer</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mt-8">
+                    <!-- Active Leads Column -->
+                    <div class="card p-8 h-full shadow-sm">
+                        <h4 class="text-xl font-black mb-6 flex items-center gap-2">
+                            <i data-lucide="clock" class="w-5 h-5 text-rose-500"></i> Active Inquiries (48h Response)
+                        </h4>
+                        <div id="crm-leads-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                            <!-- JS populated -->
+                        </div>
+                    </div>
+
+                    <!-- Booked Retainers Column -->
+                    <div class="card p-8 bg-slate-900 text-white h-full shadow-md">
+                        <div class="flex justify-between items-end mb-6">
+                            <h4 class="text-xl font-black flex items-center gap-2">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i> Booked Dates
+                            </h4>
+                            <button onclick="promptNewBooking()" class="text-[10px] bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider transition">+ Log Booking</button>
+                        </div>
+                        <div id="crm-booked-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                            <!-- JS populated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tab: Dashboard -->
             <div id="dashboard" class="tab-content active space-y-10">
                 <header class="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -216,7 +264,21 @@
                 </div>
             </div>
 
-            <!-- Tab: Write-Off Analyzer -->
+            <!-- 72-Hour Sneak Peek Engine (Batch 33) -->
+            <section id="sneak-peek-engine" class="card p-8 border-l-4 border-amber-400">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h4 class="text-xl font-black flex items-center gap-2">
+                            <i data-lucide="timer" class="w-5 h-5 text-amber-500"></i> 72-Hour Sneak Peek Engine
+                        </h4>
+                        <p class="text-xs text-slate-500 mt-1">Log a shoot date to start your 72-hour gallery preview delivery countdown.</p>
+                    </div>
+                    <button onclick="promptSneakPeekShoot()" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-sm">+ Log Shoot</button>
+                </div>
+                <div id="sneak-peek-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                </div>
+            </section>
+
             <div id="analyzer" class="tab-content space-y-10">
                 <header>
                     <h2 class="text-4xl font-black text-slate-900 tracking-tight">Write-Off Analyzer</h2>
@@ -292,6 +354,56 @@
                         <div class="bg-rose-50 p-4 rounded-xl text-rose-900 text-center">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-rose-700/70">Total Write-Off</p>
                             <h5 id="office-deduction" class="text-3xl font-black mt-1">$0</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destination Elopement ROI Calculator (Phase 8) -->
+                <h3 class="text-2xl font-black text-slate-900 mt-12 mb-6 tracking-tight flex items-center gap-2">
+                    <i data-lucide="plane" class="w-6 h-6 text-rose-500"></i> Destination Elopement Margin Analyzer
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card p-8 border-l-4 border-rose-500">
+                        <h4 class="font-bold text-lg mb-6 text-slate-800">Travel Package Inputs</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Package Revenue ($)</label>
+                                <input type="number" id="dest-revenue" placeholder="e.g. 3500" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Flights ($)</label>
+                                    <input type="number" id="dest-flights" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Hotel / AirBNB ($)</label>
+                                    <input type="number" id="dest-hotel" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Rental Car ($)</label>
+                                    <input type="number" id="dest-car" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Meals / Per Diem ($)</label>
+                                    <input type="number" id="dest-meals" placeholder="0" class="w-full px-4 py-3 bg-slate-50 border rounded-xl font-bold" oninput="calcDestinationROI()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-8 bg-slate-900 text-white flex flex-col justify-between gap-6">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Total Travel Cost</p>
+                            <h4 id="dest-total-cost" class="text-3xl font-black text-rose-400">$0</h4>
+                        </div>
+                        <div class="border-t border-slate-700 pt-6">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Travel Write-Off Value (Est.)</p>
+                            <h4 id="dest-writeoff" class="text-2xl font-black text-amber-400">$0</h4>
+                            <p class="text-xs text-slate-400 mt-1">Flights, hotel &amp; car: 100% deductible. Meals: 50%.</p>
+                        </div>
+                        <div class="border-t border-slate-700 pt-6">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">True Take-Home Margin</p>
+                            <h4 id="dest-net-margin" class="text-4xl font-black text-emerald-400">$0</h4>
+                            <p id="dest-margin-pct" class="text-xs text-slate-400 mt-1">&mdash;</p>
                         </div>
                     </div>
                 </div>
@@ -694,6 +806,51 @@
                 </div>
             </div>
 
+            <!-- Tab: Social Media Planner -->
+            <div id="social" class="tab-content space-y-10">
+                <header>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Social Media Content Planner</h2>
+                    <p class="text-slate-500 mt-2">Funnel your 72-hour sneak peeks into a consistent Instagram & TikTok presence.</p>
+                </header>
+
+                <div class="card p-6 border-dashed bg-slate-50">
+                    <h4 class="font-bold text-sm mb-4">Add New Content Card</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="new-social-title" placeholder="e.g. Sedona Elopement Reel" class="px-4 py-3 border rounded-xl col-span-1 md:col-span-2 text-sm font-medium">
+                        <select id="new-social-platform" class="px-4 py-3 border rounded-xl text-sm font-medium">
+                            <option value="instagram">Instagram Reels</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="both">Both Platforms</option>
+                        </select>
+                        <button onclick="addSocialCard()" class="bg-rose-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-rose-700 text-sm shadow-md">+ Add Card</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Drafting -->
+                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                        <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span> Drafting / Concept
+                        </h4>
+                        <div id="social-col-draft" class="space-y-3 min-h-[200px]"></div>
+                    </div>
+                    <!-- Needs Audio -->
+                    <div class="bg-amber-50 rounded-2xl p-6 border border-amber-100">
+                        <h4 class="text-[11px] font-black uppercase tracking-widest text-amber-600 mb-4 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span> Needs Trending Audio
+                        </h4>
+                        <div id="social-col-audio" class="space-y-3 min-h-[200px]"></div>
+                    </div>
+                    <!-- Ready to Publish -->
+                    <div class="bg-emerald-50 rounded-2xl p-6 border border-emerald-100">
+                        <h4 class="text-[11px] font-black uppercase tracking-widest text-emerald-600 mb-4 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span> Ready to Publish
+                        </h4>
+                        <div id="social-col-ready" class="space-y-3 min-h-[200px]"></div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tab: Operations -->
             <div id="operations" class="tab-content space-y-10">
                 <header class="no-print">
@@ -737,9 +894,31 @@
             customPerks: [],
             customChecks: [],
             profile: {},
-            clients: [], // Dormant post-V5
+            crmLeads: [],
+            bookedClients: [],
+            sneakPeeks: [],
+            socialCards: [],
             workflows: [],
-            emailTemplates: [],
+            emailTemplates: [
+                {
+                    id: 'pre-loaded-1',
+                    name: 'What to Wear Guide (Engagement)',
+                    subject: 'Your Session - Style Notes!',
+                    body: 'Hi {{ClientName}}, I am SO excited for our {{ShootType}} session on {{Date}}! Top wardrobe tips: TONES: Think warm, earthy -- creams, sage greens, dusty roses. AVOID bright white or neon. LAYERS: A flowy dress or linen blazer adds movement. COORDINATE BUT DO NOT MATCH. COMFORT IS KEY -- wear something you feel gorgeous in! See you soon! Ariana, The Love Lens by Ariana'
+                },
+                {
+                    id: 'pre-loaded-2',
+                    name: 'Pre-Wedding Touch Base',
+                    subject: 'A Few Days Away -- Locking In the Details!',
+                    body: 'Hi {{ClientName}}, Your wedding day is almost here -- I am so honored to be your photographer! Here is a quick checklist: Location: {{Location}} | Arrival Time: {{ArrivalTime}} | Please send over your shot list and key family members for portraits. A reminder that your final balance of {{BalanceDue}} is due on {{BalanceDueDate}}. I will be in touch the morning of with my ETA. Cannot wait to document every magical moment! Love, Ariana, The Love Lens by Ariana'
+                },
+                {
+                    id: 'pre-loaded-3',
+                    name: 'Gallery Delivery (Pixieset)',
+                    subject: 'Your Gallery is Live! {{ClientName}}',
+                    body: 'Hi {{ClientName}}, Your gallery is officially live! GALLERY LINK: {{GalleryLink}} | PASSWORD: {{Password}} -- {{NumPhotos}} hand-edited images, each chosen because it captured something real, something true, something YOU. Downloading: Click any image for print-ready resolution. Gallery is available for 90 days. Thank you for trusting me with your story. With love, Ariana, The Love Lens by Ariana'
+                }
+            ],
             emailSettings: { address: '', appPassword: '' }
         };
 
@@ -822,6 +1001,11 @@
 
             // Load Email Templates & Ops
             renderEmailTemplates();
+            renderCRM();
+            renderSocial();
+            renderSneakPeeks();
+            setInterval(renderCRM, 60000);
+            setInterval(renderSneakPeeks, 60000);
             renderWorkflows();
 
             switchTab('dashboard');
@@ -1521,6 +1705,259 @@
             if(postList && postList.innerHTML === '') postList.innerHTML = '<p class="text-xs text-slate-400 italic">No post-production tasks.</p>';
             
             if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        // --- CRM PIPELINE LOGIC --- //
+        function addCRMLead() {
+            const name = document.getElementById('new-lead-name').value.trim();
+            const type = document.getElementById('new-lead-type').value.trim();
+            if(!name) return;
+            const leads = window.StateStore.state.crmLeads || [];
+            leads.push({ id: Date.now().toString(), name, type, logDate: Date.now() });
+            window.StateStore.update('crmLeads', leads);
+            document.getElementById('new-lead-name').value = '';
+            document.getElementById('new-lead-type').value = '';
+            renderCRM();
+        }
+
+        function deleteCRMLead(id) {
+            let leads = window.StateStore.state.crmLeads || [];
+            leads = leads.filter(l => l.id !== id);
+            window.StateStore.update('crmLeads', leads);
+            renderCRM();
+        }
+
+        function promptNewBooking() {
+            const name = prompt("Client / Couple Name:");
+            if(!name) return;
+            const pkgPrice = parseFloat(prompt("Total Package Price (e.g. 3500):"));
+            if(isNaN(pkgPrice)) return;
+            const date = prompt("Shoot Date (YYYY-MM-DD):");
+            if(!date) return;
+            
+            const clients = window.StateStore.state.bookedClients || [];
+            clients.push({ id: Date.now().toString(), name, pkgPrice, retainerPaid: false, balancePaid: false, shootDate: date });
+            window.StateStore.update('bookedClients', clients);
+            renderCRM();
+        }
+
+        function toggleRetainer(id) {
+            const clients = window.StateStore.state.bookedClients || [];
+            const c = clients.find(c => c.id === id);
+            if(c) { c.retainerPaid = !c.retainerPaid; window.StateStore.update('bookedClients', clients); renderCRM(); }
+        }
+
+        function toggleBalance(id) {
+            const clients = window.StateStore.state.bookedClients || [];
+            const c = clients.find(c => c.id === id);
+            if(c) { c.balancePaid = !c.balancePaid; window.StateStore.update('bookedClients', clients); renderCRM(); }
+        }
+
+        function deleteBooking(id) {
+            let clients = window.StateStore.state.bookedClients || [];
+            clients = clients.filter(c => c.id !== id);
+            window.StateStore.update('bookedClients', clients);
+            renderCRM();
+        }
+
+        function renderCRM() {
+            const leads = window.StateStore.state.crmLeads || [];
+            const clients = window.StateStore.state.bookedClients || [];
+            const leadsList = document.getElementById('crm-leads-list');
+            const bookedList = document.getElementById('crm-booked-list');
+            if(!leadsList || !bookedList) return;
+
+            leadsList.innerHTML = '';
+            bookedList.innerHTML = '';
+
+            const now = Date.now();
+            leads.forEach(l => {
+                const hoursPassed = (now - l.logDate) / (1000 * 60 * 60);
+                const remaining = Math.max(0, 48 - hoursPassed).toFixed(1);
+                const isUrgent = remaining <= 12;
+                
+                leadsList.innerHTML += `
+                    <div class="flex flex-col p-4 bg-slate-50 border ${isUrgent ? 'border-rose-300' : 'border-slate-100'} rounded-xl relative group">
+                        <button onclick="deleteCRMLead('${l.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-rose-600 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+                        <div class="flex justify-between items-start mb-2 pr-6">
+                            <span class="font-bold text-sm text-slate-800">${l.name}</span>
+                            <span class="text-xs font-semibold ${isUrgent ? 'text-rose-600' : 'text-slate-500'} bg-${isUrgent ? 'rose' : 'slate'}-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <i data-lucide="clock" class="w-3 h-3"></i> ${remaining}h left
+                            </span>
+                        </div>
+                        <p class="text-xs font-medium text-slate-500">${l.type}</p>
+                    </div>
+                `;
+            });
+
+            if(leads.length === 0) leadsList.innerHTML = '<p class="text-xs text-slate-400 italic">No active inquiries. You are at inbox zero!</p>';
+
+            clients.sort((a,b) => new Date(a.shootDate) - new Date(b.shootDate)).forEach(c => {
+                const retainer = c.pkgPrice * 0.5;
+                const balance = c.pkgPrice - retainer;
+                bookedList.innerHTML += `
+                    <div class="p-5 border border-slate-700 bg-slate-800 rounded-xl relative group">
+                        <button onclick="deleteBooking('${c.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-rose-400 hover:text-rose-600 transition"><i data-lucide="trash" class="w-4 h-4"></i></button>
+                        <div class="flex justify-between items-center mb-4 pr-6">
+                            <h5 class="font-bold text-sm text-white">${c.name}</h5>
+                            <span class="text-[10px] font-black tracking-widest uppercase text-slate-400 bg-slate-900 px-2 py-1 rounded shadow-sm border border-slate-700">${c.shootDate}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="toggleRetainer('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.retainerPaid ? 'bg-emerald-900/30 border-emerald-500/50' : 'bg-slate-900 border-slate-700 hover:border-slate-500'}">
+                                <div class="flex justify-between w-full items-center mb-1">
+                                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">50% Retainer</span>
+                                    <i data-lucide="check-circle" class="w-3 h-3 ${c.retainerPaid ? 'text-emerald-400' : 'text-slate-600'}"></i>
+                                </div>
+                                <span class="font-black text-sm ${c.retainerPaid ? 'text-emerald-400' : 'text-slate-300'}">$${retainer.toLocaleString()}</span>
+                            </button>
+                            <button onclick="toggleBalance('${c.id}')" class="flex flex-col items-start p-3 rounded-lg border transition ${c.balancePaid ? 'bg-emerald-900/30 border-emerald-500/50' : 'bg-slate-900 border-slate-700 hover:border-slate-500'}">
+                                <div class="flex justify-between w-full items-center mb-1">
+                                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Final Balance</span>
+                                    <i data-lucide="check-circle" class="w-3 h-3 ${c.balancePaid ? 'text-emerald-400' : 'text-slate-600'}"></i>
+                                </div>
+                                <span class="font-black text-sm ${c.balancePaid ? 'text-emerald-400' : 'text-slate-300'}">$${balance.toLocaleString()}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if(clients.length === 0) bookedList.innerHTML = '<p class="text-xs text-slate-500 italic">No active bookings yet.</p>';
+            
+            // Dynamic Header Inject
+            const dashOpsList = document.querySelector('#crm-booked-list');
+            // Update Dashboard Active Inquiries specifically (Phase 7 hardcoded UI map)
+            const openInquiriesCount = document.querySelector('#dashboard .border-blue-600 h3');
+            if(openInquiriesCount) openInquiriesCount.innerText = leads.length;
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        // --- DESTINATION ELOPEMENT ROI --- //
+        function calcDestinationROI() {
+            const revenue = parseFloat(document.getElementById('dest-revenue').value) || 0;
+            const flights = parseFloat(document.getElementById('dest-flights').value) || 0;
+            const hotel = parseFloat(document.getElementById('dest-hotel').value) || 0;
+            const car = parseFloat(document.getElementById('dest-car').value) || 0;
+            const meals = parseFloat(document.getElementById('dest-meals').value) || 0;
+
+            const totalCost = flights + hotel + car + meals;
+            const fullyDeductible = flights + hotel + car;
+            const mealDeduct = meals * 0.5;
+            const marginalRate = window.StateStore.state.marginalRate || 0.30;
+            const writeoffValue = (fullyDeductible + mealDeduct) * marginalRate;
+            const netMargin = revenue - totalCost;
+            const marginPct = revenue > 0 ? ((netMargin / revenue) * 100).toFixed(1) : 0;
+
+            const upd = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
+            upd('dest-total-cost', `$${Math.round(totalCost).toLocaleString()}`);
+            upd('dest-writeoff', `+$${Math.round(writeoffValue).toLocaleString()}`);
+            upd('dest-net-margin', `$${Math.round(netMargin).toLocaleString()}`);
+            upd('dest-margin-pct', `${marginPct}% profit margin on this package`);
+        }
+
+        // --- 72-HR SNEAK PEEK ENGINE --- //
+        function promptSneakPeekShoot() {
+            const name = prompt('Couple / Client Name (e.g. Sarah & John):');
+            if(!name) return;
+            const dateStr = prompt('Shoot Date (YYYY-MM-DD):');
+            if(!dateStr) return;
+            const shoots = window.StateStore.state.sneakPeeks || [];
+            shoots.push({ id: Date.now().toString(), name, shootDate: dateStr, shootTimestamp: new Date(dateStr).getTime() });
+            window.StateStore.update('sneakPeeks', shoots);
+            renderSneakPeeks();
+        }
+
+        function deleteSneakPeek(id) {
+            let shoots = window.StateStore.state.sneakPeeks || [];
+            shoots = shoots.filter(s => s.id !== id);
+            window.StateStore.update('sneakPeeks', shoots);
+            renderSneakPeeks();
+        }
+
+        function renderSneakPeeks() {
+            const shoots = window.StateStore.state.sneakPeeks || [];
+            const container = document.getElementById('sneak-peek-list');
+            if(!container) return;
+            container.innerHTML = '';
+            const now = Date.now();
+            shoots.forEach(s => {
+                const msSinceShoot = now - s.shootTimestamp;
+                const hoursLeft = Math.max(0, 72 - msSinceShoot / (1000 * 60 * 60)).toFixed(1);
+                const isDone = hoursLeft <= 0;
+                const isUrgent = !isDone && hoursLeft <= 12;
+                container.innerHTML += `
+                    <div class="relative p-5 rounded-2xl border group ${isDone ? 'bg-emerald-50 border-emerald-200' : isUrgent ? 'bg-rose-50 border-rose-300' : 'bg-white border-slate-200'}">
+                        <button onclick="deleteSneakPeek('${s.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-500 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+                        <p class="font-black text-sm text-slate-800 mb-1">${s.name}</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-3">${s.shootDate}</p>
+                        ${isDone
+                            ? '<span class="text-xs font-black text-emerald-600 flex items-center gap-1"><i data-lucide="check-circle" class="w-4 h-4"></i> Sneak Peek Window Passed</span>'
+                            : `<span class="text-xs font-black ${isUrgent ? 'text-rose-600' : 'text-amber-600'} flex items-center gap-1"><i data-lucide="timer" class="w-4 h-4"></i> ${hoursLeft}h remaining</span>`
+                        }
+                    </div>
+                `;
+            });
+            if(shoots.length === 0) container.innerHTML = '<p class="text-xs text-slate-400 italic col-span-3 text-center py-8">No active shoot timers. Click "+ Log Shoot" to start your first 72-hour preview countdown.</p>';
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // --- SOCIAL MEDIA KANBAN --- //
+        function addSocialCard() {
+            const title = document.getElementById('new-social-title').value.trim();
+            const platform = document.getElementById('new-social-platform').value;
+            if(!title) return;
+            const cards = window.StateStore.state.socialCards || [];
+            cards.push({ id: Date.now().toString(), title, platform, status: 'draft' });
+            window.StateStore.update('socialCards', cards);
+            document.getElementById('new-social-title').value = '';
+            renderSocial();
+        }
+
+        function advanceSocialCard(id) {
+            const cards = window.StateStore.state.socialCards || [];
+            const card = cards.find(c => c.id === id);
+            if(!card) return;
+            const flow = ['draft', 'audio', 'ready'];
+            const next = flow.indexOf(card.status) + 1;
+            if(next < flow.length) { card.status = flow[next]; window.StateStore.update('socialCards', cards); renderSocial(); }
+        }
+
+        function deleteSocialCard(id) {
+            let cards = window.StateStore.state.socialCards || [];
+            cards = cards.filter(c => c.id !== id);
+            window.StateStore.update('socialCards', cards);
+            renderSocial();
+        }
+
+        function renderSocial() {
+            const cards = window.StateStore.state.socialCards || [];
+            const cols = { draft: document.getElementById('social-col-draft'), audio: document.getElementById('social-col-audio'), ready: document.getElementById('social-col-ready') };
+            if(!cols.draft) return;
+            Object.values(cols).forEach(c => { if(c) c.innerHTML = ''; });
+
+            const platformLabel = { instagram: 'Instagram', tiktok: 'TikTok', both: 'Both' };
+            const platformColor = { instagram: 'text-rose-500', tiktok: 'text-slate-700', both: 'text-indigo-500' };
+            const nextLabel = { draft: 'Needs Audio', audio: 'Ready', ready: null };
+            const nextBg = { draft: 'bg-amber-400 hover:bg-amber-500 text-slate-900', audio: 'bg-emerald-500 hover:bg-emerald-600 text-white', ready: '' };
+
+            cards.forEach(card => {
+                const col = cols[card.status];
+                if(!col) return;
+                const html = `
+                    <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-4 relative group">
+                        <button onclick="deleteSocialCard('${card.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-500 transition"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                        <p class="font-bold text-sm text-slate-800 leading-snug mb-2 pr-4">${card.title}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-widest ${platformColor[card.platform]} mb-3">${platformLabel[card.platform]}</p>
+                        ${nextLabel[card.status] ? `<button onclick="advanceSocialCard('${card.id}')" class="w-full text-center text-[10px] font-bold py-1.5 rounded-lg transition ${nextBg[card.status]}">${nextLabel[card.status]} &rarr;</button>` : '<span class="w-full text-center text-[10px] font-bold text-emerald-600 block">Published!</span>'}
+                    </div>
+                `;
+                col.innerHTML += html;
+            });
+
+            Object.entries(cols).forEach(([key, el]) => {
+                if(el && el.innerHTML === '') el.innerHTML = '<p class="text-xs text-center text-slate-400 italic pt-6">Empty</p>';
+            });
+
+            if(typeof lucide !== 'undefined') lucide.createIcons();
         }
     </script>
 </body>

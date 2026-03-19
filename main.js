@@ -198,8 +198,45 @@ const downloadPayload = async () => {
   });
 };
 
+const CHECK_INTERVAL_MS = 3 * 60 * 1000; // Check GitHub every 3 minutes
+let mainWindowRef = null;
+
+const getLocalPayloadHash = () => {
+  try {
+    const userDataPath = app.getPath('userData');
+    const payloadPath = path.join(userDataPath, 'current_payload.html');
+    if (!fs.existsSync(payloadPath)) return null;
+    const content = fs.readFileSync(payloadPath, 'utf8');
+    // Use a simple length+last-200-chars fingerprint (no crypto needed)
+    return `${content.length}::${content.slice(-200)}`;
+  } catch (e) {
+    return null;
+  }
+};
+
+const checkForUpdates = async () => {
+  console.log('[AutoUpdate] Checking GitHub for new version...');
+  const previousHash = getLocalPayloadHash();
+  const success = await downloadPayload();
+  if (!success) {
+    console.log('[AutoUpdate] Could not reach GitHub. Staying on current version.');
+    return;
+  }
+  const newHash = getLocalPayloadHash();
+  if (previousHash !== newHash) {
+    console.log('[AutoUpdate] New version detected! Reloading window...');
+    if (mainWindowRef && !mainWindowRef.isDestroyed()) {
+      const userDataPath = app.getPath('userData');
+      const payloadPath = path.join(userDataPath, 'current_payload.html');
+      mainWindowRef.loadFile(payloadPath);
+    }
+  } else {
+    console.log('[AutoUpdate] Already on latest version.');
+  }
+};
+
 const createWindow = async () => {
-  const mainWindow = new BrowserWindow({
+  mainWindowRef = new BrowserWindow({
     width: 1280,
     height: 800,
     webPreferences: {
@@ -213,14 +250,18 @@ const createWindow = async () => {
 
   if (payloadSuccess && fs.existsSync(payloadPath)) {
     console.log('Launch path: Loading dynamic payload from userData');
-    mainWindow.loadFile(payloadPath);
+    mainWindowRef.loadFile(payloadPath);
   } else if (fs.existsSync(payloadPath)) {
     console.log('Launch path: Loading CACHED dynamic payload (offline/failed update)');
-    mainWindow.loadFile(payloadPath);
+    mainWindowRef.loadFile(payloadPath);
   } else {
     console.log('Launch path: Loading baseline static local payload');
-    mainWindow.loadFile('src/index.html');
+    mainWindowRef.loadFile('src/index.html');
   }
+
+  // Start the background auto-update daemon
+  setInterval(checkForUpdates, CHECK_INTERVAL_MS);
+  console.log(`[AutoUpdate] Daemon started. Checking every ${CHECK_INTERVAL_MS / 60000} minutes.`);
 };
 
 app.whenReady().then(() => {
