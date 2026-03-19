@@ -1895,15 +1895,16 @@
         // ─── QUARTERLY TRACKER ───────────────────────────────────────────────────
         function renderQuarterlyTracker(annualTax) {
             const qPay = Math.round(annualTax / 4);
+            const now = new Date();
+            const year = now.getFullYear();
             const quarters = [
-                { q: 'Q1 2025', fed: 'April 15, 2025', az: 'April 15, 2025', period: '2025-04-15' },
-                { q: 'Q2 2025', fed: 'June 16, 2025',  az: 'June 16, 2025',  period: '2025-06-16' },
-                { q: 'Q3 2025', fed: 'Sept 15, 2025',  az: 'Sept 15, 2025',  period: '2025-09-15' },
-                { q: 'Q4 2025', fed: 'Jan 15, 2026',   az: 'Jan 15, 2026',   period: '2026-01-15' },
+                { q: 'Q1 ' + year, fed: 'April 15, ' + year, az: 'April 15, ' + year, period: `${year}-04-15` },
+                { q: 'Q2 ' + year, fed: 'June 15, ' + year,  az: 'June 15, ' + year,  period: `${year}-06-15` },
+                { q: 'Q3 ' + year, fed: 'Sept 15, ' + year,  az: 'Sept 15, ' + year,  period: `${year}-09-15` },
+                { q: 'Q4 ' + year, fed: 'Jan 15, ' + (year+1), az: 'Jan 15, ' + (year+1), period: `${year+1}-01-15` },
             ];
             const container = document.getElementById('quarterly-tracker');
             if (!container) return;
-            const now = new Date();
 
             container.innerHTML = quarters.map((q, i) => {
                 const due = new Date(q.period);
