@@ -1,7 +1,7 @@
 {
   "name": "az-photo-command-center",
   "productName": "AZ Photo Command Center",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AZ Photographer LLC Command Center",
   "main": "main.js",
   "scripts": {

@@ -124,48 +124,85 @@
             <div id="dashboard" class="tab-content active space-y-10">
                 <header class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
-                        <h2 class="text-4xl font-black text-slate-900 tracking-tight">Executive Overview</h2>
-                        <p class="text-slate-500 mt-2">LLC Status: <strong>Operating</strong> • Canon Ecosystem: <strong>Active</strong></p>
+                        <h2 class="text-4xl font-black text-slate-900 tracking-tight">Executive Dashboard</h2>
+                        <p class="text-slate-500 mt-2">LLC Status: <strong>Operating (Arizona)</strong> • Tax Year: <strong>2026</strong></p>
                     </div>
                 </header>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="card p-8 border-t-4 border-blue-600">
-                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Annual Take-Home (Est)</p>
-                        <h3 id="dash-takehome" class="text-4xl font-black text-slate-900">$0</h3>
+                    <!-- Primary Financials -->
+                    <div class="card p-8 bg-slate-900 text-white shadow-xl xl:col-span-1 border border-slate-700 h-full flex flex-col justify-between">
+                        <div>
+                            <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Annual Take-Home (Est)</p>
+                            <h3 id="dash-takehome" class="text-4xl font-black text-emerald-400">$0</h3>
+                            <p class="text-xs text-slate-400 mt-4 leading-relaxed">Tracking toward your $100,000 net profit baseline for Section 199A QBI maximization.</p>
+                        </div>
+                        <div class="mt-6">
+                            <div class="flex justify-between text-xs mb-1"><span class="text-slate-400">Profit Target</span><span id="profit-target-percent" class="font-bold text-emerald-400">0%</span></div>
+                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                <div id="profit-progress" class="bg-emerald-500 h-full transition-all duration-1000" style="width: 0%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card p-8 border-t-4 border-indigo-600">
-                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Telco/Phone Savings</p>
-                        <h3 class="text-4xl font-black text-indigo-600">Up to $800</h3>
-                        <p class="text-xs text-slate-500 mt-3">Via Business Unlimited credits</p>
+                    
+                    <!-- Compliance / Tax Deadlines -->
+                    <div class="card p-8 border-t-4 border-rose-600 xl:col-span-1 shadow-md h-full flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <p class="text-[11px] font-black text-rose-600/70 uppercase tracking-widest">Next Tax Milestone</p>
+                                <i data-lucide="calendar-alert" class="w-5 h-5 text-rose-500"></i>
+                            </div>
+                            <h3 class="text-3xl font-black text-slate-900 mb-1">April 15th</h3>
+                            <p class="text-sm font-bold text-slate-600">Q1 Estimated Tax Payment</p>
+                        </div>
+                        <ul class="text-[11px] font-bold text-slate-500 mt-6 space-y-3">
+                            <li class="flex gap-3 items-center"><i data-lucide="circle-check" class="w-4 h-4 text-emerald-500"></i> Annual Report Filed (AZCC)</li>
+                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-slate-300"></i> Prepare CPA Profit/Loss</li>
+                            <li class="flex gap-3 items-center"><i data-lucide="circle-dashed" class="w-4 h-4 text-slate-300"></i> Audit Equipment Depreciation</li>
+                        </ul>
                     </div>
-                    <div class="card p-8 border-t-4 border-emerald-600">
-                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Veil Strength</p>
-                        <h3 id="dash-protection" class="text-4xl font-black text-emerald-600">25%</h3>
+
+                    <!-- CRM / Active Pipeline -->
+                    <div class="card p-8 border-t-4 border-blue-600 shadow-md xl:col-span-1 h-full flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <p class="text-[11px] font-black text-blue-600/70 uppercase tracking-widest">Active Pipeline</p>
+                                <i data-lucide="users" class="w-5 h-5 text-blue-500"></i>
+                            </div>
+                            <div class="flex items-end gap-3 mb-2">
+                                <h3 class="text-4xl font-black text-slate-900">4</h3>
+                                <p class="text-sm text-slate-500 font-bold mb-1">Open Inquiries</p>
+                            </div>
+                        </div>
+                        <div class="space-y-3 mt-4">
+                            <div class="flex justify-between text-xs p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Retainers Pending</span><span class="text-slate-500 font-bold">2</span></div>
+                            <div class="flex justify-between text-xs p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Contract Signatures</span><span class="text-slate-500 font-bold">1</span></div>
+                            <div class="flex justify-between text-xs p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Upcoming Shoots</span><span class="text-slate-500 font-bold">3</span></div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <section class="card p-8">
                         <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
-                            <i data-lucide="zap" class="w-5 h-5 text-amber-500 fill-amber-500"></i> Canon & Phone Priorities
+                            <i data-lucide="zap" class="w-5 h-5 text-amber-500 fill-amber-500"></i> Operational Priorities
                         </h4>
                         <div class="space-y-4">
                             <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
                                 <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
-                                <span class="text-sm font-semibold">Enroll in Canon CPS (Gold or Platinum)</span>
-                            </label>
-                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
-                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
-                                <span class="text-sm font-semibold">Switch to T-Mobile/Verizon Business (Unlimited)</span>
-                            </label>
-                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
-                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
                                 <span class="text-sm font-semibold">Separate Phone Bill Deductions for Tax Year</span>
+                            </label>
+                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
+                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
+                                <span class="text-sm font-semibold">Log Subcontractor Payments (1099-NEC)</span>
+                            </label>
+                            <label class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition">
+                                <input type="checkbox" class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
+                                <span class="text-sm font-semibold">Export Q1 Gross Receipts to CPA</span>
                             </label>
                         </div>
                     </section>
-                    <section class="card p-8 canon-gradient text-white flex flex-col justify-center">
+                    <section class="card p-8 canon-gradient text-white flex flex-col justify-center shadow-md">
                          <div class="flex justify-between items-end mb-4">
                             <div>
                                 <h4 class="text-xl font-bold">Canon Pro Status</h4>
@@ -173,24 +210,10 @@
                             </div>
                             <span class="text-red-200 font-black text-2xl"><i data-lucide="award" class="w-8 h-8"></i></span>
                          </div>
-                         <p class="text-sm leading-relaxed mb-4">Get a $100 service voucher and 2-day turnaround on all EOS R bodies and RF glass repairs with your EIN-verified CPS account.</p>
-                         <a href="https://www.usa.canon.com/pro/canon-professional-services" target="_blank" class="bg-white text-red-700 text-center py-2 rounded-xl font-bold text-sm">Access CPS Portal</a>
+                         <p class="text-sm leading-relaxed mb-6">Get a $100 service voucher and 2-day turnaround on all EOS R bodies and RF glass repairs with your EIN-verified CPS account.</p>
+                         <a href="https://www.usa.canon.com/pro/canon-professional-services" target="_blank" class="bg-white text-red-700 text-center py-3 rounded-xl font-bold text-sm hover:bg-red-50 transition drop-shadow">Access CPS Portal</a>
                     </section>
                 </div>
-
-                <!-- Growth Tracking -->
-                <section class="card p-8">
-                    <div class="flex justify-between items-end mb-4">
-                        <div>
-                            <h4 class="text-xl font-bold">Annual Profit Milestone</h4>
-                            <p class="text-sm text-slate-500 mt-1">Tracking toward $100,000 net profit</p>
-                        </div>
-                        <span id="profit-target-percent" class="text-blue-600 font-black text-2xl">0%</span>
-                    </div>
-                    <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden mb-2">
-                        <div id="profit-progress" class="bg-blue-600 h-full transition-all duration-1000" style="width: 0%"></div>
-                    </div>
-                </section>
             </div>
 
             <!-- Tab: Write-Off Analyzer -->
@@ -456,34 +479,68 @@
             <!-- Tab: Vendor Perks -->
             <div id="discounts" class="tab-content space-y-10">
                 <header>
-                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">Canon Pro Ecosystem</h2>
-                    <p class="text-slate-500 mt-2">Maximum utility for Canon-based Arizona businesses.</p>
+                    <h2 class="text-4xl font-black text-slate-900 tracking-tight">LLC Banking & Vendor Perks</h2>
+                    <p class="text-slate-500 mt-2">Highly vetted ecosystem accounts specifically curated for professional photographers.</p>
                 </header>
 
+                <h3 class="text-xl font-black text-slate-800 border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="building-2" class="w-5 h-5 text-indigo-500"></i> Zero-Fee Business Checking</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="card p-6 border-l-4 border-indigo-600 h-full flex flex-col shadow-sm">
+                        <h4 class="font-black text-lg">Novo Business Checking</h4>
+                        <p class="text-xs text-slate-500 mt-2">Incredible for sole-proprietors. Automatically sweeps 15.3% of your inbound invoices into a hidden tax reserve sub-account.</p>
+                        <a href="https://novo.co" target="_blank" class="mt-auto pt-6 block text-center py-2.5 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-bold hover:bg-indigo-100 transition">Open Novo Account</a>
+                    </div>
+                    <div class="card p-6 border-l-4 border-teal-600 h-full flex flex-col shadow-sm">
+                        <h4 class="font-black text-lg">Relay Financial</h4>
+                        <p class="text-xs text-slate-500 mt-2">Best for Profit First methodologies. Allows up to 20 free checking accounts under one LLC to perfectly silo gear savings and operating expenses.</p>
+                        <a href="https://relayfi.com" target="_blank" class="mt-auto pt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Explore Relay</a>
+                    </div>
+                    <div class="card p-6 border-l-4 border-blue-800 h-full flex flex-col shadow-sm">
+                        <h4 class="font-black text-lg">Chase Business Complete</h4>
+                        <p class="text-xs text-slate-500 mt-2">The heavyweight champion. If you need physical branches to deposit cash or heavy lending power, Chase is the gold standard.</p>
+                        <a href="https://www.chase.com/business/checking" target="_blank" class="mt-auto pt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">View Chase Options</a>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-black text-slate-800 border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="credit-card" class="w-5 h-5 text-emerald-500"></i> Tax-Optimized Credit Lines</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="card p-6 border-l-4 border-slate-900 bg-slate-900 text-white flex flex-col shadow-md">
+                        <h4 class="font-black text-lg flex items-center justify-between">Amex Blue Business Plus <i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i></h4>
+                        <p class="text-sm text-slate-400 mt-2 leading-relaxed">The holy grail of photography cards. An un-capped 2X points on every single purchase up to $50k/yr, perfectly subsidizing your destination travel.</p>
+                        <a href="https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/american-express-blue-business-plus-credit-card-amex/" target="_blank" class="mt-auto mt-6 block text-center py-3 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition">Apply for BBP</a>
+                    </div>
+                    <div class="card p-6 border-l-4 border-blue-500 flex flex-col shadow-md">
+                        <h4 class="font-black text-lg">Chase Ink Business Cash</h4>
+                        <p class="text-sm text-slate-500 mt-2 leading-relaxed">No annual fee. Earns 5% cash back on internet, cable, and phone services (massive capability for your business line) and 2% at gas stations.</p>
+                        <a href="https://creditcards.chase.com/business-credit-cards/ink/cash" target="_blank" class="mt-auto mt-6 block text-center py-3 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Compare Chase Ink</a>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-black text-slate-800 border-b pb-2 mb-4 mt-8 flex items-center gap-2"><i data-lucide="camera" class="w-5 h-5 text-red-500"></i> Photography Hardware Ecosystem</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="perks-container">
-                    <div class="card p-6 border-l-4 border-red-600">
+                    <div class="card p-6 border-l-4 border-red-600 shadow-sm">
                         <h4 class="font-black text-lg">Canon CPS Platinum</h4>
                         <p class="text-xs text-slate-500 mt-2">The essential tool. 2-day repair turnaround, free return shipping, and 15 free sensor cleanings/checks per year.</p>
-                        <a href="https://www.usa.canon.com/pro/canon-professional-services" target="_blank" class="mt-6 block text-center py-2.5 bg-red-600 text-white rounded-xl text-xs font-bold">Access CPS</a>
+                        <a href="https://www.usa.canon.com/pro/canon-professional-services" target="_blank" class="mt-6 block text-center py-2.5 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 transition">Access CPS</a>
                     </div>
-                    <div class="card p-6 border-l-4 border-slate-900">
+                    <div class="card p-6 border-l-4 border-slate-300 shadow-sm">
                         <h4 class="font-black text-lg">B&H B2B Portal</h4>
                         <p class="text-xs text-slate-500 mt-2">Link your EIN and AZ Form 5000A. Tax-free checkout on RF lenses and bodies automatically.</p>
-                        <a href="https://www.bhphotovideo.com/b2b" target="_blank" class="mt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold">Setup B2B Account</a>
+                        <a href="https://www.bhphotovideo.com/b2b" target="_blank" class="mt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Setup B2B Account</a>
                     </div>
-                    <div class="card p-6 border-l-4 border-blue-600">
-                        <h4 class="font-black text-lg">PPA Insurance</h4>
+                    <div class="card p-6 border-l-4 border-blue-400 shadow-sm">
+                        <h4 class="font-black text-lg">PPA Membership</h4>
                         <p class="text-xs text-slate-500 mt-2">Covers Canon gear against theft or damage (up to $15k) for around $30/mo membership fee.</p>
-                        <a href="https://www.ppa.com/" target="_blank" class="mt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold">Join PPA</a>
+                        <a href="https://www.ppa.com/" target="_blank" class="mt-6 block text-center py-2.5 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition">Join PPA</a>
                     </div>
                 </div>
 
                 <div class="card p-6 mt-8 bg-slate-50 border-dashed">
                     <h4 class="font-bold text-sm mb-4">Add Custom Vendor Perk</h4>
                     <div class="flex flex-col md:flex-row gap-4">
-                        <input type="text" id="new-perk-title" placeholder="Perk Name (e.g., Hertz Gold)" class="px-4 py-2 border rounded-xl flex-grow">
-                        <input type="text" id="new-perk-desc" placeholder="Details or link" class="px-4 py-2 border rounded-xl flex-grow">
-                        <button onclick="addCustomPerk()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700">Add Perk</button>
+                        <input type="text" id="new-perk-title" placeholder="Perk Name (e.g., Hertz Gold)" class="px-4 py-3 border rounded-xl flex-grow font-medium">
+                        <input type="text" id="new-perk-desc" placeholder="Details or HTTP Link" class="px-4 py-3 border rounded-xl flex-grow font-medium">
+                        <button onclick="addCustomPerk()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 drop-shadow shadow-blue-500/30">Add Perk</button>
                     </div>
                 </div>
             </div>
@@ -810,6 +867,19 @@
         }
 
         window.addEventListener('StateStoreReady', initApp);
+
+        // Global External Deep-Link Interceptor (Phase 7)
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (link && link.href && (link.href.startsWith('http://') || link.href.startsWith('https://'))) {
+                e.preventDefault();
+                if (window.electronAPI && window.electronAPI.openExternal) {
+                    window.electronAPI.openExternal(link.href);
+                } else {
+                    window.open(link.href, '_blank');
+                }
+            }
+        });
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));

@@ -131,6 +131,31 @@ ipcMain.handle('set-state', (event, newState) => {
   }
 });
 
+// Universal API Proxy (Bypasses Frontend CORS for future Phase 7 integrations like Plaid/Stripe)
+ipcMain.handle('fetch-proxy', async (event, { url, options }) => {
+  try {
+    const response = await fetch(url, options);
+    const data = await response.text();
+    let parsed;
+    try { parsed = JSON.parse(data); } catch(e) { parsed = data; }
+    return { success: true, status: response.status, data: parsed };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+// External Deep-Link Hijacker
+ipcMain.handle('open-external', async (event, url) => {
+  try {
+    const { shell } = require('electron');
+    await shell.openExternal(url);
+    return true;
+  } catch (err) {
+    console.error('Failed to open external link: ', err);
+    return false;
+  }
+});
+
 const downloadPayload = async () => {
   return new Promise((resolve) => {
     try {
