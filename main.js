@@ -9,6 +9,11 @@ const nodemailer = require('nodemailer');
 // Remote UI/Tax logic payload
 const PAYLOAD_URL = 'https://raw.githubusercontent.com/quin566/App_dat_Basestation/main/latest.html';
 
+// OTA Update System — packaged-app updates via GitHub zip (no git/DMG required)
+const OTA_VERSION_URL = 'https://raw.githubusercontent.com/quin566/App_dat_Basestation/main/version.json';
+const OTA_ZIP_URL     = 'https://github.com/quin566/App_dat_Basestation/archive/refs/heads/main.zip';
+const OTA_ZIP_PREFIX  = 'App_dat_Basestation-main'; // GitHub archive root folder name
+
 // --- GMAIL IMAP/SMTP INTEGRATION ---
 ipcMain.handle('fetch-inbox', async (event, creds) => {
   if (!creds || !creds.address || !creds.appPassword) return { success: false, error: "No credentials provided." };
@@ -215,6 +220,87 @@ const getLocalPayloadHash = () => {
   }
 };
 
+// Downloads a URL to a local file path as raw bytes (handles binary zip files)
+const downloadToFile = (url, destPath) => new Promise((resolve, reject) => {
+  const request = net.request(url);
+  request.setHeader('User-Agent', 'Electron/AZ-Command-Center');
+  const chunks = [];
+  request.on('response', (response) => {
+    if (response.statusCode !== 200) {
+      reject(new Error(`Download failed: HTTP ${response.statusCode}`));
+      return;
+    }
+    response.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    response.on('end', () => {
+      try {
+        fs.writeFileSync(destPath, Buffer.concat(chunks));
+        resolve();
+      } catch (e) { reject(e); }
+    });
+  });
+  request.on('error', reject);
+  request.end();
+});
+
+const semverGt = (a, b) => {
+  const pa = a.split('.').map(Number);
+  const pb = b.split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    if ((pa[i] || 0) > (pb[i] || 0)) return true;
+    if ((pa[i] || 0) < (pb[i] || 0)) return false;
+  }
+  return false;
+};
+
+const checkOTAUpdate = async () => {
+  console.log('[OTA] Checking for remote update...');
+  try {
+    const res = await fetch(OTA_VERSION_URL, { headers: { 'Cache-Control': 'no-cache', 'User-Agent': 'Electron/AZ-Command-Center' } });
+    if (!res.ok) throw new Error(`version.json fetch failed: HTTP ${res.status}`);
+    const remote = await res.json();
+    const localVersion = require('./package.json').version;
+
+    if (!semverGt(remote.version, localVersion)) {
+      console.log(`[OTA] Up to date (${localVersion}).`);
+      return;
+    }
+    console.log(`[OTA] Update available: ${localVersion} → ${remote.version}. Downloading...`);
+
+    const userData   = app.getPath('userData');
+    const zipPath    = path.join(userData, 'ota_update.zip');
+    const extractDir = path.join(userData, 'ota_extract');
+    const destDir    = path.join(userData, 'latest_v3');
+
+    await downloadToFile(OTA_ZIP_URL, zipPath);
+    console.log('[OTA] Zip downloaded. Extracting dist/v3...');
+
+    fs.mkdirSync(extractDir, { recursive: true });
+    await execPromise(`unzip -o "${zipPath}" -d "${extractDir}"`);
+
+    const extractedV3 = path.join(extractDir, OTA_ZIP_PREFIX, 'dist', 'v3');
+    if (!fs.existsSync(extractedV3)) throw new Error('dist/v3 not found in downloaded zip.');
+
+    if (fs.existsSync(destDir)) fs.rmSync(destDir, { recursive: true, force: true });
+    fs.renameSync(extractedV3, destDir);
+
+    // Clean up temp files
+    fs.rmSync(zipPath, { force: true });
+    fs.rmSync(extractDir, { recursive: true, force: true });
+
+    console.log('[OTA] Installed. Relaunching...');
+    dialog.showMessageBoxSync({
+      type: 'info',
+      title: 'Update Installed',
+      message: `Version ${remote.version} has been installed. The app will now restart.`,
+      buttons: ['Restart Now']
+    });
+    app.relaunch();
+    app.exit(0);
+  } catch (err) {
+    console.error('[OTA] Error:', err.message);
+  }
+};
+
 const checkForUpdates = async () => {
   console.log('[AutoUpdate] Checking GitHub for new version...');
   const success = await downloadPayload();
@@ -289,9 +375,19 @@ const checkV3Update = async () => {
 
 const isDev = !app.isPackaged;
 
-// TOGGLE: Set to true to launch the new React foundation. 
+// Returns the best available V3 index.html — OTA override takes priority over the built-in dist
+const getV3LoadPath = () => {
+  const otaPath = path.join(app.getPath('userData'), 'latest_v3', 'index.html');
+  if (fs.existsSync(otaPath)) {
+    console.log('[V3] OTA override active:', otaPath);
+    return otaPath;
+  }
+  return path.join(__dirname, 'dist/v3/index.html');
+};
+
+// TOGGLE: Set to true to launch the new React foundation.
 // Set to false to launch the legacy HTML version.
-const V3_MODE = true; 
+const V3_MODE = true;
 
 const createWindow = async () => {
   mainWindowRef = new BrowserWindow({
@@ -313,22 +409,22 @@ const createWindow = async () => {
       try {
         await mainWindowRef.loadURL('http://localhost:5173/');
       } catch (e) {
-        console.log('[V3] Dev server not reachable, falling back to production build...');
-        const prodPath = path.join(__dirname, 'dist/v3/index.html');
-        if (fs.existsSync(prodPath)) {
-          mainWindowRef.loadFile(prodPath);
+        console.log('[V3] Dev server not reachable, falling back to build...');
+        const loadPath = getV3LoadPath();
+        if (fs.existsSync(loadPath)) {
+          mainWindowRef.loadFile(loadPath);
         } else {
-          console.error('[V3] Error: Production build missing at', prodPath);
+          console.error('[V3] Error: No build found at', loadPath);
           mainWindowRef.loadFile('src/index.html'); // LAST RESORT
         }
       }
     } else {
-      const prodPath = path.join(__dirname, 'dist/v3/index.html');
-      console.log('[V3] Production Mode: Loading', prodPath);
-      if (fs.existsSync(prodPath)) {
-        mainWindowRef.loadFile(prodPath);
+      const loadPath = getV3LoadPath();
+      console.log('[V3] Production Mode: Loading', loadPath);
+      if (fs.existsSync(loadPath)) {
+        mainWindowRef.loadFile(loadPath);
       } else {
-        console.error('[V3] Error: Production build missing at', prodPath);
+        console.error('[V3] Error: No build found at', loadPath);
         mainWindowRef.loadFile('src/index.html');
       }
     }
@@ -344,9 +440,17 @@ const createWindow = async () => {
   // Kick off update check after a short delay so the window is fully ready
   setTimeout(() => {
     if (V3_MODE) {
-      checkV3Update();
-      setInterval(checkV3Update, V3_UPDATE_INTERVAL_MS);
-      console.log(`[V3 AutoUpdate] Daemon started. Checking every ${V3_UPDATE_INTERVAL_MS / 60000} minutes.`);
+      if (app.isPackaged) {
+        // Packaged builds: OTA via GitHub zip (no git required)
+        checkOTAUpdate();
+        setInterval(checkOTAUpdate, V3_UPDATE_INTERVAL_MS);
+        console.log(`[OTA] Daemon started. Checking every ${V3_UPDATE_INTERVAL_MS / 60000} minutes.`);
+      } else {
+        // Dev/source builds: git pull + rebuild
+        checkV3Update();
+        setInterval(checkV3Update, V3_UPDATE_INTERVAL_MS);
+        console.log(`[V3 AutoUpdate] Daemon started. Checking every ${V3_UPDATE_INTERVAL_MS / 60000} minutes.`);
+      }
     } else {
       checkForUpdates();
       setInterval(checkForUpdates, CHECK_INTERVAL_MS);
