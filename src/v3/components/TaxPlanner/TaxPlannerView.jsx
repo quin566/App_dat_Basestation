@@ -2,16 +2,65 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useAppState } from '../../contexts/StateContext';
 import { calculateTaxes, formatCurrency } from '../../utils/taxEngine';
 import QuarterlyTracker from './QuarterlyTracker';
-import { Calculator, Car, Home, Package, TrendingDown, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  Calculator, Car, Home, Package, TrendingDown,
+  ChevronDown, ChevronUp, Info, ExternalLink,
+} from 'lucide-react';
+
+// --- Info Tooltip with Source Link ---
+const InfoTooltip = ({ tooltip }) => {
+  const [show, setShow] = useState(false);
+
+  const openLink = (e) => {
+    e.stopPropagation();
+    if (window.electronAPI?.openExternal) {
+      window.electronAPI.openExternal(tooltip.href);
+    } else {
+      window.open(tooltip.href, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  return (
+    <span
+      className="relative inline-flex items-center ml-1.5 shrink-0"
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+      onFocus={() => setShow(true)}
+      onBlur={() => setShow(false)}
+      tabIndex={0}
+      role="button"
+      aria-label={`More info: ${tooltip.text}`}
+    >
+      <Info size={13} className="text-[#B0A090] cursor-help hover:text-[#5F6F65] transition-colors focus:outline-none" />
+      {show && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-[#2C2511] text-[#FAF8F3] text-xs rounded-xl p-3 shadow-xl z-50 leading-relaxed font-medium pointer-events-auto">
+          <p>{tooltip.text}</p>
+          {tooltip.href && (
+            <button
+              onClick={openLink}
+              className="mt-2 flex items-center gap-1.5 text-[#9FBD9A] hover:text-white transition-colors font-bold"
+            >
+              <ExternalLink size={11} /> Source
+            </button>
+          )}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-[#2C2511]" />
+        </div>
+      )}
+    </span>
+  );
+};
 
 // --- Write-off Input Card ---
-const WriteoffCard = ({ icon: Icon, label, value, onChange, prefix = '$', suffix = '', max, helpText }) => (
+const WriteoffCard = ({ icon: Icon, label, value, onChange, prefix = '$', suffix = '', max, helpText, tooltip }) => (
   <div className="bg-white rounded-2xl p-6 border border-[#E8E4E1] shadow-sm hover:shadow-md transition-shadow">
     <div className="flex items-center gap-3 mb-4">
       <div className="w-9 h-9 rounded-xl bg-[#F2EFE9] flex items-center justify-center text-[#5F6F65]">
         <Icon size={18} />
       </div>
-      <span className="text-sm font-bold text-[#5F6F65]">{label}</span>
+      <span className="text-sm font-bold text-[#5F6F65] flex items-center">
+        {label}
+        {tooltip && <InfoTooltip tooltip={tooltip} />}
+      </span>
     </div>
     <div className="relative flex items-center">
       {prefix && <span className="absolute left-4 text-[#8A7A6A] font-bold">{prefix}</span>}
@@ -30,9 +79,12 @@ const WriteoffCard = ({ icon: Icon, label, value, onChange, prefix = '$', suffix
 );
 
 // --- Deduction Result Row ---
-const DeductionRow = ({ label, value, accent = false }) => (
+const DeductionRow = ({ label, value, accent = false, tooltip }) => (
   <div className={`flex justify-between items-center py-3.5 border-b border-[#F2EFE9] last:border-0 ${accent ? 'text-[#5F6F65]' : ''}`}>
-    <span className={`text-sm font-medium ${accent ? 'font-bold' : 'text-[#8A7A6A]'}`}>{label}</span>
+    <span className={`text-sm font-medium flex items-center ${accent ? 'font-bold' : 'text-[#8A7A6A]'}`}>
+      {label}
+      {tooltip && <InfoTooltip tooltip={tooltip} />}
+    </span>
     <span className={`font-black text-base ${accent ? 'text-[#2C2511] text-lg' : 'text-[#332F2E]'}`}>{value}</span>
   </div>
 );
@@ -102,7 +154,6 @@ const TaxPlannerView = () => {
   const [sqft, setSqft] = useState(state.writeoffs?.sqft || 0);
   const [showTracker, setShowTracker] = useState(true);
 
-  // Save inputs to state on change
   const save = useCallback(() => {
     updateState({
       grossRevenue: gross,
@@ -113,8 +164,8 @@ const TaxPlannerView = () => {
 
   const finances = useMemo(() => calculateTaxes(gross, expenses), [gross, expenses]);
 
-  const mileageDeduction = miles * 0.70;
-  const homeOfficeDeduction = Math.min(sqft, 300) * 6;
+  const mileageDeduction = miles * 0.67;
+  const homeOfficeDeduction = Math.min(sqft, 300) * 5;
   const totalAdditionalDeductions = mileageDeduction + homeOfficeDeduction;
 
   return (
@@ -129,7 +180,7 @@ const TaxPlannerView = () => {
       </header>
 
       {/* Income & Expense Inputs */}
-      <div className="bg-[#F2EFE9] rounded-3xl p-8 border border-[#E8E4E1]">
+      <div data-tour="income-overview" className="bg-[#F2EFE9] rounded-3xl p-8 border border-[#E8E4E1]">
         <h3 className="text-lg font-black mb-6 flex items-center gap-3">
           <div className="w-1.5 h-5 bg-[#5F6F65] rounded-full" />
           Income Overview
@@ -153,8 +204,30 @@ const TaxPlannerView = () => {
         <div className="mt-6 bg-white rounded-2xl p-6 border border-[#E8E4E1]">
           <DeductionRow label="Gross Revenue" value={formatCurrency(gross)} />
           <DeductionRow label="Business Expenses" value={`— ${formatCurrency(expenses)}`} />
-          <DeductionRow label="SE Tax Deduction (½)" value={`— ${formatCurrency(finances.seTax / 2)}`} />
-          <DeductionRow label="QBI Deduction (20%)" value={`— ${formatCurrency(finances.qbiDeduct)}`} />
+          <DeductionRow
+            label="SE Tax Deduction (½)"
+            value={`— ${formatCurrency(finances.seTax / 2)}`}
+            tooltip={{
+              text: "15.3% tax (12.4% SS + 2.9% Medicare) on 92.35% of net profit. Half is deductible from income.",
+              href: "https://www.irs.gov/taxtopics/tc554",
+            }}
+          />
+          <DeductionRow
+            label="QBI Deduction (20%)"
+            value={`— ${formatCurrency(finances.qbiDeduct)}`}
+            tooltip={{
+              text: "20% deduction for eligible pass-through income (sole proprietors, S-corps, partnerships).",
+              href: "https://www.irs.gov/newsroom/qualified-business-income-deduction",
+            }}
+          />
+          <DeductionRow
+            label="AZ Flat Tax (2.5%)"
+            value={formatCurrency(finances.azTax)}
+            tooltip={{
+              text: "Arizona flat 2.5% individual income tax rate as of 2023.",
+              href: "https://azdor.gov/individual-income-tax",
+            }}
+          />
           <DeductionRow label="Estimated Total Tax" value={formatCurrency(finances.totalTax)} />
           <DeductionRow label="Take-Home Pay" value={formatCurrency(finances.takehome)} accent />
         </div>
@@ -167,7 +240,7 @@ const TaxPlannerView = () => {
       </div>
 
       {/* Write-off Calculators */}
-      <div>
+      <div data-tour="writeoffs">
         <h3 className="text-lg font-black mb-5 flex items-center gap-3">
           <div className="w-1.5 h-5 bg-[#D4A373] rounded-full" />
           Additional Write-offs
@@ -180,7 +253,11 @@ const TaxPlannerView = () => {
             onChange={setMiles}
             prefix=""
             suffix="mi"
-            helpText={`At $0.70/mi = ${formatCurrency(mileageDeduction)} deduction`}
+            helpText={`At $0.67/mi = ${formatCurrency(mileageDeduction)} deduction`}
+            tooltip={{
+              text: "IRS 2024 standard mileage rate: 67¢/mile.",
+              href: "https://www.irs.gov/newsroom/irs-issues-standard-mileage-rates-for-2024",
+            }}
           />
           <WriteoffCard
             icon={Home}
@@ -190,7 +267,11 @@ const TaxPlannerView = () => {
             prefix=""
             suffix="sqft"
             max={300}
-            helpText={`IRS Simplified: $6/sqft (300 max) = ${formatCurrency(homeOfficeDeduction)}`}
+            helpText={`IRS Simplified: $5/sqft (300 max) = ${formatCurrency(homeOfficeDeduction)}`}
+            tooltip={{
+              text: "Simplified Method: $5/sqft, up to 300 sqft ($1,500 max). Ref: IRS Pub 587.",
+              href: "https://www.irs.gov/businesses/small-businesses-self-employed/simplified-option-for-home-office-deduction",
+            }}
           />
         </div>
         {totalAdditionalDeductions > 0 && (
@@ -203,7 +284,9 @@ const TaxPlannerView = () => {
       </div>
 
       {/* ROI Analyzer */}
-      <ROIAnalyzer marginalRate={finances.marginalRate} />
+      <div data-tour="roi-analyzer">
+        <ROIAnalyzer marginalRate={finances.marginalRate} />
+      </div>
 
       {/* Quarterly Tracker */}
       <div>

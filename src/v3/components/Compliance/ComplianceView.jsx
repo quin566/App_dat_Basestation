@@ -47,8 +47,8 @@ const ComplianceView = () => {
     : 'text-rose-600';
 
   return (
-    <div className="p-10 max-w-5xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <header>
+    <div className="p-10 max-w-5xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
+      <header data-tour="compliance-status">
         <div className="flex items-center gap-3 text-[#9C8A7A] text-sm font-bold uppercase tracking-widest mb-2">
           <ShieldCheck size={14} />
           <span>Compliance</span>

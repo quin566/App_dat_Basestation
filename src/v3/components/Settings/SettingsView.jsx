@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAppState } from '../../contexts/StateContext';
-import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download } from 'lucide-react';
+import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download, Compass } from 'lucide-react';
 
 const SettingsView = () => {
-  const { state, updateState } = useAppState();
+  const { state, updateState, setRunTour } = useAppState();
   const [saved, setSaved] = useState(false);
   const [gmailAddress, setGmailAddress] = useState(state.emailSettings?.address || '');
   const [gmailPass, setGmailPass] = useState(state.emailSettings?.appPassword || '');
@@ -36,7 +36,7 @@ const SettingsView = () => {
   };
 
   return (
-    <div className="p-10 max-w-3xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="p-10 max-w-3xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
       <header>
         <div className="flex items-center gap-3 text-[#9C8A7A] text-sm font-bold uppercase tracking-widest mb-2">
           <Settings size={14} /><span>Settings</span>
@@ -46,7 +46,7 @@ const SettingsView = () => {
       </header>
 
       {/* Business Profile */}
-      <section className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm space-y-5">
+      <section data-tour="settings-profile" className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm space-y-5">
         <h3 className="text-lg font-black flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-[#F2EFE9] flex items-center justify-center text-[#5F6F65]"><User size={18} /></div>
           Business Profile
@@ -166,9 +166,27 @@ const SettingsView = () => {
         </button>
       </section>
 
+      {/* Help & Onboarding */}
+      <section className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm space-y-5">
+        <h3 className="text-lg font-black flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#F2EFE9] flex items-center justify-center text-[#5F6F65]"><Compass size={18} /></div>
+          Help &amp; Onboarding
+        </h3>
+        <p className="text-xs text-[#9C8A7A] leading-relaxed">
+          New to the Command Center? Launch the guided tour for a walkthrough of all six modules — Dashboard, Tax Planner, Write-offs, ROI Analyzer, Compliance, and Settings.
+        </p>
+        <button
+          onClick={() => setRunTour(true)}
+          className="flex items-center gap-3 px-6 py-3 rounded-xl font-black text-sm bg-[#5F6F65] hover:bg-[#4A6657] text-white transition-all active:scale-95"
+        >
+          <Compass size={16} /> Start Guided Tour
+        </button>
+      </section>
+
       {/* Save */}
+      <span aria-live="polite" className="sr-only">{saved ? 'Settings saved successfully.' : ''}</span>
       <button onClick={handleSave}
-        className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-black text-base transition-all ${
+        className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-black text-base transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5F6F65]/60 focus-visible:ring-offset-2 ${
           saved ? 'bg-emerald-500 text-white' : 'bg-[#5F6F65] hover:bg-[#4A6657] text-white'
         }`}
       >

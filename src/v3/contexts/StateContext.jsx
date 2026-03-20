@@ -7,6 +7,7 @@ export const StateProvider = ({ children }) => {
   const [state, setState] = useState(defaultState);
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [runTour, setRunTour] = useState(false);
   const saveTimeoutRef = useRef(null);
 
   // Load from IPC on mount
@@ -45,12 +46,14 @@ export const StateProvider = ({ children }) => {
   }, []);
 
   const updateState = useCallback((updater) => {
-    setState(prev => {
-      const next = typeof updater === 'function' ? updater(prev) : { ...prev, ...updater };
-      persistState(next);
-      return next;
-    });
-  }, [persistState]);
+    setState(prev => typeof updater === 'function' ? updater(prev) : { ...prev, ...updater });
+  }, []);
+
+  // Persist any state change via effect (safe in StrictMode / Concurrent Mode)
+  useEffect(() => {
+    if (!isLoaded) return;
+    persistState(state);
+  }, [state, isLoaded, persistState]);
 
   const value = {
     state,
@@ -58,6 +61,8 @@ export const StateProvider = ({ children }) => {
     isLoaded,
     activeTab,
     setActiveTab,
+    runTour,
+    setRunTour,
   };
 
   return (

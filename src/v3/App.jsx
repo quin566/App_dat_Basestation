@@ -1,36 +1,52 @@
 import React from 'react'
-import { LayoutDashboard, Calculator, ShieldCheck, Mail, Users, Settings } from 'lucide-react'
+import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera } from 'lucide-react'
 import { StateProvider, useAppState } from './contexts/StateContext'
+import GuidedTour from './components/GuidedTour'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, info: null };
   }
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
   componentDidCatch(error, info) {
-    console.error('[ErrorBoundary]', error, info);
+    console.error('[ErrorBoundary caught]', error, info);
+    this.setState({ info });
   }
   render() {
     if (this.state.hasError) {
+      const msg   = this.state.error?.message || 'Unknown error';
+      const stack = this.state.error?.stack    || '';
+      const comp  = this.state.info?.componentStack || '';
       return (
-        <div className="flex h-screen items-center justify-center bg-[#FDFCFB]">
-          <div className="max-w-md p-8 bg-white rounded-3xl border border-rose-200 shadow-sm text-center">
-            <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center mx-auto mb-4 text-rose-500 text-xl font-black">!</div>
-            <h2 className="text-lg font-black text-[#2C2511] mb-2">Something went wrong</h2>
-            <p className="text-sm text-[#9C8A7A] mb-6">A rendering error occurred. Your data is safe.</p>
-            <p className="text-xs font-mono text-rose-400 bg-rose-50 rounded-xl p-3 text-left break-all mb-6">
-              {this.state.error?.message || 'Unknown error'}
-            </p>
-            <button
-              onClick={() => this.setState({ hasError: false, error: null })}
-              className="px-6 py-2.5 bg-[#5F6F65] text-white text-sm font-bold rounded-xl hover:bg-[#4A5A50] transition-colors"
-            >
-              Try Again
-            </button>
+        <div style={{ position:'fixed', inset:0, background:'#7f1d1d', color:'#fef2f2',
+                      display:'flex', flexDirection:'column', padding:'32px', overflow:'auto',
+                      fontFamily:'monospace', zIndex:9999 }}>
+          <div style={{ fontSize:'20px', fontWeight:'900', marginBottom:'12px' }}>
+            ⚠ RENDER CRASH — read this and copy to Claude
           </div>
+          <div style={{ fontSize:'14px', background:'#991b1b', padding:'12px', borderRadius:'8px',
+                        marginBottom:'12px', whiteSpace:'pre-wrap', wordBreak:'break-all' }}>
+            {msg}
+          </div>
+          <div style={{ fontSize:'11px', opacity:0.8, whiteSpace:'pre-wrap', wordBreak:'break-all',
+                        marginBottom:'12px' }}>
+            {stack}
+          </div>
+          <div style={{ fontSize:'11px', opacity:0.6, whiteSpace:'pre-wrap', wordBreak:'break-all',
+                        marginBottom:'20px' }}>
+            Component stack:{comp}
+          </div>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null, info: null })}
+            style={{ padding:'10px 24px', background:'#fef2f2', color:'#7f1d1d',
+                     fontWeight:'900', border:'none', borderRadius:'8px', cursor:'pointer',
+                     alignSelf:'flex-start' }}
+          >
+            Dismiss
+          </button>
         </div>
       );
     }
@@ -40,21 +56,21 @@ class ErrorBoundary extends React.Component {
 import DashboardView from './components/Dashboard/DashboardView'
 import TaxPlannerView from './components/TaxPlanner/TaxPlannerView'
 import ComplianceView from './components/Compliance/ComplianceView'
-import CRMView from './components/CRM/CRMView'
 import EmailView from './components/Email/EmailView'
 import SettingsView from './components/Settings/SettingsView'
+import PackageCalculatorView from './components/PackageCalculator/PackageCalculatorView'
 
 const NAV_ITEMS = [
-  { id: 'dashboard',   label: 'Dashboard',   icon: LayoutDashboard, built: true },
-  { id: 'taxes',       label: 'Tax Planner', icon: Calculator,      built: true },
-  { id: 'compliance',  label: 'Compliance',  icon: ShieldCheck,     built: true },
-  { id: 'crm',         label: 'CRM / Leads', icon: Users,           built: true },
-  { id: 'email',       label: 'Email Ops',   icon: Mail,            built: true },
-  { id: 'settings',    label: 'Settings',    icon: Settings,        built: true },
+  { id: 'dashboard',  label: 'Dashboard',    icon: LayoutDashboard, built: true },
+  { id: 'taxes',      label: 'Tax Planner',  icon: Calculator,      built: true },
+  { id: 'packages',   label: 'Packages',     icon: Camera,          built: true },
+  { id: 'compliance', label: 'Compliance',   icon: ShieldCheck,     built: true },
+  { id: 'email',      label: 'Email Ops',    icon: Mail,            built: true },
+  { id: 'settings',   label: 'Settings',     icon: Settings,        built: true },
 ];
 
 function AppContent() {
-  const { isLoaded, activeTab, setActiveTab } = useAppState()
+  const { isLoaded, activeTab, setActiveTab, runTour } = useAppState()
 
   if (!isLoaded) {
     return (
@@ -71,8 +87,8 @@ function AppContent() {
     switch (activeTab) {
       case 'dashboard':  return <DashboardView />;
       case 'taxes':      return <TaxPlannerView />;
+      case 'packages':   return <PackageCalculatorView />;
       case 'compliance': return <ComplianceView />;
-      case 'crm':        return <CRMView />;
       case 'email':      return <EmailView />;
       case 'settings':   return <SettingsView />;
       default:
@@ -110,7 +126,9 @@ function AppContent() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold transition-all relative ${
+              data-tour-id={tab.id}
+              aria-current={activeTab === tab.id ? 'page' : undefined}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold transition-all relative cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5F6F65]/60 focus-visible:ring-offset-1 ${
                 activeTab === tab.id
                   ? 'bg-[#F4F1EE] text-[#5F6F65] rounded-r-xl border-l-2 border-[#5F6F65]'
                   : 'text-[#9C8A7A] hover:bg-[#FDFCFB] hover:text-[#5F6F65] rounded-xl border-l-2 border-transparent'
@@ -136,6 +154,7 @@ function AppContent() {
       <main className="flex-1 overflow-y-auto bg-white/50">
         {renderContent()}
       </main>
+      {runTour && <GuidedTour />}
     </div>
   )
 }

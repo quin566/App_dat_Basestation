@@ -36,3 +36,16 @@ body {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px -10px rgba(95, 111, 101, 0.1);
 }
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card:hover {
+    transform: none;
+  }
+}
