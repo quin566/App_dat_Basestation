@@ -1,4 +1,4 @@
-const { app, BrowserWindow, net, ipcMain } = require('electron');
+const { app, BrowserWindow, net, ipcMain, dialog } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -198,7 +198,8 @@ const downloadPayload = async () => {
   });
 };
 
-const CHECK_INTERVAL_MS = 3 * 60 * 1000; // Check GitHub every 3 minutes
+const CHECK_INTERVAL_MS = 3 * 60 * 1000; // Check GitHub every 3 minutes (legacy mode)
+const V3_UPDATE_INTERVAL_MS = 20 * 60 * 1000; // Check git every 20 minutes (V3 mode)
 let mainWindowRef = null;
 
 const getLocalPayloadHash = () => {
@@ -227,6 +228,35 @@ const checkForUpdates = async () => {
     const userDataPath = app.getPath('userData');
     const payloadPath = path.join(userDataPath, 'current_payload.html');
     mainWindowRef.loadFile(payloadPath);
+  }
+};
+
+const checkV3Update = async () => {
+  if (app.isPackaged) return; // Only runs from source; packaged builds update via DMG
+  console.log('[V3 AutoUpdate] Fetching origin...');
+  try {
+    await execPromise('git fetch', { cwd: __dirname });
+    const { stdout: local } = await execPromise('git rev-parse HEAD', { cwd: __dirname });
+    const { stdout: remote } = await execPromise('git rev-parse origin/main', { cwd: __dirname });
+    if (local.trim() === remote.trim()) {
+      console.log('[V3 AutoUpdate] Already up to date.');
+      return;
+    }
+    console.log('[V3 AutoUpdate] Update found — pulling...');
+    await execPromise('git pull origin main', { cwd: __dirname });
+    console.log('[V3 AutoUpdate] Rebuilding dist/v3...');
+    await execPromise('npm run build', { cwd: __dirname });
+    console.log('[V3 AutoUpdate] Build complete. Relaunching...');
+    dialog.showMessageBoxSync({
+      type: 'info',
+      title: 'Update Applied',
+      message: 'A new version has been downloaded and built. The app will now restart.',
+      buttons: ['Restart Now']
+    });
+    app.relaunch();
+    app.exit(0);
+  } catch (err) {
+    console.error('[V3 AutoUpdate] Error:', err.message);
   }
 };
 
@@ -286,9 +316,12 @@ const createWindow = async () => {
 
   // Kick off update check after a short delay so the window is fully ready
   setTimeout(() => {
-    if (!V3_MODE) {
+    if (V3_MODE) {
+      checkV3Update();
+      setInterval(checkV3Update, V3_UPDATE_INTERVAL_MS);
+      console.log(`[V3 AutoUpdate] Daemon started. Checking every ${V3_UPDATE_INTERVAL_MS / 60000} minutes.`);
+    } else {
       checkForUpdates();
-      // Continue checking every 3 minutes
       setInterval(checkForUpdates, CHECK_INTERVAL_MS);
       console.log(`[AutoUpdate] Daemon started. Checking every ${CHECK_INTERVAL_MS / 60000} minutes.`);
     }
