@@ -230,26 +230,68 @@ const checkForUpdates = async () => {
   }
 };
 
+const isDev = !app.isPackaged;
+
+// TOGGLE: Set to true to launch the new React foundation. 
+// Set to false to launch the legacy HTML version.
+const V3_MODE = true; 
+
 const createWindow = async () => {
   mainWindowRef = new BrowserWindow({
     width: 1280,
     height: 800,
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true
     },
   });
 
-  // Always load from src/index.html on startup - this is always the correct, bundled version.
-  // The auto-updater will switch to the downloaded payload when a new version arrives from GitHub.
-  console.log('Launch path: Loading bundled src/index.html');
-  mainWindowRef.loadFile('src/index.html');
+  if (V3_MODE) {
+    // mainWindowRef.webContents.openDevTools();
+
+    if (isDev) {
+      console.log('[V3] Attempting Dev Mode: http://localhost:5173/');
+      try {
+        await mainWindowRef.loadURL('http://localhost:5173/');
+      } catch (e) {
+        console.log('[V3] Dev server not reachable, falling back to production build...');
+        const prodPath = path.join(__dirname, 'dist/v3/index.html');
+        if (fs.existsSync(prodPath)) {
+          mainWindowRef.loadFile(prodPath);
+        } else {
+          console.error('[V3] Error: Production build missing at', prodPath);
+          mainWindowRef.loadFile('src/index.html'); // LAST RESORT
+        }
+      }
+    } else {
+      const prodPath = path.join(__dirname, 'dist/v3/index.html');
+      console.log('[V3] Production Mode: Loading', prodPath);
+      if (fs.existsSync(prodPath)) {
+        mainWindowRef.loadFile(prodPath);
+      } else {
+        console.error('[V3] Error: Production build missing at', prodPath);
+        mainWindowRef.loadFile('src/index.html');
+      }
+    }
+  } else {
+    console.log('[Legacy] Loading src/index.html');
+    mainWindowRef.loadFile('src/index.html');
+  }
+
+  mainWindowRef.once('ready-to-show', () => {
+    mainWindowRef.show();
+  });
 
   // Kick off update check after a short delay so the window is fully ready
   setTimeout(() => {
-    checkForUpdates();
-    // Continue checking every 3 minutes
-    setInterval(checkForUpdates, CHECK_INTERVAL_MS);
-    console.log(`[AutoUpdate] Daemon started. Checking every ${CHECK_INTERVAL_MS / 60000} minutes.`);
+    if (!V3_MODE) {
+      checkForUpdates();
+      // Continue checking every 3 minutes
+      setInterval(checkForUpdates, CHECK_INTERVAL_MS);
+      console.log(`[AutoUpdate] Daemon started. Checking every ${CHECK_INTERVAL_MS / 60000} minutes.`);
+    }
   }, 3000);
 };
 
