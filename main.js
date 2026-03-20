@@ -10,9 +10,9 @@ const nodemailer = require('nodemailer');
 const PAYLOAD_URL = 'https://raw.githubusercontent.com/quin566/App_dat_Basestation/main/latest.html';
 
 // OTA Update System — packaged-app updates via GitHub zip (no git/DMG required)
-const OTA_VERSION_URL = 'https://raw.githubusercontent.com/quin566/App_dat_Basestation/main/version.json';
-const OTA_ZIP_URL     = 'https://github.com/quin566/App_dat_Basestation/archive/refs/heads/main.zip';
-const OTA_ZIP_PREFIX  = 'App_dat_Basestation-main'; // GitHub archive root folder name
+const OTA_VERSION_URL = 'https://raw.githubusercontent.com/quin566/App_dat_Basestation/ota-release/version.json';
+const OTA_ZIP_URL     = 'https://github.com/quin566/App_dat_Basestation/archive/refs/heads/ota-release.zip';
+const OTA_ZIP_PREFIX  = 'App_dat_Basestation-ota-release'; // GitHub archive root folder name
 
 // --- GMAIL IMAP/SMTP INTEGRATION ---
 ipcMain.handle('fetch-inbox', async (event, creds) => {

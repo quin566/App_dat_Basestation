@@ -10,7 +10,8 @@
     "make": "electron-forge make",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "release-ota": "bash scripts/release-ota.sh"
   },
   "author": "AZ Photo LLC",
   "license": "MIT",
