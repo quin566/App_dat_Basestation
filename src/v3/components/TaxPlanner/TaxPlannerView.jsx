@@ -118,7 +118,7 @@ const TaxPlannerView = () => {
   const totalAdditionalDeductions = mileageDeduction + homeOfficeDeduction;
 
   return (
-    <div className="p-10 max-w-7xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="p-10 max-w-7xl mx-auto space-y-10">
       <header className="mb-2">
         <div className="flex items-center gap-3 text-[#9C8A7A] text-sm font-bold uppercase tracking-widest mb-2">
           <Calculator size={14} />
