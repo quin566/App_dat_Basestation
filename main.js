@@ -231,6 +231,33 @@ const checkForUpdates = async () => {
   }
 };
 
+ipcMain.handle('trigger-git-update', async () => {
+  if (app.isPackaged) return { status: 'unavailable' };
+  try {
+    await execPromise('git fetch', { cwd: __dirname });
+    const { stdout: local } = await execPromise('git rev-parse HEAD', { cwd: __dirname });
+    const { stdout: remote } = await execPromise('git rev-parse origin/main', { cwd: __dirname });
+    if (local.trim() === remote.trim()) return { status: 'up-to-date' };
+    // Notify renderer to show "installing" state before the long build
+    if (mainWindowRef && !mainWindowRef.isDestroyed()) {
+      mainWindowRef.webContents.send('update-status', 'installing');
+    }
+    await execPromise('git pull origin main', { cwd: __dirname });
+    await execPromise('npm run build', { cwd: __dirname });
+    dialog.showMessageBoxSync({
+      type: 'info',
+      title: 'Update Applied',
+      message: 'A new version has been downloaded and built. The app will now restart.',
+      buttons: ['Restart Now']
+    });
+    app.relaunch();
+    app.exit(0);
+  } catch (err) {
+    console.error('[V3 ManualUpdate] Error:', err.message);
+    return { status: 'error', message: err.message };
+  }
+});
+
 const checkV3Update = async () => {
   if (app.isPackaged) return; // Only runs from source; packaged builds update via DMG
   console.log('[V3 AutoUpdate] Fetching origin...');

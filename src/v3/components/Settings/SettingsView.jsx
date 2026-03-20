@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppState } from '../../contexts/StateContext';
-import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download } from 'lucide-react';
 
 const SettingsView = () => {
   const { state, updateState } = useAppState();
@@ -11,6 +11,19 @@ const SettingsView = () => {
   const [profileBiz, setProfileBiz] = useState(state.businessProfile?.businessName || 'The Love Lens by Ariana');
   const [profileState, setProfileState] = useState(state.businessProfile?.state || 'Arizona');
   const [revenueTarget, setRevenueTarget] = useState(state.revenueTarget || 100000);
+  const [updateStatus, setUpdateStatus] = useState('idle'); // idle | checking | installing | up-to-date | error
+
+  useEffect(() => {
+    window.electronAPI?.onUpdateStatus?.((status) => setUpdateStatus(status));
+  }, []);
+
+  const handleCheckUpdate = async () => {
+    setUpdateStatus('checking');
+    const result = await window.electronAPI?.triggerGitUpdate?.();
+    if (result?.status === 'up-to-date') setUpdateStatus('up-to-date');
+    else if (result?.status === 'error') setUpdateStatus('error');
+    // 'installing' is set by the onUpdateStatus listener; app relaunches before invoke resolves
+  };
 
   const handleSave = () => {
     updateState({
@@ -119,6 +132,38 @@ const SettingsView = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* System Updates */}
+      <section className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm space-y-5">
+        <h3 className="text-lg font-black flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#F2EFE9] flex items-center justify-center text-[#5F6F65]"><Download size={18} /></div>
+          System Updates
+        </h3>
+        <p className="text-xs text-[#9C8A7A] leading-relaxed">
+          Pulls the latest code from GitHub and rebuilds the app. Only available in development mode.
+        </p>
+        <button
+          onClick={handleCheckUpdate}
+          disabled={updateStatus === 'checking' || updateStatus === 'installing'}
+          className={`flex items-center gap-3 px-6 py-3 rounded-xl font-black text-sm transition-all ${
+            updateStatus === 'installing'
+              ? 'bg-amber-500 text-white cursor-not-allowed'
+              : updateStatus === 'checking'
+              ? 'bg-[#9C8A7A] text-white cursor-not-allowed'
+              : updateStatus === 'up-to-date'
+              ? 'bg-emerald-500 text-white'
+              : updateStatus === 'error'
+              ? 'bg-rose-500 text-white'
+              : 'bg-[#5F6F65] hover:bg-[#4A6657] text-white'
+          }`}
+        >
+          {updateStatus === 'checking' && <><RefreshCw size={16} className="animate-spin" /> Checking...</>}
+          {updateStatus === 'installing' && <><RefreshCw size={16} className="animate-spin" /> Installing Update — Do Not Close App...</>}
+          {updateStatus === 'up-to-date' && <><CheckCircle2 size={16} /> Already Up to Date</>}
+          {updateStatus === 'error' && <><RefreshCw size={16} /> Update Failed — Retry</>}
+          {updateStatus === 'idle' && <><Download size={16} /> Check for Updates</>}
+        </button>
       </section>
 
       {/* Save */}

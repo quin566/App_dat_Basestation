@@ -6,5 +6,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   fetchInbox: (creds) => ipcRenderer.invoke('fetch-inbox', creds),
   openAppleMailReply: (payload) => ipcRenderer.invoke('open-apple-mail-reply', payload),
   fetchProxy: (payload) => ipcRenderer.invoke('fetch-proxy', payload),
-  openExternal: (url) => ipcRenderer.invoke('open-external', url)
+  openExternal: (url) => ipcRenderer.invoke('open-external', url),
+  triggerGitUpdate: () => ipcRenderer.invoke('trigger-git-update'),
+  onUpdateStatus: (cb) => ipcRenderer.on('update-status', (_, status) => cb(status))
 });
