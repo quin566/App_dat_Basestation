@@ -1,6 +1,42 @@
 import React from 'react'
 import { LayoutDashboard, Calculator, ShieldCheck, Mail, Users, Settings } from 'lucide-react'
 import { StateProvider, useAppState } from './contexts/StateContext'
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, info) {
+    console.error('[ErrorBoundary]', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex h-screen items-center justify-center bg-[#FDFCFB]">
+          <div className="max-w-md p-8 bg-white rounded-3xl border border-rose-200 shadow-sm text-center">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center mx-auto mb-4 text-rose-500 text-xl font-black">!</div>
+            <h2 className="text-lg font-black text-[#2C2511] mb-2">Something went wrong</h2>
+            <p className="text-sm text-[#9C8A7A] mb-6">A rendering error occurred. Your data is safe.</p>
+            <p className="text-xs font-mono text-rose-400 bg-rose-50 rounded-xl p-3 text-left break-all mb-6">
+              {this.state.error?.message || 'Unknown error'}
+            </p>
+            <button
+              onClick={() => this.setState({ hasError: false, error: null })}
+              className="px-6 py-2.5 bg-[#5F6F65] text-white text-sm font-bold rounded-xl hover:bg-[#4A5A50] transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import DashboardView from './components/Dashboard/DashboardView'
 import TaxPlannerView from './components/TaxPlanner/TaxPlannerView'
 import ComplianceView from './components/Compliance/ComplianceView'
@@ -106,9 +142,11 @@ function AppContent() {
 
 function App() {
   return (
-    <StateProvider>
-      <AppContent />
-    </StateProvider>
+    <ErrorBoundary>
+      <StateProvider>
+        <AppContent />
+      </StateProvider>
+    </ErrorBoundary>
   )
 }
 

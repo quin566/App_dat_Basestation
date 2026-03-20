@@ -4,7 +4,7 @@ import { CheckCircle2, Clock, AlertTriangle, Circle } from 'lucide-react';
 
 const QuarterlyTracker = ({ annualTax }) => {
   const { state, updateState } = useAppState();
-  const qPay = Math.round(annualTax / 4);
+  const qPay = Math.round((Number.isFinite(Number(annualTax)) ? Number(annualTax) : 0) / 4);
   const now = new Date();
   const year = now.getFullYear();
 
