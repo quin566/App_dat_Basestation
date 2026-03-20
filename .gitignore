@@ -1,6 +1,7 @@
 node_modules/
 out/
-dist/
+# dist/ — intentionally tracked for OTA delivery via GitHub zip download
+# dist/
 .npm-cache/
 .DS_Store
 *.sqlite
