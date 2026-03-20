@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatCurrency } from '../../utils/taxEngine';
 
-const MetricCard = ({ title, value, subtext, icon: Icon, trend, accent = 'sage' }) => {
+const MetricCard = ({ title, value, subtext, icon: Icon, trend, accent = 'sage', onClick }) => {
   const accentColors = {
     sage: 'bg-[#5F6F65] text-white',
     linen: 'bg-[#F2EFE9] text-[#332F2E]',
@@ -10,7 +10,10 @@ const MetricCard = ({ title, value, subtext, icon: Icon, trend, accent = 'sage' 
   };
 
   return (
-    <div className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
+    <div
+      onClick={onClick}
+      className={`bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm transition-all group relative overflow-hidden ${onClick ? 'cursor-pointer hover:shadow-lg hover:scale-[1.02] active:scale-[0.99]' : 'hover:shadow-md'}`}
+    >
       <div className="flex justify-between items-start mb-4">
         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${accentColors[accent] || accentColors.sage} shadow-sm transition-transform group-hover:scale-110`}>
           {Icon && <Icon size={24} />}

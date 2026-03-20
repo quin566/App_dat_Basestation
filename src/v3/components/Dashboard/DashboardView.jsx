@@ -60,7 +60,7 @@ const RevenueChart = ({ gross, expenses, tax }) => {
 };
 
 // --- Live Activity Feed ---
-const ActivityFeed = ({ leads, clients }) => {
+const ActivityFeed = ({ leads, clients, setActiveTab }) => {
   const now = new Date();
   const items = [];
 
@@ -77,6 +77,7 @@ const ActivityFeed = ({ leads, clients }) => {
       text: `Next shoot: ${next.name}`,
       meta: `${daysAway} day${daysAway === 1 ? '' : 's'} away · ${next.shootDate}`,
       accent: daysAway <= 7 ? 'text-amber-600' : 'text-[#5F6F65]',
+      tab: 'crm',
     });
   }
 
@@ -88,6 +89,7 @@ const ActivityFeed = ({ leads, clients }) => {
       text: `${leads.length} active inquiry${leads.length === 1 ? '' : 'ies'}`,
       meta: urgent.length > 0 ? `${urgent.length} response window closing soon!` : 'All within 48-hour window',
       accent: urgent.length > 0 ? 'text-rose-600' : 'text-[#9C8A7A]',
+      tab: 'crm',
     });
   }
 
@@ -107,6 +109,7 @@ const ActivityFeed = ({ leads, clients }) => {
       text: `${nextQ.label} due ${nextQ.iso}`,
       meta: `${daysToQ} days away`,
       accent: daysToQ <= 14 ? 'text-amber-600' : 'text-[#9C8A7A]',
+      tab: 'taxes',
     });
   }
 
@@ -122,14 +125,19 @@ const ActivityFeed = ({ leads, clients }) => {
   return (
     <ul className="space-y-5">
       {items.map((item, i) => (
-        <li key={i} className="flex items-start gap-4 border-b border-[#FAF8F3] pb-5 last:border-0 last:pb-0">
+        <li
+          key={i}
+          onClick={item.tab ? () => setActiveTab(item.tab) : undefined}
+          className={`flex items-start gap-4 border-b border-[#FAF8F3] pb-5 last:border-0 last:pb-0 rounded-xl transition-colors ${item.tab ? 'cursor-pointer hover:bg-[#FDFCFB] -mx-3 px-3' : ''}`}
+        >
           <div className={`mt-0.5 flex-shrink-0 ${item.accent}`}>
             <item.icon size={16} />
           </div>
-          <div>
+          <div className="flex-1">
             <p className="text-sm font-bold text-[#332F2E]">{item.text}</p>
             <p className={`text-[10px] font-bold uppercase tracking-tight mt-0.5 ${item.accent}`}>{item.meta}</p>
           </div>
+          {item.tab && <div className="mt-0.5 text-[#C8BFB5]">→</div>}
         </li>
       ))}
     </ul>
@@ -145,7 +153,7 @@ const getGreeting = (name) => {
 
 // --- Main Dashboard View ---
 const DashboardView = () => {
-  const { state } = useAppState();
+  const { state, setActiveTab } = useAppState();
   const name = state.businessProfile?.name || 'Ariana';
   const leads = state.crmLeads || [];
   const clients = state.bookedClients || [];
@@ -184,6 +192,7 @@ const DashboardView = () => {
           icon={Zap}
           accent="sage"
           trend={{ value: `Target: ${formatCurrency(revenueTarget)}`, positive: true }}
+          onClick={() => setActiveTab('taxes')}
         />
         <MetricCard
           title="Estimated Tax"
@@ -191,6 +200,7 @@ const DashboardView = () => {
           subtext={`Federal (${Math.round(finances.marginalRate * 100)}% bracket) + SE + AZ 2.5%.`}
           icon={Calculator}
           accent="amber"
+          onClick={() => setActiveTab('taxes')}
         />
         <MetricCard
           title="Take-Home Pay"
@@ -198,12 +208,16 @@ const DashboardView = () => {
           subtext="Your net income after all tax obligations."
           icon={ShieldCheck}
           accent="charcoal"
+          onClick={() => setActiveTab('taxes')}
         />
       </div>
 
       {/* Chart + Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-[#F2EFE9] rounded-3xl p-8 border border-[#E8E4E1]">
+        <div
+          onClick={() => setActiveTab('taxes')}
+          className="lg:col-span-2 bg-[#F2EFE9] rounded-3xl p-8 border border-[#E8E4E1] cursor-pointer hover:shadow-md hover:scale-[1.01] active:scale-[1.00] transition-all"
+        >
           <h3 className="text-xl font-black mb-2 flex items-center gap-3">
             <div className="w-1.5 h-6 bg-[#5F6F65] rounded-full" />
             Revenue Snapshot
@@ -220,7 +234,7 @@ const DashboardView = () => {
 
         <div className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm">
           <h3 className="text-xl font-black mb-6">Live Activity</h3>
-          <ActivityFeed leads={leads} clients={clients} />
+          <ActivityFeed leads={leads} clients={clients} setActiveTab={setActiveTab} />
         </div>
       </div>
     </div>

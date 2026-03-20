@@ -6,6 +6,7 @@ const StateContext = createContext();
 export const StateProvider = ({ children }) => {
   const [state, setState] = useState(defaultState);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
   const saveTimeoutRef = useRef(null);
 
   // Load from IPC on mount
@@ -54,7 +55,9 @@ export const StateProvider = ({ children }) => {
   const value = {
     state,
     updateState,
-    isLoaded
+    isLoaded,
+    activeTab,
+    setActiveTab,
   };
 
   return (

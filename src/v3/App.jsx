@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { LayoutDashboard, Calculator, ShieldCheck, Mail, Users, Settings } from 'lucide-react'
 import { StateProvider, useAppState } from './contexts/StateContext'
 import DashboardView from './components/Dashboard/DashboardView'
@@ -18,8 +18,7 @@ const NAV_ITEMS = [
 ];
 
 function AppContent() {
-  const { isLoaded } = useAppState()
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const { isLoaded, activeTab, setActiveTab } = useAppState()
 
   if (!isLoaded) {
     return (
