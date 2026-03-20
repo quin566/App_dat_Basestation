@@ -8,18 +8,18 @@ import { LayoutDashboard, Calculator, Zap, ShieldCheck, Users, CalendarDays, Clo
 const RevenueChart = ({ gross, expenses, tax }) => {
   const max = Math.max(gross, expenses + tax, 1);
   const bars = [
-    { label: 'Gross Revenue', value: gross, color: '#5F6F65', textColor: 'text-[#5F6F65]' },
-    { label: 'Business Expenses', value: expenses, color: '#D4A373', textColor: 'text-[#D4A373]' },
-    { label: 'Est. Tax Owed', value: tax, color: '#C4847A', textColor: 'text-[#C4847A]' },
+    { label: 'Gross Revenue', value: gross, color: '#5F6F65' },
+    { label: 'Business Expenses', value: expenses, color: '#D4A373' },
+    { label: 'Est. Tax Owed', value: tax, color: '#C4847A' },
   ];
-  const barWidth = 56;
-  const chartH = 160;
-  const gap = 40;
-  const svgW = bars.length * (barWidth + gap);
+  const barWidth = 60;
+  const chartH = 150;
+  const gap = 48;
+  const svgW = bars.length * (barWidth + gap) - gap;
 
   return (
-    <div>
-      <svg width="100%" viewBox={`0 0 ${svgW} ${chartH + 48}`} className="overflow-visible">
+    <div className="mt-8">
+      <svg width="100%" viewBox={`0 -40 ${svgW} ${chartH + 80}`} className="overflow-visible">
         {bars.map((bar, i) => {
           const h = Math.round((bar.value / max) * chartH);
           const x = i * (barWidth + gap);
@@ -27,19 +27,19 @@ const RevenueChart = ({ gross, expenses, tax }) => {
           return (
             <g key={bar.label}>
               {/* Background track */}
-              <rect x={x} y={0} width={barWidth} height={chartH} rx={10} fill="#F2EFE9" />
+              <rect x={x} y={0} width={barWidth} height={chartH} rx={12} fill="#F2EFE9" />
               {/* Value bar */}
-              <rect x={x} y={y} width={barWidth} height={h} rx={10} fill={bar.color} opacity={0.9} />
+              <rect x={x} y={y} width={barWidth} height={h} rx={12} fill={bar.color} opacity={0.9} />
               {/* Value label */}
               {bar.value > 0 && (
-                <text x={x + barWidth / 2} y={y - 8} textAnchor="middle" fontSize="10" fontWeight="700" fill={bar.color}>
+                <text x={x + barWidth / 2} y={y - 12} textAnchor="middle" fontSize="12" fontWeight="800" fill={bar.color}>
                   {bar.value >= 1000 ? `$${Math.round(bar.value / 1000)}k` : `$${Math.round(bar.value)}`}
                 </text>
               )}
               {/* Axis label */}
-              <text x={x + barWidth / 2} y={chartH + 20} textAnchor="middle" fontSize="9.5" fontWeight="700" fill="#9C8A7A">
+              <text x={x + barWidth / 2} y={chartH + 24} textAnchor="middle" fontSize="11" fontWeight="700" fill="#9C8A7A">
                 {bar.label.split(' ').map((word, wi) => (
-                  <tspan key={wi} x={x + barWidth / 2} dy={wi === 0 ? 0 : 12}>{word}</tspan>
+                  <tspan key={wi} x={x + barWidth / 2} dy={wi === 0 ? 0 : 14}>{word}</tspan>
                 ))}
               </text>
             </g>
@@ -47,11 +47,11 @@ const RevenueChart = ({ gross, expenses, tax }) => {
         })}
       </svg>
       {/* Legend dots */}
-      <div className="flex items-center gap-5 mt-4">
+      <div className="flex items-center gap-6 mt-8">
         {bars.map(b => (
           <div key={b.label} className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full" style={{ background: b.color }} />
-            <span className="text-[10px] font-bold text-[#9C8A7A]">{b.label}</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A]">{b.label}</span>
           </div>
         ))}
       </div>
@@ -149,6 +149,7 @@ const DashboardView = () => {
   const name = state.businessProfile?.name || 'Ariana';
   const leads = state.crmLeads || [];
   const clients = state.bookedClients || [];
+  const revenueTarget = state.revenueTarget ?? 100000;
 
   const finances = useMemo(() => calculateTaxes(
     state.grossRevenue || 0,
@@ -182,7 +183,7 @@ const DashboardView = () => {
           subtext="Revenue after expenses, before taxes."
           icon={Zap}
           accent="sage"
-          trend={{ value: 'Target: $100k', positive: true }}
+          trend={{ value: `Target: ${formatCurrency(revenueTarget)}`, positive: true }}
         />
         <MetricCard
           title="Estimated Tax"
@@ -208,7 +209,7 @@ const DashboardView = () => {
             Revenue Snapshot
           </h3>
           <p className="text-xs text-[#9C8A7A] mb-6">
-            Based on {formatCurrency(state.grossRevenue || 0)} gross · Update figures in Tax Planner
+            Based on {formatCurrency(state.grossRevenue || 0)} gross · Target: {formatCurrency(revenueTarget)} · Update figures in Tax Planner
           </p>
           <RevenueChart
             gross={state.grossRevenue || 0}

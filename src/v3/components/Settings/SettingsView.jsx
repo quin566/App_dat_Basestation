@@ -10,11 +10,13 @@ const SettingsView = () => {
   const [profileName, setProfileName] = useState(state.businessProfile?.name || 'Ariana');
   const [profileBiz, setProfileBiz] = useState(state.businessProfile?.businessName || 'The Love Lens by Ariana');
   const [profileState, setProfileState] = useState(state.businessProfile?.state || 'Arizona');
+  const [revenueTarget, setRevenueTarget] = useState(state.revenueTarget || 100000);
 
   const handleSave = () => {
     updateState({
       emailSettings: { address: gmailAddress, appPassword: gmailPass },
-      businessProfile: { name: profileName, businessName: profileBiz, state: profileState }
+      businessProfile: { name: profileName, businessName: profileBiz, state: profileState },
+      revenueTarget: Number(revenueTarget)
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
@@ -61,6 +63,26 @@ const SettingsView = () => {
             <option>Utah</option>
             <option>Other</option>
           </select>
+        </div>
+      </section>
+
+      {/* Business Goals */}
+      <section className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm space-y-5">
+        <h3 className="text-lg font-black flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#F2EFE9] flex items-center justify-center text-[#5F6F65]"><RefreshCw size={18} /></div>
+          Business Goals
+        </h3>
+        <div>
+          <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Annual Net Profit Target</label>
+          <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A] font-bold">$</div>
+            <input type="number" value={revenueTarget} onChange={e => setRevenueTarget(e.target.value)} placeholder="100000"
+              className="w-full pl-8 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+            />
+          </div>
+          <p className="text-[10px] text-[#9C8A7A] mt-2 font-medium italic">
+            This target will update your Dashboard "Net Profit" progress card.
+          </p>
         </div>
       </section>
 

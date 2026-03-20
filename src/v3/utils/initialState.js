@@ -1,6 +1,7 @@
 export const defaultState = {
   grossRevenue: 95000,
   bizExpenses: 25000,
+  revenueTarget: 100000,
   customPerks: [],
   customChecks: [],
   profile: {},
@@ -11,6 +12,7 @@ export const defaultState = {
   complianceChecks: {},
   totalTax: 12000,
   businessProfile: {},
+  revenueTarget: 100000,
   compliancePaid: {},
   workflows: [],
   emailTemplates: [
