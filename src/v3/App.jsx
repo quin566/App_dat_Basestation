@@ -68,7 +68,7 @@ function AppContent() {
       <aside className="w-64 border-r border-[#E8E4E1] bg-white p-6 hidden md:flex flex-col">
         <h1 className="text-xl font-black tracking-tighter mb-10 flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-[#5F6F65] flex items-center justify-center text-white font-black">L</div>
-          COMMAND CENTER
+          COMMAND CENTER V3
         </h1>
         <nav className="space-y-1 flex-1">
           {NAV_ITEMS.map((tab) => (
