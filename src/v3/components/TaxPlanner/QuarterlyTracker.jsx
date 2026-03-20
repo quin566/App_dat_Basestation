@@ -17,7 +17,7 @@ const QuarterlyTracker = ({ annualTax }) => {
 
   const handleToggle = (idx, checked) => {
     const paid = { ...(state.compliancePaid || {}) };
-    paid[`q-paid-${idx}`] = checked;
+    paid[`q-paid-${year}-${idx}`] = checked;
     updateState({ compliancePaid: paid });
   };
 
@@ -27,7 +27,7 @@ const QuarterlyTracker = ({ annualTax }) => {
         const due = new Date(q.isoDate);
         const isPast = due < now;
         const isSoon = !isPast && (due - now) < 30 * 24 * 3600 * 1000;
-        const paid = (state.compliancePaid || {})[`q-paid-${i}`];
+        const paid = (state.compliancePaid || {})[`q-paid-${year}-${i}`];
 
         let statusColor = 'border-[#E8E4E1]';
         let StatusIcon = paid ? CheckCircle2 : Circle;

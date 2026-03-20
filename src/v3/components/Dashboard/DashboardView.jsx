@@ -164,6 +164,16 @@ const DashboardView = () => {
     state.bizExpenses || 0
   ), [state.grossRevenue, state.bizExpenses]);
 
+  const { totalPaid, remainingTax } = useMemo(() => {
+    const year = new Date().getFullYear();
+    const qPay = Math.round(finances.totalTax / 4);
+    const paidCount = [0, 1, 2, 3].filter(
+      i => !!(state.compliancePaid || {})[`q-paid-${year}-${i}`]
+    ).length;
+    const totalPaid = paidCount * qPay;
+    return { totalPaid, remainingTax: Math.max(0, finances.totalTax - totalPaid) };
+  }, [finances.totalTax, state.compliancePaid]);
+
   const subtitle = useMemo(() => {
     const parts = [];
     if (clients.length > 0) parts.push(`${clients.length} client${clients.length > 1 ? 's' : ''} booked`);
@@ -196,8 +206,8 @@ const DashboardView = () => {
         />
         <MetricCard
           title="Estimated Tax"
-          value={finances.totalTax}
-          subtext={`Federal (${Math.round(finances.marginalRate * 100)}% bracket) + SE + AZ 2.5%.`}
+          value={remainingTax}
+          subtext={`Total: ${formatCurrency(finances.totalTax)} · Paid: ${formatCurrency(totalPaid)}`}
           icon={Calculator}
           accent="amber"
           onClick={() => setActiveTab('taxes')}

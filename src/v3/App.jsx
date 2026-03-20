@@ -62,7 +62,7 @@ function AppContent() {
   };
 
   return (
-    <div className="flex h-screen bg-[#FDFCFB] text-[#332F2E]">
+    <div className="flex h-screen overflow-hidden bg-[#FDFCFB] text-[#332F2E]">
       {/* Sidebar */}
       <aside className="w-64 border-r border-[#E8E4E1] bg-white p-6 hidden md:flex flex-col">
         <h1 className="text-xl font-black tracking-tighter mb-10 flex items-center gap-2.5">
