@@ -25,6 +25,8 @@ const SettingsView = () => {
     const result = await window.electronAPI?.triggerGitUpdate?.();
     if (result?.status === 'up-to-date') setUpdateStatus('up-to-date');
     else if (result?.status === 'error') setUpdateStatus('error');
+    else if (result?.status === 'unavailable') setUpdateStatus('unavailable');
+    else setUpdateStatus('idle');
     // 'installing' is set by the onUpdateStatus listener; app relaunches before invoke resolves
   };
 
@@ -161,11 +163,12 @@ const SettingsView = () => {
           System Updates
         </h3>
         <p className="text-xs text-[#9C8A7A] leading-relaxed">
-          Pulls the latest code from GitHub and rebuilds the app. Only available in development mode.
+          Pulls the latest code from GitHub and rebuilds the app. Only available in development (source) mode —
+          packaged DMG builds update via the OTA system automatically.
         </p>
         <button
           onClick={handleCheckUpdate}
-          disabled={updateStatus === 'checking' || updateStatus === 'installing'}
+          disabled={updateStatus === 'checking' || updateStatus === 'installing' || updateStatus === 'unavailable'}
           className={`flex items-center gap-3 px-6 py-3 rounded-xl font-black text-sm transition-all ${
             updateStatus === 'installing'
               ? 'bg-amber-500 text-white cursor-not-allowed'
@@ -175,6 +178,8 @@ const SettingsView = () => {
               ? 'bg-emerald-500 text-white'
               : updateStatus === 'error'
               ? 'bg-rose-500 text-white'
+              : updateStatus === 'unavailable'
+              ? 'bg-[#F2EFE9] text-[#9C8A7A] cursor-not-allowed'
               : 'bg-[#5F6F65] hover:bg-[#4A6657] text-white'
           }`}
         >
@@ -182,6 +187,7 @@ const SettingsView = () => {
           {updateStatus === 'installing' && <><RefreshCw size={16} className="animate-spin" /> Installing Update — Do Not Close App...</>}
           {updateStatus === 'up-to-date' && <><CheckCircle2 size={16} /> Already Up to Date</>}
           {updateStatus === 'error' && <><RefreshCw size={16} /> Update Failed — Retry</>}
+          {updateStatus === 'unavailable' && <><CheckCircle2 size={16} /> OTA Updates Active (DMG Build)</>}
           {updateStatus === 'idle' && <><Download size={16} /> Check for Updates</>}
         </button>
       </section>
