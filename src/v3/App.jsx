@@ -1,5 +1,5 @@
 import React from 'react'
-import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera } from 'lucide-react'
+import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera, BarChart2 } from 'lucide-react'
 import { StateProvider, useAppState } from './contexts/StateContext'
 import GuidedTour from './components/GuidedTour'
 
@@ -59,11 +59,13 @@ import ComplianceView from './components/Compliance/ComplianceView'
 import EmailView from './components/Email/EmailView'
 import SettingsView from './components/Settings/SettingsView'
 import PackageCalculatorView from './components/PackageCalculator/PackageCalculatorView'
+import BusinessHealthView from './components/BusinessHealth/BusinessHealthView'
 
 const NAV_ITEMS = [
   { id: 'dashboard',  label: 'Dashboard',    icon: LayoutDashboard, built: true },
   { id: 'taxes',      label: 'Tax Planner',  icon: Calculator,      built: true },
   { id: 'packages',   label: 'Packages',     icon: Camera,          built: true },
+  { id: 'health',     label: 'Business Health', icon: BarChart2,    built: true },
   { id: 'compliance', label: 'Compliance',   icon: ShieldCheck,     built: true },
   { id: 'email',      label: 'Email Ops',    icon: Mail,            built: true },
   { id: 'settings',   label: 'Settings',     icon: Settings,        built: true },
@@ -88,6 +90,7 @@ function AppContent() {
       case 'dashboard':  return <DashboardView />;
       case 'taxes':      return <TaxPlannerView />;
       case 'packages':   return <PackageCalculatorView />;
+      case 'health':     return <BusinessHealthView />;
       case 'compliance': return <ComplianceView />;
       case 'email':      return <EmailView />;
       case 'settings':   return <SettingsView />;

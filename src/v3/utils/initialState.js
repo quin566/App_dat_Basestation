@@ -35,7 +35,10 @@ export const defaultState = {
       body: 'Hi {{ClientName}}, Your gallery is officially live! GALLERY LINK: {{GalleryLink}} | PASSWORD: {{Password}} -- {{NumPhotos}} hand-edited images, each chosen because it captured something real, something true, something YOU. Downloading: Click any image for print-ready resolution. Gallery is available for 90 days. Thank you for trusting me with your story. With love, Ariana, The Love Lens by Ariana'
     }
   ],
-  emailSettings: { address: '', appPassword: '' }
+  emailSettings: { address: '', appPassword: '' },
+  stripeSecretKey: '',
+  bankAccounts: [],
+  transactions: [],
 };
 
 export const mergeState = (stored) => {

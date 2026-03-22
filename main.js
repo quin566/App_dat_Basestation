@@ -1,6 +1,7 @@
-const { app, BrowserWindow, net, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, net, ipcMain, dialog, protocol, shell } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
+const Stripe = require('stripe');
 
 const imaps = require('imap-simple');
 const { simpleParser } = require('mailparser');
@@ -152,7 +153,6 @@ ipcMain.handle('fetch-proxy', async (event, { url, options }) => {
 // External Deep-Link Hijacker
 ipcMain.handle('open-external', async (event, url) => {
   try {
-    const { shell } = require('electron');
     await shell.openExternal(url);
     return true;
   } catch (err) {
@@ -160,6 +160,91 @@ ipcMain.handle('open-external', async (event, url) => {
     return false;
   }
 });
+
+// ─── Stripe Financial Connections ────────────────────────────────────────────
+
+const getStripeClient = () => {
+  const statePath = path.join(app.getPath('userData'), 'azphoto_store.json');
+  let saved = {};
+  try {
+    if (fs.existsSync(statePath)) saved = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+  } catch (e) { /* ignore */ }
+  const key = saved.stripeSecretKey;
+  if (!key || (!key.startsWith('sk_live_') && !key.startsWith('sk_test_'))) {
+    throw new Error('Stripe secret key not configured. Go to Settings → Stripe Integration.');
+  }
+  return new Stripe(key, { apiVersion: '2024-06-20' });
+};
+
+ipcMain.handle('stripe-create-link-session', async () => {
+  try {
+    const stripe = getStripeClient();
+    const session = await stripe.financialConnections.sessions.create({
+      account_holder: { type: 'individual' },
+      permissions: ['balances', 'transactions'],
+      return_url: 'azphotoapp://stripe-return',
+    });
+    return { success: true, clientSecret: session.client_secret, sessionId: session.id };
+  } catch (err) {
+    console.error('[Stripe] create-link-session error:', err.message);
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('stripe-get-accounts', async (_event, { sessionId }) => {
+  try {
+    const stripe = getStripeClient();
+    const session = await stripe.financialConnections.sessions.retrieve(sessionId);
+    const accounts = [];
+    for (const acct of (session.accounts?.data || [])) {
+      let balance = null;
+      try {
+        const bal = await stripe.financialConnections.accounts.retrieveBalance(acct.id);
+        balance = bal.cash?.available?.usd ?? null;
+      } catch (e) { /* balance fetch optional */ }
+      accounts.push({
+        id: acct.id,
+        institutionName: acct.institution_name || 'Bank',
+        displayName: acct.display_name || acct.institution_name || 'Account',
+        last4: acct.last4 || '••••',
+        balance,
+        linkedAt: Date.now(),
+        status: 'active',
+      });
+    }
+    return { success: true, accounts };
+  } catch (err) {
+    console.error('[Stripe] get-accounts error:', err.message);
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('stripe-sync-transactions', async (_event, { accountId, limit = 200 }) => {
+  try {
+    const stripe = getStripeClient();
+    const list = await stripe.financialConnections.transactions.list({
+      account: accountId,
+      limit,
+    });
+    const transactions = list.data.map((txn) => ({
+      id: txn.id,
+      accountId,
+      date: new Date(txn.transacted_at * 1000).toISOString().slice(0, 10),
+      description: txn.description || '',
+      // Stripe Financial Connections amounts are in cents, positive = credit, negative = debit
+      amount: txn.amount,
+      category: '',
+      categoryOverride: false,
+      source: 'stripe',
+    }));
+    return { success: true, transactions };
+  } catch (err) {
+    console.error('[Stripe] sync-transactions error:', err.message);
+    return { success: false, error: err.message };
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 const downloadPayload = async () => {
   return new Promise((resolve) => {
@@ -460,6 +545,24 @@ const createWindow = async () => {
 };
 
 app.whenReady().then(() => {
+  // Register azphotoapp:// deep-link so Stripe OAuth can return to the app
+  app.setAsDefaultProtocolClient('azphotoapp');
+  protocol.handle('azphotoapp', (request) => {
+    try {
+      const url = new URL(request.url);
+      if (url.hostname === 'stripe-return') {
+        const sessionId = url.searchParams.get('session_id');
+        if (mainWindowRef && !mainWindowRef.isDestroyed()) {
+          mainWindowRef.webContents.send('stripe-auth-complete', { sessionId });
+          mainWindowRef.focus();
+        }
+      }
+    } catch (e) {
+      console.error('[Protocol] azphotoapp handler error:', e.message);
+    }
+    return new Response('', { status: 200 });
+  });
+
   createWindow();
 
   app.on('activate', () => {

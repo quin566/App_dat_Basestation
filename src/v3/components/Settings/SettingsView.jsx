@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppState } from '../../contexts/StateContext';
-import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download, Compass } from 'lucide-react';
+import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download, Compass, Link, AlertCircle } from 'lucide-react';
 
 const SettingsView = () => {
   const { state, updateState, setRunTour } = useAppState();
@@ -12,6 +12,9 @@ const SettingsView = () => {
   const [profileState, setProfileState] = useState(state.businessProfile?.state || 'Arizona');
   const [revenueTarget, setRevenueTarget] = useState(state.revenueTarget || 100000);
   const [updateStatus, setUpdateStatus] = useState('idle'); // idle | checking | installing | up-to-date | error
+  const [stripeKey, setStripeKey] = useState(state.stripeSecretKey || '');
+  const [stripeTestStatus, setStripeTestStatus] = useState('idle'); // idle | testing | ok | error
+  const [stripeTestError, setStripeTestError] = useState('');
 
   useEffect(() => {
     window.electronAPI?.onUpdateStatus?.((status) => setUpdateStatus(status));
@@ -25,11 +28,28 @@ const SettingsView = () => {
     // 'installing' is set by the onUpdateStatus listener; app relaunches before invoke resolves
   };
 
+  const handleStripeTest = async () => {
+    if (!stripeKey.trim()) return;
+    setStripeTestStatus('testing');
+    setStripeTestError('');
+    updateState({ stripeSecretKey: stripeKey.trim() });
+    // Small delay so state persists before IPC call reads it
+    await new Promise(r => setTimeout(r, 600));
+    const res = await window.electronAPI?.stripeCreateLinkSession?.();
+    if (res?.success) {
+      setStripeTestStatus('ok');
+    } else {
+      setStripeTestStatus('error');
+      setStripeTestError(res?.error || 'Connection failed. Check your key.');
+    }
+  };
+
   const handleSave = () => {
     updateState({
       emailSettings: { address: gmailAddress, appPassword: gmailPass },
       businessProfile: { name: profileName, businessName: profileBiz, state: profileState },
-      revenueTarget: Number(revenueTarget)
+      revenueTarget: Number(revenueTarget),
+      stripeSecretKey: stripeKey.trim(),
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
@@ -164,6 +184,58 @@ const SettingsView = () => {
           {updateStatus === 'error' && <><RefreshCw size={16} /> Update Failed — Retry</>}
           {updateStatus === 'idle' && <><Download size={16} /> Check for Updates</>}
         </button>
+      </section>
+
+      {/* Stripe Integration */}
+      <section className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm space-y-5">
+        <h3 className="text-lg font-black flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#F2EFE9] flex items-center justify-center text-[#5F6F65]"><Link size={18} /></div>
+          Stripe Integration
+        </h3>
+        <p className="text-xs text-[#9C8A7A] leading-relaxed">
+          Paste your <strong>Stripe Restricted Key</strong> below to link bank accounts and sync transactions in the Business Health module.
+          Use a key with <strong>Financial Connections read-only</strong> scope only — never paste a full-access key.
+          Start with a <code className="bg-[#F2EFE9] px-1.5 py-0.5 rounded text-[#5F6F65] font-black">sk_test_</code> key during setup.
+        </p>
+        <div>
+          <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Stripe Secret Key</label>
+          <div className="relative">
+            <Key size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A]" />
+            <input
+              type="password"
+              value={stripeKey}
+              onChange={e => setStripeKey(e.target.value)}
+              placeholder="sk_test_..."
+              className="w-full pl-11 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+            />
+          </div>
+        </div>
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            onClick={handleStripeTest}
+            disabled={!stripeKey.trim() || stripeTestStatus === 'testing'}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm transition-all disabled:opacity-50 ${
+              stripeTestStatus === 'ok' ? 'bg-emerald-500 text-white'
+              : stripeTestStatus === 'error' ? 'bg-rose-500 text-white'
+              : 'bg-[#5F6F65] hover:bg-[#4A6657] text-white'
+            }`}
+          >
+            {stripeTestStatus === 'testing' && <RefreshCw size={14} className="animate-spin" />}
+            {stripeTestStatus === 'ok' && <CheckCircle2 size={14} />}
+            {stripeTestStatus === 'error' && <AlertCircle size={14} />}
+            {stripeTestStatus === 'idle' && <Link size={14} />}
+            {stripeTestStatus === 'testing' ? 'Testing…'
+              : stripeTestStatus === 'ok' ? 'Connected!'
+              : stripeTestStatus === 'error' ? 'Failed — Retry'
+              : 'Test Connection'}
+          </button>
+          {stripeTestError && (
+            <span className="text-xs font-bold text-rose-600">{stripeTestError}</span>
+          )}
+        </div>
+        <p className="text-[10px] text-[#9C8A7A] font-medium italic">
+          Your key is stored locally in your app data folder. It is never transmitted to any server.
+        </p>
       </section>
 
       {/* Help & Onboarding */}

@@ -8,5 +8,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   fetchProxy: (payload) => ipcRenderer.invoke('fetch-proxy', payload),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
   triggerGitUpdate: () => ipcRenderer.invoke('trigger-git-update'),
-  onUpdateStatus: (cb) => ipcRenderer.on('update-status', (_, status) => cb(status))
+  onUpdateStatus: (cb) => ipcRenderer.on('update-status', (_, status) => cb(status)),
+  stripeCreateLinkSession: () => ipcRenderer.invoke('stripe-create-link-session'),
+  stripeGetAccounts: (payload) => ipcRenderer.invoke('stripe-get-accounts', payload),
+  stripeSyncTransactions: (payload) => ipcRenderer.invoke('stripe-sync-transactions', payload),
+  onStripeAuthComplete: (cb) => ipcRenderer.on('stripe-auth-complete', (_, data) => cb(data)),
 });
