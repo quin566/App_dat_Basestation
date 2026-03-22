@@ -5,7 +5,6 @@ export const defaultState = {
   customPerks: [],
   customChecks: [],
   profile: {},
-  crmLeads: [],
   bookedClients: [],
   sneakPeeks: [],
   socialCards: [],
