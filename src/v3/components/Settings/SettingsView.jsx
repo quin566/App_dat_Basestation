@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppState } from '../../contexts/StateContext';
-import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download, Compass, Link, AlertCircle } from 'lucide-react';
+import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download, Compass, Link, AlertCircle, MessageSquare } from 'lucide-react';
 
 const SettingsView = () => {
   const { state, updateState, setRunTour } = useAppState();
@@ -15,6 +15,9 @@ const SettingsView = () => {
   const [stripeKey, setStripeKey] = useState(state.stripeSecretKey || '');
   const [stripeTestStatus, setStripeTestStatus] = useState('idle'); // idle | testing | ok | error
   const [stripeTestError, setStripeTestError] = useState('');
+  const [smsSid, setSmsSid] = useState(state.smsSettings?.accountSid || '');
+  const [smsToken, setSmsToken] = useState(state.smsSettings?.authToken || '');
+  const [smsFrom, setSmsFrom] = useState(state.smsSettings?.fromNumber || '');
 
   useEffect(() => {
     window.electronAPI?.onUpdateStatus?.((status) => setUpdateStatus(status));
@@ -52,6 +55,7 @@ const SettingsView = () => {
       businessProfile: { name: profileName, businessName: profileBiz, state: profileState },
       revenueTarget: Number(revenueTarget),
       stripeSecretKey: stripeKey.trim(),
+      smsSettings: { accountSid: smsSid.trim(), authToken: smsToken.trim(), fromNumber: smsFrom.trim() },
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
@@ -168,7 +172,7 @@ const SettingsView = () => {
         </p>
         <button
           onClick={handleCheckUpdate}
-          disabled={updateStatus === 'checking' || updateStatus === 'installing' || updateStatus === 'unavailable'}
+          disabled={updateStatus === 'checking' || updateStatus === 'installing'}
           className={`flex items-center gap-3 px-6 py-3 rounded-xl font-black text-sm transition-all ${
             updateStatus === 'installing'
               ? 'bg-amber-500 text-white cursor-not-allowed'
@@ -178,8 +182,6 @@ const SettingsView = () => {
               ? 'bg-emerald-500 text-white'
               : updateStatus === 'error'
               ? 'bg-rose-500 text-white'
-              : updateStatus === 'unavailable'
-              ? 'bg-[#F2EFE9] text-[#9C8A7A] cursor-not-allowed'
               : 'bg-[#5F6F65] hover:bg-[#4A6657] text-white'
           }`}
         >
@@ -187,8 +189,7 @@ const SettingsView = () => {
           {updateStatus === 'installing' && <><RefreshCw size={16} className="animate-spin" /> Installing Update — Do Not Close App...</>}
           {updateStatus === 'up-to-date' && <><CheckCircle2 size={16} /> Already Up to Date</>}
           {updateStatus === 'error' && <><RefreshCw size={16} /> Update Failed — Retry</>}
-          {updateStatus === 'unavailable' && <><CheckCircle2 size={16} /> OTA Updates Active (DMG Build)</>}
-          {updateStatus === 'idle' && <><Download size={16} /> Check for Updates</>}
+          {(updateStatus === 'idle' || updateStatus === 'unavailable') && <><Download size={16} /> Check for Updates</>}
         </button>
       </section>
 
@@ -241,6 +242,45 @@ const SettingsView = () => {
         </div>
         <p className="text-[10px] text-[#9C8A7A] font-medium italic">
           Your key is stored locally in your app data folder. It is never transmitted to any server.
+        </p>
+      </section>
+
+      {/* SMS Reminders */}
+      <section className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm space-y-5">
+        <h3 className="text-lg font-black flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#F2EFE9] flex items-center justify-center text-[#5F6F65]"><MessageSquare size={18} /></div>
+          SMS Reminders
+        </h3>
+        <p className="text-xs text-[#9C8A7A] leading-relaxed">
+          Connect your Twilio account to enable automatic client SMS reminders — a 3-day notice and a morning-of message.
+          Use a Twilio number in <strong>E.164 format</strong> (e.g. +16025551234).
+        </p>
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs font-bold text-amber-700">
+          ⚠ Ensure SMS consent is added to your Pixiset booking form before enabling.
+        </div>
+        <div className="space-y-4">
+          {[
+            { label: 'Account SID', value: smsSid, set: setSmsSid, placeholder: 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' },
+            { label: 'Auth Token', value: smsToken, set: setSmsToken, placeholder: 'Your Twilio auth token', secret: true },
+            { label: 'From Number', value: smsFrom, set: setSmsFrom, placeholder: '+16025551234' },
+          ].map(({ label, value, set, placeholder, secret }) => (
+            <div key={label}>
+              <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">{label}</label>
+              <div className="relative">
+                <MessageSquare size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A]" />
+                <input
+                  type={secret ? 'password' : 'text'}
+                  value={value}
+                  onChange={e => set(e.target.value)}
+                  placeholder={placeholder}
+                  className="w-full pl-11 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-[#9C8A7A] font-medium italic">
+          Credentials are stored locally in your app data folder and never transmitted.
         </p>
       </section>
 

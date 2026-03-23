@@ -2,6 +2,7 @@ const { app, BrowserWindow, net, ipcMain, dialog, protocol, shell } = require('e
 const path = require('node:path');
 const fs = require('node:fs');
 const Stripe = require('stripe');
+const twilio = require('twilio');
 
 const imaps = require('imap-simple');
 const { simpleParser } = require('mailparser');
@@ -246,6 +247,35 @@ ipcMain.handle('stripe-sync-transactions', async (_event, { accountId, limit = 2
 
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─── Client File Storage ──────────────────────────────────────────────────────
+
+ipcMain.handle('client-save-file', async (event, { clientId, filename, buffer }) => {
+  const dir = path.join(app.getPath('userData'), 'clients', clientId);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, filename), Buffer.from(buffer));
+  return { success: true, filePath: path.join(dir, filename) };
+});
+
+ipcMain.handle('client-read-file', async (event, { clientId, filename }) => {
+  const filePath = path.join(app.getPath('userData'), 'clients', clientId, filename);
+  const data = fs.readFileSync(filePath);
+  return { success: true, data: data.toString('base64') };
+});
+
+ipcMain.handle('client-delete-file', async (event, { clientId, filename }) => {
+  const filePath = path.join(app.getPath('userData'), 'clients', clientId, filename);
+  fs.rmSync(filePath, { force: true });
+  return { success: true };
+});
+
+ipcMain.handle('client-delete-folder', async (event, { clientId }) => {
+  const dir = path.join(app.getPath('userData'), 'clients', clientId);
+  fs.rmSync(dir, { recursive: true, force: true });
+  return { success: true };
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 const downloadPayload = async () => {
   return new Promise((resolve) => {
     try {
@@ -403,7 +433,7 @@ const checkForUpdates = async () => {
 };
 
 ipcMain.handle('trigger-git-update', async () => {
-  if (app.isPackaged) return { status: 'unavailable' };
+  if (app.isPackaged) { await checkOTAUpdate(); return { status: 'up-to-date' }; }
   try {
     await execPromise('git fetch', { cwd: __dirname });
     const { stdout: local } = await execPromise('git rev-parse HEAD', { cwd: __dirname });
@@ -546,6 +576,81 @@ const createWindow = async () => {
   }, 3000);
 };
 
+// ─── Twilio SMS Scheduler ─────────────────────────────────────────────────────
+
+function buildSmsMessage(client, type) {
+  const dateStr = new Date(client.shootDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  const unpaid  = client.packageTotal - client.amountPaid;
+
+  if (type === 'three-day') {
+    let msg = `Hi ${client.name.split(' ')[0]}! This is Ariana from The Love Lens. Your session is coming up on ${dateStr} at ${client.shootTime} at ${client.location.name}.`;
+    if (client.location.mapUrl) msg += ` 📍 ${client.location.mapUrl}`;
+    if (unpaid > 0) msg += ` You have a remaining balance of $${unpaid.toFixed(2)} due before your session.`;
+    msg += ` Can't wait to see you!`;
+    return msg;
+  }
+
+  if (type === 'morning-of') {
+    return `Good morning ${client.name.split(' ')[0]}! Today's the day 🎉 Your session with Ariana is at ${client.shootTime} at ${client.location.name}. See you soon!`;
+  }
+}
+
+async function checkAndSendReminders(store) {
+  const { bookedClients = [], smsSettings = {} } = store;
+  if (!smsSettings.accountSid || !smsSettings.authToken || !smsSettings.fromNumber) return;
+
+  const twilioClient = twilio(smsSettings.accountSid, smsSettings.authToken);
+  const now = new Date();
+  let dirty = false;
+
+  for (const client of bookedClients) {
+    if (!client.phone || !client.shootDate) continue;
+
+    const shootDate    = new Date(`${client.shootDate}T${client.shootTime || '08:00'}`);
+    const threeDayMark = new Date(shootDate);
+    threeDayMark.setDate(threeDayMark.getDate() - 3);
+
+    if (!client.smsReminders.threeDaySent && now >= threeDayMark && now < shootDate) {
+      try {
+        await twilioClient.messages.create({
+          body: buildSmsMessage(client, 'three-day'),
+          from: smsSettings.fromNumber,
+          to:   client.phone,
+        });
+        client.smsReminders.threeDaySent = true;
+        dirty = true;
+        console.log(`[SMS] 3-day reminder sent to ${client.name}`);
+      } catch (err) {
+        console.error(`[SMS] Failed for ${client.name}:`, err.message);
+      }
+    }
+
+    const isShootDay = now.toDateString() === shootDate.toDateString();
+    const isAfter8   = now.getHours() === 8;
+    if (!client.smsReminders.morningOfSent && isShootDay && isAfter8) {
+      try {
+        await twilioClient.messages.create({
+          body: buildSmsMessage(client, 'morning-of'),
+          from: smsSettings.fromNumber,
+          to:   client.phone,
+        });
+        client.smsReminders.morningOfSent = true;
+        dirty = true;
+        console.log(`[SMS] Morning-of reminder sent to ${client.name}`);
+      } catch (err) {
+        console.error(`[SMS] Failed for ${client.name}:`, err.message);
+      }
+    }
+  }
+
+  if (dirty) {
+    const storePath = path.join(app.getPath('userData'), 'azphoto_store.json');
+    fs.writeFileSync(storePath, JSON.stringify(store, null, 2));
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 app.whenReady().then(() => {
   // Register azphotoapp:// deep-link so Stripe OAuth can return to the app
   app.setAsDefaultProtocolClient('azphotoapp');
@@ -566,6 +671,21 @@ app.whenReady().then(() => {
   });
 
   createWindow();
+
+  // SMS scheduler — check on startup and every hour
+  const runSmsCheck = async () => {
+    try {
+      const storePath = path.join(app.getPath('userData'), 'azphoto_store.json');
+      if (fs.existsSync(storePath)) {
+        const store = JSON.parse(fs.readFileSync(storePath, 'utf8'));
+        await checkAndSendReminders(store);
+      }
+    } catch (err) {
+      console.error('[SMS Scheduler]', err.message);
+    }
+  };
+  runSmsCheck();
+  setInterval(runSmsCheck, 60 * 60 * 1000);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
