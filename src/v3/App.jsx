@@ -72,7 +72,6 @@ const NAV_ITEMS = [
   { id: 'health',     label: 'Business Health', icon: BarChart2,    built: true },
   { id: 'compliance', label: 'Compliance',   icon: ShieldCheck,     built: true },
   { id: 'email',      label: 'Email Ops',    icon: Mail,            built: true },
-  { id: 'settings',   label: 'Settings',     icon: Settings,        built: true },
 ];
 
 function AppContent() {
@@ -153,9 +152,18 @@ function AppContent() {
 
         </nav>
         <div className="mt-auto pt-6 border-t border-[#F2EFE9]">
-          <div className="px-3 py-2 rounded-xl bg-[#EEF2F0] text-[11px] font-black text-[#5F6F65] tracking-widest uppercase text-center">
-            V3 REBUILD ACTIVE
-          </div>
+          <button
+            onClick={() => setActiveTab('settings')}
+            aria-current={activeTab === 'settings' ? 'page' : undefined}
+            className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold transition-all relative cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5F6F65]/60 focus-visible:ring-offset-1 ${
+              activeTab === 'settings'
+                ? 'bg-[#F4F1EE] text-[#5F6F65] rounded-r-xl border-l-2 border-[#5F6F65]'
+                : 'text-[#9C8A7A] hover:bg-[#FDFCFB] hover:text-[#5F6F65] rounded-xl border-l-2 border-transparent'
+            }`}
+          >
+            <Settings size={18} strokeWidth={activeTab === 'settings' ? 2.5 : 1.8} />
+            <span className="flex-1 text-left">Settings</span>
+          </button>
         </div>
       </aside>
 
