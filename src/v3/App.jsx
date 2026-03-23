@@ -1,5 +1,5 @@
 import React from 'react'
-import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera, BarChart2 } from 'lucide-react'
+import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera, BarChart2, CalendarDays, MapPin } from 'lucide-react'
 import { StateProvider, useAppState } from './contexts/StateContext'
 import GuidedTour from './components/GuidedTour'
 
@@ -60,9 +60,13 @@ import EmailView from './components/Email/EmailView'
 import SettingsView from './components/Settings/SettingsView'
 import PackageCalculatorView from './components/PackageCalculator/PackageCalculatorView'
 import BusinessHealthView from './components/BusinessHealth/BusinessHealthView'
+import SessionsView from './components/Sessions/SessionsView'
+import LocationsView from './components/Locations/LocationsView'
 
 const NAV_ITEMS = [
   { id: 'dashboard',  label: 'Dashboard',    icon: LayoutDashboard, built: true },
+  { id: 'sessions',   label: 'Sessions',     icon: CalendarDays,    built: true },
+  { id: 'locations',  label: 'Locations',    icon: MapPin,          built: true },
   { id: 'taxes',      label: 'Tax Planner',  icon: Calculator,      built: true },
   { id: 'packages',   label: 'Packages',     icon: Camera,          built: true },
   { id: 'health',     label: 'Business Health', icon: BarChart2,    built: true },
@@ -88,6 +92,8 @@ function AppContent() {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':  return <DashboardView />;
+      case 'sessions':   return <SessionsView />;
+      case 'locations':  return <LocationsView />;
       case 'taxes':      return <TaxPlannerView />;
       case 'packages':   return <PackageCalculatorView />;
       case 'health':     return <BusinessHealthView />;
