@@ -367,13 +367,21 @@ const semverGt = (a, b) => {
   return false;
 };
 
+const getOTAInstalledVersion = () => {
+  try {
+    const versionFile = path.join(app.getPath('userData'), 'ota_installed_version.json');
+    if (fs.existsSync(versionFile)) return JSON.parse(fs.readFileSync(versionFile, 'utf8')).version;
+  } catch (_) {}
+  return require('./package.json').version;
+};
+
 const checkOTAUpdate = async () => {
   console.log('[OTA] Checking for remote update...');
   try {
     const res = await fetch(OTA_VERSION_URL, { headers: { 'Cache-Control': 'no-cache', 'User-Agent': 'Electron/AZ-Command-Center' } });
     if (!res.ok) throw new Error(`version.json fetch failed: HTTP ${res.status}`);
     const remote = await res.json();
-    const localVersion = require('./package.json').version;
+    const localVersion = getOTAInstalledVersion();
 
     if (!semverGt(remote.version, localVersion)) {
       console.log(`[OTA] Up to date (${localVersion}).`);
@@ -397,6 +405,9 @@ const checkOTAUpdate = async () => {
 
     if (fs.existsSync(destDir)) fs.rmSync(destDir, { recursive: true, force: true });
     fs.renameSync(extractedV3, destDir);
+
+    // Record installed version so next launch doesn't re-download
+    fs.writeFileSync(path.join(userData, 'ota_installed_version.json'), JSON.stringify({ version: remote.version }));
 
     // Clean up temp files
     fs.rmSync(zipPath, { force: true });
