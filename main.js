@@ -197,7 +197,7 @@ ipcMain.handle('stripe-create-link-session', async () => {
     const account = await stripe.account.retrieve();
     const session = await stripe.financialConnections.sessions.create({
       account_holder: { type: 'account', account: account.id },
-      permissions: ['balances', 'transactions'],
+      permissions: ['balances', 'transactions', 'payment_method'],
     });
     return { success: true, clientSecret: session.client_secret, sessionId: session.id };
   } catch (err) {
