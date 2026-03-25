@@ -206,30 +206,32 @@ const SettingsView = () => {
           The <strong>Publishable Key</strong> (<code className="bg-[#F2EFE9] px-1 rounded text-[#5F6F65] font-black">pk_...</code>) is required to open the bank-linking window.
           Both are available in <strong>Stripe Dashboard → Developers → API keys</strong>.
         </p>
-        <div>
-          <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Restricted Key</label>
-          <div className="relative">
-            <Key size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A]" />
-            <input
-              type="password"
-              value={stripeKey}
-              onChange={e => setStripeKey(e.target.value)}
-              placeholder="rk_test_..."
-              className="w-full pl-11 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
-            />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div>
+            <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Secret Key (sk_test_...)</label>
+            <div className="relative">
+              <Key size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A]" />
+              <input
+                type="password"
+                value={stripeKey}
+                onChange={e => setStripeKey(e.target.value)}
+                placeholder="sk_test_51P..."
+                className="w-full pl-11 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+              />
+            </div>
           </div>
-        </div>
-        <div>
-          <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Publishable Key</label>
-          <div className="relative">
-            <Key size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A]" />
-            <input
-              type="text"
-              value={stripePubKey}
-              onChange={e => setStripePubKey(e.target.value)}
-              placeholder="pk_test_..."
-              className="w-full pl-11 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
-            />
+          <div>
+            <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Publishable Key (pk_test_...)</label>
+            <div className="relative">
+              <Key size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A]" />
+              <input
+                type="text"
+                value={stripePubKey}
+                onChange={e => setStripePubKey(e.target.value)}
+                placeholder="pk_test_51P..."
+                className="w-full pl-11 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+              />
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
