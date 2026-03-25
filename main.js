@@ -1,4 +1,4 @@
-const { app, BrowserWindow, net, ipcMain, dialog, protocol, shell } = require('electron');
+const { app, BrowserWindow, net, ipcMain, dialog, shell } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 const Stripe = require('stripe');
@@ -180,8 +180,9 @@ const getStripeClient = () => {
 ipcMain.handle('stripe-create-link-session', async () => {
   try {
     const stripe = getStripeClient();
+    const account = await stripe.accounts.retrieve();
     const session = await stripe.financialConnections.sessions.create({
-      account_holder: { type: 'account' },
+      account_holder: { type: 'account', account: account.id },
       permissions: ['balances', 'transactions'],
       return_url: 'azphotoapp://stripe-return',
     });
@@ -665,20 +666,20 @@ async function checkAndSendReminders(store) {
 app.whenReady().then(() => {
   // Register azphotoapp:// deep-link so Stripe OAuth can return to the app
   app.setAsDefaultProtocolClient('azphotoapp');
-  protocol.handle('azphotoapp', (request) => {
+  app.on('open-url', (event, url) => {
+    event.preventDefault();
     try {
-      const url = new URL(request.url);
-      if (url.hostname === 'stripe-return') {
-        const sessionId = url.searchParams.get('session_id');
+      const parsed = new URL(url);
+      if (parsed.hostname === 'stripe-return') {
+        const sessionId = parsed.searchParams.get('session_id');
         if (mainWindowRef && !mainWindowRef.isDestroyed()) {
           mainWindowRef.webContents.send('stripe-auth-complete', { sessionId });
           mainWindowRef.focus();
         }
       }
     } catch (e) {
-      console.error('[Protocol] azphotoapp handler error:', e.message);
+      console.error('[Protocol] open-url handler error:', e.message);
     }
-    return new Response('', { status: 200 });
   });
 
   createWindow();
