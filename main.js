@@ -174,7 +174,9 @@ const getStripeClient = () => {
   if (!key || (!key.startsWith('sk_live_') && !key.startsWith('sk_test_') && !key.startsWith('rk_live_') && !key.startsWith('rk_test_'))) {
     throw new Error('Stripe secret key not configured. Go to Settings → Stripe Integration.');
   }
-  return new Stripe(key, { apiVersion: '2024-06-20' });
+  // Use SDK default version (2026-02-25.clover) — the .clover suffix is the
+  // preview flag required to access Financial Connections sessions.
+  return new Stripe(key);
 };
 
 // Lightweight key verification — does not create a session
@@ -192,10 +194,9 @@ ipcMain.handle('stripe-test-key', async () => {
 ipcMain.handle('stripe-create-link-session', async () => {
   try {
     const stripe = getStripeClient();
-    // account_holder and return_url are omitted:
-    // - account_holder is optional; omitting it uses the authenticated platform account
-    // - return_url must be https:// and is not needed for the Electron BrowserWindow flow
+    const account = await stripe.account.retrieve();
     const session = await stripe.financialConnections.sessions.create({
+      account_holder: { type: 'account', account: account.id },
       permissions: ['balances', 'transactions'],
     });
     return { success: true, clientSecret: session.client_secret, sessionId: session.id };
