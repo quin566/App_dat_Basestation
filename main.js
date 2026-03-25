@@ -198,6 +198,7 @@ ipcMain.handle('stripe-create-link-session', async () => {
     const session = await stripe.financialConnections.sessions.create({
       account_holder: { type: 'account', account: account.id },
       permissions: ['balances', 'transactions', 'payment_method'],
+      filters: { countries: ['US'] },
     });
     return { success: true, clientSecret: session.client_secret, sessionId: session.id };
   } catch (err) {
