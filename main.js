@@ -180,7 +180,7 @@ const getStripeClient = () => {
 ipcMain.handle('stripe-create-link-session', async () => {
   try {
     const stripe = getStripeClient();
-    const account = await stripe.accounts.retrieve();
+    const account = await stripe.account.retrieve();
     const session = await stripe.financialConnections.sessions.create({
       account_holder: { type: 'account', account: account.id },
       permissions: ['balances', 'transactions'],
