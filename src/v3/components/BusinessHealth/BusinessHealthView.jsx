@@ -198,6 +198,7 @@ const BusinessHealthView = () => {
     }
     setIsLinking(true);
     setSyncError(null);
+    // Step 1: create the Financial Connections session
     const res = await window.electronAPI.stripeCreateLinkSession();
     if (!res?.success) {
       setSyncError(res?.error || 'Failed to start Stripe link session.');
@@ -205,10 +206,20 @@ const BusinessHealthView = () => {
       return;
     }
     setPendingSessionId(res.sessionId);
-    // Open Stripe hosted link flow in default browser
-    await window.electronAPI.openExternal(
-      `https://connect.stripe.com/setup/s/${res.clientSecret}`
-    );
+    // Step 2: open child BrowserWindow with Stripe.js to handle the bank-link flow
+    const publishableKey = state.stripePublishableKey || '';
+    if (!publishableKey) {
+      setSyncError('Publishable key missing. Add your pk_test_... key in Settings → Stripe Integration.');
+      setIsLinking(false);
+      return;
+    }
+    await window.electronAPI.stripeOpenLinkWindow({ clientSecret: res.clientSecret, publishableKey });
+    // Step 3: after window closes, fetch linked accounts from the session
+    const acctRes = await window.electronAPI.stripeGetAccounts({ sessionId: res.sessionId });
+    if (acctRes?.success && acctRes.accounts?.length) {
+      updateState({ bankAccounts: [...(state.bankAccounts || []), ...acctRes.accounts] });
+    }
+    setIsLinking(false);
   };
 
   const handleSync = async (accountId) => {

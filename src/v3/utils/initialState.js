@@ -85,6 +85,7 @@ export const defaultState = {
   ],
   emailSettings: { address: '', appPassword: '' },
   stripeSecretKey: '',
+  stripePublishableKey: '',
   bankAccounts: [],
   transactions: [],
 };

@@ -177,20 +177,89 @@ const getStripeClient = () => {
   return new Stripe(key, { apiVersion: '2024-06-20' });
 };
 
+// Lightweight key verification — does not create a session
+ipcMain.handle('stripe-test-key', async () => {
+  try {
+    const stripe = getStripeClient();
+    await stripe.account.retrieve();
+    return { success: true };
+  } catch (err) {
+    console.error('[Stripe] test-key error:', err.message);
+    return { success: false, error: err.message };
+  }
+});
+
 ipcMain.handle('stripe-create-link-session', async () => {
   try {
     const stripe = getStripeClient();
-    const account = await stripe.account.retrieve();
+    // account_holder and return_url are omitted:
+    // - account_holder is optional; omitting it uses the authenticated platform account
+    // - return_url must be https:// and is not needed for the Electron BrowserWindow flow
     const session = await stripe.financialConnections.sessions.create({
-      account_holder: { type: 'account', account: account.id },
       permissions: ['balances', 'transactions'],
-      return_url: 'azphotoapp://stripe-return',
     });
     return { success: true, clientSecret: session.client_secret, sessionId: session.id };
   } catch (err) {
     console.error('[Stripe] create-link-session error:', err.message);
     return { success: false, error: err.message };
   }
+});
+
+// Opens a child BrowserWindow with Stripe.js to handle the Financial Connections flow
+ipcMain.handle('stripe-open-link-window', async (_event, { clientSecret, publishableKey }) => {
+  return new Promise((resolve) => {
+    const win = new BrowserWindow({
+      width: 520,
+      height: 720,
+      title: 'Link Bank Account — AZ Photo',
+      webPreferences: { contextIsolation: true, nodeIntegration: false, webSecurity: false },
+    });
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#FDFCFB;font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px}
+h2{color:#2C2511;font-size:22px;font-weight:900;margin:0 0 8px}
+p{color:#8A7A6A;font-size:14px;text-align:center;margin:0 0 28px;line-height:1.5}
+.btn{background:#5F6F65;color:#fff;border:none;padding:13px 32px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
+.btn:hover{background:#4A5750}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.status{color:#5F6F65;font-size:14px;margin-top:18px;font-weight:600}
+.err{color:#C0392B;font-size:13px;margin-top:12px;text-align:center}
+</style>
+</head>
+<body>
+<h2>Link Bank Account</h2>
+<p>Securely connect your bank through Stripe.<br>Your credentials are never seen by this app.</p>
+<button class="btn" id="btn" onclick="go()">Connect Bank</button>
+<div class="status" id="status"></div>
+<div class="err" id="err"></div>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+async function go(){
+  const btn=document.getElementById('btn');
+  const status=document.getElementById('status');
+  const err=document.getElementById('err');
+  btn.disabled=true;
+  status.textContent='Opening bank connection\u2026';
+  err.textContent='';
+  try{
+    const stripe=Stripe('${publishableKey}');
+    const result=await stripe.collectFinancialConnectionsAccounts({clientSecret:'${clientSecret}'});
+    if(result.error){err.textContent=result.error.message;btn.disabled=false;status.textContent='';}
+    else{status.textContent='\u2713 Bank linked! You can close this window.';btn.style.display='none';}
+  }catch(e){err.textContent=e.message;btn.disabled=false;status.textContent='';}
+}
+</script>
+</body>
+</html>`;
+
+    win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+    win.on('closed', () => resolve({ success: true }));
+  });
 });
 
 ipcMain.handle('stripe-get-accounts', async (_event, { sessionId }) => {

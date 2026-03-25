@@ -13,6 +13,7 @@ const SettingsView = () => {
   const [revenueTarget, setRevenueTarget] = useState(state.revenueTarget || 100000);
   const [updateStatus, setUpdateStatus] = useState('idle'); // idle | checking | installing | up-to-date | error
   const [stripeKey, setStripeKey] = useState(state.stripeSecretKey || '');
+  const [stripePubKey, setStripePubKey] = useState(state.stripePublishableKey || '');
   const [stripeTestStatus, setStripeTestStatus] = useState('idle'); // idle | testing | ok | error
   const [stripeTestError, setStripeTestError] = useState('');
   const [smsSid, setSmsSid] = useState(state.smsSettings?.accountSid || '');
@@ -37,10 +38,10 @@ const SettingsView = () => {
     if (!stripeKey.trim()) return;
     setStripeTestStatus('testing');
     setStripeTestError('');
-    updateState({ stripeSecretKey: stripeKey.trim() });
+    updateState({ stripeSecretKey: stripeKey.trim(), stripePublishableKey: stripePubKey.trim() });
     // Small delay so state persists before IPC call reads it
     await new Promise(r => setTimeout(r, 600));
-    const res = await window.electronAPI?.stripeCreateLinkSession?.();
+    const res = await window.electronAPI?.stripeTestKey?.();
     if (res?.success) {
       setStripeTestStatus('ok');
     } else {
@@ -55,6 +56,7 @@ const SettingsView = () => {
       businessProfile: { name: profileName, businessName: profileBiz, state: profileState },
       revenueTarget: Number(revenueTarget),
       stripeSecretKey: stripeKey.trim(),
+      stripePublishableKey: stripePubKey.trim(),
       smsSettings: { accountSid: smsSid.trim(), authToken: smsToken.trim(), fromNumber: smsFrom.trim() },
     });
     setSaved(true);
@@ -200,19 +202,32 @@ const SettingsView = () => {
           Stripe Integration
         </h3>
         <p className="text-xs text-[#9C8A7A] leading-relaxed">
-          Paste your <strong>Stripe Restricted Key</strong> below to link bank accounts and sync transactions in the Business Health module.
-          Use a key with <strong>Financial Connections read-only</strong> scope only — never paste a full-access key.
-          Start with a <code className="bg-[#F2EFE9] px-1.5 py-0.5 rounded text-[#5F6F65] font-black">sk_test_</code> key during setup.
+          Two keys are required. The <strong>Restricted Key</strong> (<code className="bg-[#F2EFE9] px-1 rounded text-[#5F6F65] font-black">rk_...</code>) authenticates server-side API calls.
+          The <strong>Publishable Key</strong> (<code className="bg-[#F2EFE9] px-1 rounded text-[#5F6F65] font-black">pk_...</code>) is required to open the bank-linking window.
+          Both are available in <strong>Stripe Dashboard → Developers → API keys</strong>.
         </p>
         <div>
-          <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Stripe Secret Key</label>
+          <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Restricted Key</label>
           <div className="relative">
             <Key size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A]" />
             <input
               type="password"
               value={stripeKey}
               onChange={e => setStripeKey(e.target.value)}
-              placeholder="sk_test_..."
+              placeholder="rk_test_..."
+              className="w-full pl-11 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Publishable Key</label>
+          <div className="relative">
+            <Key size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A]" />
+            <input
+              type="text"
+              value={stripePubKey}
+              onChange={e => setStripePubKey(e.target.value)}
+              placeholder="pk_test_..."
               className="w-full pl-11 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
             />
           </div>
