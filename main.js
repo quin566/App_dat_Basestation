@@ -171,7 +171,7 @@ const getStripeClient = () => {
     if (fs.existsSync(statePath)) saved = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
   } catch (e) { /* ignore */ }
   const key = saved.stripeSecretKey;
-  if (!key || (!key.startsWith('sk_live_') && !key.startsWith('sk_test_'))) {
+  if (!key || (!key.startsWith('sk_live_') && !key.startsWith('sk_test_') && !key.startsWith('rk_live_') && !key.startsWith('rk_test_'))) {
     throw new Error('Stripe secret key not configured. Go to Settings → Stripe Integration.');
   }
   return new Stripe(key, { apiVersion: '2024-06-20' });
@@ -181,7 +181,7 @@ ipcMain.handle('stripe-create-link-session', async () => {
   try {
     const stripe = getStripeClient();
     const session = await stripe.financialConnections.sessions.create({
-      account_holder: { type: 'individual' },
+      account_holder: { type: 'account' },
       permissions: ['balances', 'transactions'],
       return_url: 'azphotoapp://stripe-return',
     });
