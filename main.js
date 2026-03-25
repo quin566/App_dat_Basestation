@@ -179,11 +179,11 @@ const getStripeClient = () => {
   return new Stripe(key);
 };
 
-// Lightweight key verification — does not create a session
+// Lightweight key verification — lists FC sessions (only needs Financial Connections permission)
 ipcMain.handle('stripe-test-key', async () => {
   try {
     const stripe = getStripeClient();
-    await stripe.account.retrieve();
+    await stripe.financialConnections.sessions.list({ limit: 1 });
     return { success: true };
   } catch (err) {
     console.error('[Stripe] test-key error:', err.message);
