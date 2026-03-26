@@ -462,7 +462,7 @@ const BusinessHealthView = () => {
           {taxSnap.totalTax > 0 ? (
             <>
               <div className="space-y-2.5">
-                {[{label:'Self-Employment Tax (15.3%)',value:taxSnap.selfEmploymentTax,desc:'SE on net profit'},{label:'Federal Income Tax',value:taxSnap.federalTax,desc:'Progressive brackets'},{label:'AZ State Tax (2.5%)',value:taxSnap.stateTax,desc:'Flat rate'}].map(({label,value,desc}) => (
+                {[{label:'Self-Employment Tax (15.3%)',value:taxSnap.seTax,desc:'SE on net profit'},{label:'Federal Income Tax',value:taxSnap.fedTax,desc:'Progressive brackets'},{label:'AZ State Tax (2.5%)',value:taxSnap.azTax,desc:'Flat rate'}].map(({label,value,desc}) => (
                   <div key={label} className="flex items-center justify-between py-2 border-b border-[#F2EFE9] last:border-0">
                     <div><div className="text-sm font-bold text-[#2C2511]">{label}</div>{showTaxDetail && <div className="text-xs text-[#9C8A7A]">{desc}</div>}</div>
                     <span className="font-black text-[#C4847A] text-sm">{new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(value||0)}</span>
