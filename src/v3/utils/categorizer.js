@@ -100,17 +100,30 @@ const RULES = [
 ];
 
 /**
- * Categorize a single transaction.
- * @param {{ description: string, amount: number }} txn
- * @returns {string} category name
+ * Categorize a single transaction using only built-in keyword rules.
  */
 export const categorize = (txn) => {
   if (txn.amount > 0) return 'Income';
   const desc = (txn.description || '').toLowerCase();
   for (const rule of RULES) {
-    if (rule.keywords.some((kw) => desc.includes(kw))) {
-      return rule.category;
-    }
+    if (rule.keywords.some((kw) => desc.includes(kw))) return rule.category;
+  }
+  return 'Other';
+};
+
+/**
+ * Categorize with user-defined rules taking priority over built-ins.
+ * @param {{ description: string, amount: number }} txn
+ * @param {Array<{ pattern: string, category: string }>} userRules
+ */
+export const categorizeWithRules = (txn, userRules = []) => {
+  if (txn.amount > 0) return 'Income';
+  const desc = (txn.description || '').toLowerCase();
+  for (const rule of userRules) {
+    if (rule.pattern && desc.includes(rule.pattern.toLowerCase())) return rule.category;
+  }
+  for (const rule of RULES) {
+    if (rule.keywords.some((kw) => desc.includes(kw))) return rule.category;
   }
   return 'Other';
 };

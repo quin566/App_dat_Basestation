@@ -88,6 +88,13 @@ export const defaultState = {
   stripePublishableKey: '',
   bankAccounts: [],
   transactions: [],
+  categoryRules: [],
+  financialSettings: {
+    syncFrequencyMinutes: 30,
+    autoCategorize: true,
+    ignoredMerchants: [],
+    customCategories: [],
+  },
 };
 
 export const mergeState = (stored) => {
@@ -114,6 +121,10 @@ export const mergeState = (stored) => {
 
   // Backfill smsSettings
   merged.smsSettings = { ...defaultState.smsSettings, ...(stored.smsSettings || {}) };
+
+  // Backfill financialSettings
+  merged.financialSettings = { ...defaultState.financialSettings, ...(stored.financialSettings || {}) };
+  if (!Array.isArray(merged.categoryRules)) merged.categoryRules = [];
 
   // Ensure pre-loaded templates always exist
   const existingIds = (merged.emailTemplates || []).map(t => t.id);

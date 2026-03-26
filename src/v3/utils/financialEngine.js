@@ -201,3 +201,55 @@ export const getMonthOverMonthChange = (months = []) => {
 /** Format cents to readable dollar string */
 export const centsToDisplay = (cents) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(cents / 100);
+
+/** Profit margin as a percentage. */
+export const getProfitMargin = (pl) => {
+  if (!pl.ytd.grossIncome) return 0;
+  return (pl.ytd.netProfit / pl.ytd.grossIncome) * 100;
+};
+
+/**
+ * Cash runway in months based on bank balances vs average monthly burn.
+ */
+export const getRunway = (transactions = [], bankAccounts = []) => {
+  const cashCents = bankAccounts.reduce((s, a) => s + (a.balance || 0), 0);
+  const { months } = buildPL(transactions);
+  if (months.length === 0) return { months: null, cashCents, avgBurnCents: 0 };
+  const recent = months.slice(-3);
+  const avgBurnCents = recent.reduce((s, m) => s + m.totalExpenses, 0) / recent.length;
+  if (avgBurnCents === 0) return { months: null, cashCents, avgBurnCents: 0 };
+  return { months: Math.round(cashCents / avgBurnCents), cashCents, avgBurnCents };
+};
+
+/**
+ * Top merchants by total spend (expenses only).
+ */
+export const getTopMerchants = (transactions = [], limit = 10) => {
+  const totals = {}, counts = {}, cats = {};
+  for (const txn of transactions) {
+    if (txn.amount >= 0) continue;
+    const key = (txn.description || 'Unknown').split(/\s+/).slice(0, 4).join(' ').replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'Unknown';
+    const amt = Math.abs(txn.amount);
+    totals[key] = (totals[key] || 0) + amt;
+    counts[key] = (counts[key] || 0) + 1;
+    if (!cats[key]) cats[key] = txn.category || 'Other';
+  }
+  return Object.entries(totals)
+    .map(([name, total]) => ({ name, total, count: counts[name], category: cats[name] }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, limit);
+};
+
+/** Export transactions to a CSV string. */
+export const exportCSV = (transactions = []) => {
+  const header = ['Date', 'Description', 'Amount', 'Category', 'Source', 'Notes'];
+  const rows = transactions.map(t => [
+    t.date || '',
+    `"${(t.description || '').replace(/"/g, '""')}"`,
+    (t.amount / 100).toFixed(2),
+    t.category || '',
+    t.source || '',
+    `"${(t.notes || '').replace(/"/g, '""')}"`,
+  ]);
+  return [header.join(','), ...rows.map(r => r.join(','))].join('\n');
+};
