@@ -398,7 +398,7 @@ const BusinessHealthView = () => {
   const renderOverview = () => (
     <div className="space-y-6">
       {/* Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <MetricCard title="YTD Revenue"    value={pl.ytd.grossIncome / 100}   icon={DollarSign} accent="sage"    subtext={`${mom.incomeChange > 0?'+':''}${mom.incomeChange.toFixed(1)}% vs prior month`} />
         <MetricCard title="YTD Expenses"   value={pl.ytd.totalExpenses / 100} icon={Tag}        accent="amber"   subtext={`${mom.expenseChange > 0?'+':''}${mom.expenseChange.toFixed(1)}% vs prior month`} />
         <MetricCard title="YTD Net Profit" value={pl.ytd.netProfit / 100}     icon={TrendingUp} accent={pl.ytd.netProfit >= 0 ? 'emerald' : 'amber'} subtext={`${mom.netChange > 0?'+':''}${mom.netChange.toFixed(1)}% vs prior month`} />
