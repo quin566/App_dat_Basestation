@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAppState } from '../../contexts/StateContext';
-import { Mail, Plus, Send, Copy, Trash2, RefreshCw, FileEdit, Edit3, Inbox, ChevronRight } from 'lucide-react';
+import { Mail, Plus, Send, Copy, Trash2, RefreshCw, FileEdit, Edit3, Inbox, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { toast } from '../Toast';
 
 // Extract {{Token}} placeholders from template text
 const extractTokens = (text) => {
@@ -17,7 +18,7 @@ const renderTemplate = (text, values) => {
 };
 
 // --- Email Preview ---
-const EmailPreview = ({ subject, body, onCopy, onSend, isSending }) => (
+const EmailPreview = ({ subject, body, onCopy, onSend, isSending, copyFlash }) => (
   <div className="bg-white rounded-2xl border border-[#E8E4E1] overflow-hidden">
     <div className="px-6 py-4 border-b border-[#F2EFE9] bg-[#FDFCFB] flex items-center justify-between">
       <div>
@@ -25,9 +26,17 @@ const EmailPreview = ({ subject, body, onCopy, onSend, isSending }) => (
         <p className="font-bold text-[#2C2511] text-sm">{subject || '—'}</p>
       </div>
       <div className="flex gap-2">
-        <button onClick={onCopy}
-          className="flex items-center gap-2 px-4 py-2 bg-[#F2EFE9] hover:bg-[#E8E4E1] text-[#5F6F65] rounded-xl text-xs font-bold transition"
-        ><Copy size={13} /> Copy</button>
+        <button
+          onClick={onCopy}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
+            copyFlash
+              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+              : 'bg-[#F2EFE9] hover:bg-[#E8E4E1] text-[#5F6F65]'
+          }`}
+        >
+          {copyFlash ? <CheckCircle2 size={13} /> : <Copy size={13} />}
+          {copyFlash ? 'Copied!' : 'Copy'}
+        </button>
         <button onClick={onSend} disabled={isSending}
           className="flex items-center gap-2 px-4 py-2 bg-[#5F6F65] hover:bg-[#4A6657] text-white rounded-xl text-xs font-bold transition disabled:opacity-60"
         ><Send size={13} /> {isSending ? 'Sending…' : 'Send via Mail'}</button>
@@ -62,10 +71,8 @@ const EmailView = () => {
   const previewSubject = selectedTemplate ? renderTemplate(selectedTemplate.subject, tokenValues) : '';
   const previewBody = selectedTemplate ? renderTemplate(selectedTemplate.body, tokenValues) : '';
 
-  // When a template is selected, reset token values
   useEffect(() => { setTokenValues({}); }, [selectedId]);
 
-  // Load template into editor
   useEffect(() => {
     if (editMode && selectedTemplate) {
       setEditForm({ name: selectedTemplate.name, subject: selectedTemplate.subject, body: selectedTemplate.body });
@@ -76,12 +83,14 @@ const EmailView = () => {
 
   const handleSaveTemplate = useCallback(() => {
     if (!editForm.name || !editForm.body) return;
-    const updated = selectedId
-      ? templates.map(t => t.id === selectedId ? { ...t, ...editForm } : t)
-      : [...templates, { id: Date.now().toString(), ...editForm }];
+    const isNew = !selectedId;
+    const updated = isNew
+      ? [...templates, { id: Date.now().toString(), ...editForm }]
+      : templates.map(t => t.id === selectedId ? { ...t, ...editForm } : t);
     updateState({ emailTemplates: updated });
-    if (!selectedId) setSelectedId(updated[updated.length - 1].id);
+    if (isNew) setSelectedId(updated[updated.length - 1].id);
     setEditMode(false);
+    toast(isNew ? 'Template created' : 'Template updated');
   }, [editForm, selectedId, templates, updateState]);
 
   const handleDeleteTemplate = useCallback(() => {
@@ -163,7 +172,13 @@ const EmailView = () => {
                   {selectedId === t.id && <ChevronRight size={14} />}
                 </button>
               ))}
-              {templates.length === 0 && <p className="text-xs text-[#9C8A7A] italic py-2 px-1">No templates yet. Click + to create one.</p>}
+              {templates.length === 0 && (
+                <div className="mt-2 py-8 px-4 bg-[#FAF8F3] rounded-2xl border border-dashed border-[#D8D0C0] text-center">
+                  <FileEdit size={24} className="text-[#C8C0B8] mx-auto mb-2" />
+                  <p className="text-sm font-bold text-[#9C8A7A]">No templates yet</p>
+                  <p className="text-xs text-[#B0A090] mt-1">Click + above to create one</p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -213,7 +228,7 @@ const EmailView = () => {
               </div>
             </div>
           ) : (
-            <EmailPreview subject={previewSubject} body={previewBody} onCopy={handleCopy} onSend={handleSend} isSending={isSending} />
+            <EmailPreview subject={previewSubject} body={previewBody} onCopy={handleCopy} onSend={handleSend} isSending={isSending} copyFlash={copyFlash} />
           )}
 
           {/* Gmail Inbox Panel */}
@@ -229,7 +244,12 @@ const EmailView = () => {
                     <RefreshCw size={12} className={isFetching ? 'animate-spin' : ''} /> Sync
                   </button>
                 </div>
-                {fetchError && <p className="text-xs text-rose-600 mb-3">{fetchError}</p>}
+                {fetchError && (
+                  <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3 mb-4">
+                    <AlertCircle size={14} className="text-rose-500 shrink-0" />
+                    <p className="text-xs font-bold text-rose-700">{fetchError}</p>
+                  </div>
+                )}
                 {inboxEmails.length === 0
                   ? <p className="text-xs text-[#9C8A7A] italic text-center py-4">Click Sync to load your Gmail inbox.<br/>Configure credentials in Settings.</p>
                   : <div className="space-y-2 max-h-60 overflow-y-auto">

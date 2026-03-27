@@ -2,6 +2,7 @@ import React from 'react'
 import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera, BarChart2, CalendarDays, MapPin } from 'lucide-react'
 import { StateProvider, useAppState } from './contexts/StateContext'
 import GuidedTour from './components/GuidedTour'
+import { ToastContainer } from './components/Toast'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -172,6 +173,7 @@ function AppContent() {
         {renderContent()}
       </main>
       {runTour && <GuidedTour />}
+      <ToastContainer />
     </div>
   )
 }

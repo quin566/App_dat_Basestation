@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useAppState } from '../../contexts/StateContext';
-import { Users, Plus, Trash2, Clock, CheckCircle2, DollarSign, CalendarDays, AlertCircle } from 'lucide-react';
+import { Users, Plus, Trash2, Clock, CheckCircle2, CalendarDays, AlertCircle } from 'lucide-react';
+import { toast } from '../Toast';
 
 // --- Lead Card ---
 const LeadCard = ({ lead, onDelete }) => {
@@ -108,6 +109,7 @@ const CRMView = () => {
   const { state, updateState } = useAppState();
   const [newLeadName, setNewLeadName] = useState('');
   const [newLeadType, setNewLeadType] = useState('');
+  const [leadError, setLeadError] = useState('');
   const [showAddBooking, setShowAddBooking] = useState(false);
   const [bookingForm, setBookingForm] = useState({ name: '', pkgPrice: '', shootDate: '' });
 
@@ -115,9 +117,15 @@ const CRMView = () => {
   const clients = useMemo(() => [...(state.bookedClients || [])].sort((a, b) => new Date(a.shootDate) - new Date(b.shootDate)), [state.bookedClients]);
 
   const addLead = () => {
-    if (!newLeadName.trim()) return;
+    if (!newLeadName.trim()) {
+      setLeadError('Please enter a client name.');
+      return;
+    }
+    setLeadError('');
     updateState({ crmLeads: [...leads, { id: Date.now().toString(), name: newLeadName.trim(), type: newLeadType.trim() || 'General Inquiry', logDate: Date.now() }] });
-    setNewLeadName(''); setNewLeadType('');
+    setNewLeadName('');
+    setNewLeadType('');
+    toast('Inquiry added');
   };
 
   const deleteLead = (id) => updateState({ crmLeads: leads.filter(l => l.id !== id) });
@@ -128,6 +136,7 @@ const CRMView = () => {
     updateState({ bookedClients: [...(state.bookedClients || []), newClient] });
     setBookingForm({ name: '', pkgPrice: '', shootDate: '' });
     setShowAddBooking(false);
+    toast('Booking saved');
   };
 
   const updateClient = (id, patch) => {
@@ -156,26 +165,48 @@ const CRMView = () => {
             {leads.length > 0 && <span className="text-sm font-black text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">{leads.length}</span>}
           </h3>
         </div>
-        <div className="flex gap-3 mb-5">
-          <input
-            value={newLeadName} onChange={e => setNewLeadName(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && addLead()}
-            placeholder="Client name..."
-            className="flex-1 px-4 py-3 bg-white border border-[#E8E4E1] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
-          />
-          <input
-            value={newLeadType} onChange={e => setNewLeadType(e.target.value)}
-            placeholder="Shoot type (e.g. Wedding)..."
-            className="flex-1 px-4 py-3 bg-white border border-[#E8E4E1] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
-          />
+
+        <div className="flex gap-3 mb-1.5 items-end">
+          <div className="flex-1">
+            <label htmlFor="lead-name" className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A] block mb-1.5">Client Name *</label>
+            <input
+              id="lead-name"
+              value={newLeadName}
+              onChange={e => { setNewLeadName(e.target.value); if (leadError) setLeadError(''); }}
+              onKeyDown={e => e.key === 'Enter' && addLead()}
+              placeholder="e.g. Sarah & James"
+              className={`w-full px-4 py-3 bg-white border rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30 transition ${
+                leadError ? 'border-rose-300 bg-rose-50' : 'border-[#E8E4E1]'
+              }`}
+            />
+          </div>
+          <div className="flex-1">
+            <label htmlFor="lead-type" className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A] block mb-1.5">Shoot Type</label>
+            <input
+              id="lead-type"
+              value={newLeadType}
+              onChange={e => setNewLeadType(e.target.value)}
+              placeholder="e.g. Wedding"
+              className="w-full px-4 py-3 bg-white border border-[#E8E4E1] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+            />
+          </div>
           <button onClick={addLead} className="flex items-center gap-2 px-5 py-3 bg-[#5F6F65] hover:bg-[#4A6657] text-white rounded-xl text-sm font-bold transition-colors">
             <Plus size={16} /> Add
           </button>
         </div>
-        {leads.length === 0
-          ? <div className="py-10 text-center bg-[#FAF8F3] rounded-2xl border border-dashed border-[#D8D0C0] text-[#9C8A7A] text-sm italic">Inbox zero! No active inquiries.</div>
-          : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{leads.map(l => <LeadCard key={l.id} lead={l} onDelete={deleteLead} />)}</div>
-        }
+
+        {leadError && (
+          <p className="flex items-center gap-1.5 text-xs font-bold text-rose-600 mb-4">
+            <AlertCircle size={12} /> {leadError}
+          </p>
+        )}
+
+        <div className="mt-5">
+          {leads.length === 0
+            ? <div className="py-10 text-center bg-[#FAF8F3] rounded-2xl border border-dashed border-[#D8D0C0] text-[#9C8A7A] text-sm italic">Inbox zero! No active inquiries.</div>
+            : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{leads.map(l => <LeadCard key={l.id} lead={l} onDelete={deleteLead} />)}</div>
+          }
+        </div>
       </section>
 
       {/* Booked Clients */}
@@ -192,14 +223,44 @@ const CRMView = () => {
         </div>
 
         {showAddBooking && (
-          <div className="mb-5 p-6 bg-white border border-[#E8E4E1] rounded-2xl grid grid-cols-3 gap-4">
-            <input value={bookingForm.name} onChange={e => setBookingForm(f => ({...f, name: e.target.value}))} placeholder="Client name" className="px-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30" />
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9C8A7A] font-bold">$</span>
-              <input type="number" value={bookingForm.pkgPrice} onChange={e => setBookingForm(f => ({...f, pkgPrice: e.target.value}))} placeholder="Package price" className="w-full pl-7 pr-3 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30" />
+          <div className="mb-5 p-6 bg-white border border-[#E8E4E1] rounded-2xl space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="booking-name" className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A] block mb-1.5">Client Name *</label>
+                <input
+                  id="booking-name"
+                  value={bookingForm.name}
+                  onChange={e => setBookingForm(f => ({...f, name: e.target.value}))}
+                  placeholder="e.g. Emily & Cole"
+                  className="w-full px-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+                />
+              </div>
+              <div>
+                <label htmlFor="booking-price" className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A] block mb-1.5">Package Price *</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9C8A7A] font-bold">$</span>
+                  <input
+                    id="booking-price"
+                    type="number"
+                    value={bookingForm.pkgPrice}
+                    onChange={e => setBookingForm(f => ({...f, pkgPrice: e.target.value}))}
+                    placeholder="3500"
+                    className="w-full pl-7 pr-3 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+                  />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="booking-date" className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A] block mb-1.5">Shoot Date *</label>
+                <input
+                  id="booking-date"
+                  type="date"
+                  value={bookingForm.shootDate}
+                  onChange={e => setBookingForm(f => ({...f, shootDate: e.target.value}))}
+                  className="w-full px-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+                />
+              </div>
             </div>
-            <input type="date" value={bookingForm.shootDate} onChange={e => setBookingForm(f => ({...f, shootDate: e.target.value}))} className="px-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30" />
-            <button onClick={addBooking} className="col-span-3 py-3 bg-[#5F6F65] hover:bg-[#4A6657] text-white rounded-xl text-sm font-bold transition-colors">Save Booking</button>
+            <button onClick={addBooking} className="w-full py-3 bg-[#5F6F65] hover:bg-[#4A6657] text-white rounded-xl text-sm font-bold transition-colors">Save Booking</button>
           </div>
         )}
 
