@@ -261,7 +261,7 @@ const BusinessHealthView = () => {
   const pageTxns   = filteredTxns.slice(txnPage * PAGE_SIZE, (txnPage + 1) * PAGE_SIZE);
 
   // ── Chart data
-  const plChartData = pl.months.slice(-12).map(m => ({ month: m.month, Income: m.grossIncome, Expenses: m.totalExpenses }));
+  const plChartData = pl.months.slice(-12).map(m => ({ month: m.month, 'Business Income': m.grossIncome, 'Other Deposits': m.otherDeposits || 0, Expenses: m.totalExpenses }));
   const predChartData = useMemo(() => {
     const hist = (predictions.historical || []).slice(-6).map(h => ({ month: h.month, Actual: h.actual, Predicted: null }));
     const pred = (predictions.predicted  || []).map(p => ({ month: p.month, Actual: null, Predicted: p.predicted }));
@@ -399,7 +399,7 @@ const BusinessHealthView = () => {
     <div className="space-y-6">
       {/* Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <MetricCard title="YTD Revenue"    value={pl.ytd.grossIncome / 100}   icon={DollarSign} accent="sage"    subtext={`${mom.incomeChange > 0?'+':''}${mom.incomeChange.toFixed(1)}% vs prior month`} />
+        <MetricCard title="YTD Business Income" value={pl.ytd.grossIncome / 100} icon={DollarSign} accent="sage" subtext={`${mom.incomeChange > 0?'+':''}${mom.incomeChange.toFixed(1)}% vs prior month`} />
         <MetricCard title="YTD Expenses"   value={pl.ytd.totalExpenses / 100} icon={Tag}        accent="amber"   subtext={`${mom.expenseChange > 0?'+':''}${mom.expenseChange.toFixed(1)}% vs prior month`} />
         <MetricCard title="YTD Net Profit" value={pl.ytd.netProfit / 100}     icon={TrendingUp} accent={pl.ytd.netProfit >= 0 ? 'emerald' : 'amber'} subtext={`${mom.netChange > 0?'+':''}${mom.netChange.toFixed(1)}% vs prior month`} />
         <MetricCard title="Profit Margin"  value={profitMargin}               icon={BarChart2}  accent="sage"    subtext="of gross revenue" format="percent" />
@@ -428,13 +428,15 @@ const BusinessHealthView = () => {
               <AreaChart data={plChartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="incomeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#5F6F65" stopOpacity={0.25} /><stop offset="95%" stopColor="#5F6F65" stopOpacity={0} /></linearGradient>
+                  <linearGradient id="otherGrad"  x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#9FAB6D" stopOpacity={0.2}  /><stop offset="95%" stopColor="#9FAB6D" stopOpacity={0} /></linearGradient>
                   <linearGradient id="expGrad"    x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#D4A373" stopOpacity={0.25} /><stop offset="95%" stopColor="#D4A373" stopOpacity={0} /></linearGradient>
                 </defs>
                 <XAxis dataKey="month" tickFormatter={formatMonth} tick={{ fontSize: 11, fill: '#9C8A7A' }} axisLine={false} tickLine={false} />
                 <YAxis tickFormatter={(v) => `$${(v/100).toFixed(0)}`} tick={{ fontSize: 11, fill: '#9C8A7A' }} axisLine={false} tickLine={false} width={50} />
                 <Tooltip content={<ChartTooltip />} />
-                <Area type="monotone" dataKey="Income"   stroke="#5F6F65" strokeWidth={2.5} fill="url(#incomeGrad)" name="Income" />
-                <Area type="monotone" dataKey="Expenses" stroke="#D4A373" strokeWidth={2.5} fill="url(#expGrad)"    name="Expenses" />
+                <Area type="monotone" dataKey="Business Income" stroke="#5F6F65" strokeWidth={2.5} fill="url(#incomeGrad)" name="Business Income" />
+                <Area type="monotone" dataKey="Other Deposits"  stroke="#9FAB6D" strokeWidth={1.5} fill="url(#otherGrad)"  name="Other Deposits" strokeDasharray="4 2" />
+                <Area type="monotone" dataKey="Expenses"        stroke="#D4A373" strokeWidth={2.5} fill="url(#expGrad)"    name="Expenses" />
               </AreaChart>
             </ResponsiveContainer>
           ) : <EmptyState icon={BarChart2} message="No data yet. Link a bank account or add a manual transaction." />}

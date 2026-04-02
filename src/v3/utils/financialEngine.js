@@ -17,6 +17,7 @@ export const buildPL = (transactions = []) => {
       byMonth[month] = {
         month,
         grossIncome: 0,
+        otherDeposits: 0,
         totalExpenses: 0,
         netProfit: 0,
         expensesByCategory: {},
@@ -25,7 +26,11 @@ export const buildPL = (transactions = []) => {
 
     const m = byMonth[month];
     if (txn.amount > 0) {
-      m.grossIncome += txn.amount;
+      if (txn.category === 'Income') {
+        m.grossIncome += txn.amount;
+      } else {
+        m.otherDeposits += txn.amount;
+      }
     } else {
       const expense = Math.abs(txn.amount);
       m.totalExpenses += expense;
@@ -45,6 +50,7 @@ export const buildPL = (transactions = []) => {
   const ytd = ytdMonths.reduce(
     (acc, m) => {
       acc.grossIncome += m.grossIncome;
+      acc.otherDeposits += m.otherDeposits;
       acc.totalExpenses += m.totalExpenses;
       acc.netProfit += m.netProfit;
       for (const [cat, amt] of Object.entries(m.expensesByCategory)) {
@@ -52,16 +58,17 @@ export const buildPL = (transactions = []) => {
       }
       return acc;
     },
-    { grossIncome: 0, totalExpenses: 0, netProfit: 0, expensesByCategory: {} }
+    { grossIncome: 0, otherDeposits: 0, totalExpenses: 0, netProfit: 0, expensesByCategory: {} }
   );
 
   const allTime = months.reduce(
     (acc, m) => ({
       grossIncome: acc.grossIncome + m.grossIncome,
+      otherDeposits: acc.otherDeposits + m.otherDeposits,
       totalExpenses: acc.totalExpenses + m.totalExpenses,
       netProfit: acc.netProfit + m.netProfit,
     }),
-    { grossIncome: 0, totalExpenses: 0, netProfit: 0 }
+    { grossIncome: 0, otherDeposits: 0, totalExpenses: 0, netProfit: 0 }
   );
 
   return { months, ytd, allTime };
