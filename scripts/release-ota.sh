@@ -17,9 +17,10 @@ npm run build
 TEMP_DIR=$(mktemp -d)
 echo "[OTA] Staging assets in $TEMP_DIR..."
 cp -r dist/v3 "$TEMP_DIR/"
-cp version.json "$TEMP_DIR/"
-# Write version to a plain text file so it survives after git rm wipes package.json
-node -e "process.stdout.write(require('./package.json').version)" > "$TEMP_DIR/VERSION"
+# Always derive version from package.json — version.json is overwritten here so they stay in sync
+VERSION=$(node -e "process.stdout.write(require('./package.json').version)")
+echo "{ \"version\": \"$VERSION\" }" > "$TEMP_DIR/version.json"
+echo "$VERSION" > "$TEMP_DIR/VERSION"
 
 # ── GIT: create a fresh orphan branch with no history ───────────────────────
 git branch -D ota-release 2>/dev/null || true
