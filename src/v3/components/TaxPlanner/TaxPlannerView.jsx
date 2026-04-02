@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useAppState } from '../../contexts/StateContext';
 import { calculateTaxes, formatCurrency } from '../../utils/taxEngine';
+import { SCHEDULE_C_MAP } from '../../utils/categorizer';
 import QuarterlyTracker from './QuarterlyTracker';
 import {
   Calculator, Car, Home, Package, TrendingDown,
@@ -193,36 +194,37 @@ const TaxPlannerView = () => {
     const txns = state.transactions || [];
     const ytdTxns = txns.filter(t => (t.date || '').startsWith(currentYear));
 
-    const grouped = {};
+    // Group by Schedule C line number for clean CPA filing
+    const byLine = {};
     for (const txn of ytdTxns) {
       const cat = txn.category || 'Other';
-      if (!grouped[cat]) grouped[cat] = [];
-      grouped[cat].push(txn);
+      const lineLabel = SCHEDULE_C_MAP[cat] || 'Line 27a — Other Expenses';
+      if (!byLine[lineLabel]) byLine[lineLabel] = [];
+      byLine[lineLabel].push({ ...txn, _cat: cat });
     }
 
+    const lineOrder = (label) => {
+      if (label.startsWith('Line 1 ')) return 1;
+      const m = label.match(/Line (\d+)/);
+      if (m) return parseInt(m[1], 10);
+      return 98; // Non-Deductible items go last
+    };
+    const sortedLines = Object.keys(byLine).sort((a, b) => lineOrder(a) - lineOrder(b));
+
     const lines = [
-      `"YTD Tax Export — ${currentYear}"`,
+      `"YTD CPA Export — ${currentYear} — Grouped by Schedule C Line"`,
       `"Generated: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}"`,
       '',
-      'Category,Date,Description,Amount',
+      'Schedule C Line,Category,Date,Description,Amount',
     ];
 
-    const categoryOrder = ['Income', 'Equipment', 'Software', 'Marketing', 'Travel',
-      'Contractors', 'Insurance', 'Studio / Rent', 'Education', 'Meals', 'Taxes',
-      'Transfer', 'Refund', 'Interest', 'Tax Refund', 'Other'];
-
-    const sortedCategories = [
-      ...categoryOrder.filter(c => grouped[c]),
-      ...Object.keys(grouped).filter(c => !categoryOrder.includes(c)).sort(),
-    ];
-
-    for (const cat of sortedCategories) {
-      const catTxns = (grouped[cat] || []).sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-      const subtotal = catTxns.reduce((s, t) => s + t.amount, 0);
-      for (const t of catTxns) {
-        lines.push(`"${cat}","${t.date || ''}","${(t.description || '').replace(/"/g, '""')}",${(t.amount / 100).toFixed(2)}`);
+    for (const lineLabel of sortedLines) {
+      const lineTxns = byLine[lineLabel].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+      const subtotal = lineTxns.reduce((s, t) => s + t.amount, 0);
+      for (const t of lineTxns) {
+        lines.push(`"${lineLabel}","${t._cat}","${t.date || ''}","${(t.description || '').replace(/"/g, '""')}",${(t.amount / 100).toFixed(2)}`);
       }
-      lines.push(`"${cat} — SUBTOTAL","","",${(subtotal / 100).toFixed(2)}`);
+      lines.push(`"${lineLabel} — SUBTOTAL","","","",${(subtotal / 100).toFixed(2)}`);
       lines.push('');
     }
 
@@ -274,10 +276,18 @@ const TaxPlannerView = () => {
           <DeductionRow label="Gross Revenue" value={formatCurrency(gross)} />
           <DeductionRow label="Business Expenses" value={`— ${formatCurrency(expenses)}`} />
           <DeductionRow
-            label="SE Tax Deduction (½)"
+            label="Self-Employment Tax (15.3%)"
+            value={formatCurrency(finances.seTax)}
+            tooltip={{
+              text: "15.3% SE tax = 12.4% Social Security + 2.9% Medicare, applied to 92.35% of net profit. This is the largest tax hit for sole proprietors — it's included in your total liability below.",
+              href: "https://www.irs.gov/taxtopics/tc554",
+            }}
+          />
+          <DeductionRow
+            label="SE Tax Deduction (½ deductible)"
             value={`— ${formatCurrency(finances.seTax / 2)}`}
             tooltip={{
-              text: "15.3% tax (12.4% SS + 2.9% Medicare) on 92.35% of net profit. Half is deductible from income.",
+              text: "You can deduct half of your SE tax from gross income, reducing your federal and AZ taxable income.",
               href: "https://www.irs.gov/taxtopics/tc554",
             }}
           />

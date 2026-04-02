@@ -1,5 +1,6 @@
 // Financial calculation engine — pure functions, no side effects
 import { calculateTaxes } from './taxEngine';
+import { SCHEDULE_C_MAP } from './categorizer';
 
 /**
  * Build a full P&L breakdown from a transaction array.
@@ -247,14 +248,15 @@ export const getTopMerchants = (transactions = [], limit = 10) => {
     .slice(0, limit);
 };
 
-/** Export transactions to a CSV string. */
+/** Export transactions to a CSV string (includes Schedule C line for CPA filing). */
 export const exportCSV = (transactions = []) => {
-  const header = ['Date', 'Description', 'Amount', 'Category', 'Source', 'Notes'];
+  const header = ['Date', 'Description', 'Amount', 'Category', 'Schedule C Line', 'Source', 'Notes'];
   const rows = transactions.map(t => [
     t.date || '',
     `"${(t.description || '').replace(/"/g, '""')}"`,
     (t.amount / 100).toFixed(2),
     t.category || '',
+    `"${SCHEDULE_C_MAP[t.category] || 'Line 27a — Other Expenses'}"`,
     t.source || '',
     `"${(t.notes || '').replace(/"/g, '""')}"`,
   ]);

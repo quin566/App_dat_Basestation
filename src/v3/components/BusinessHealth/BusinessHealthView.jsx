@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useAppState } from '../../contexts/StateContext';
 import MetricCard from '../Dashboard/MetricCard';
-import { CATEGORIES, categorizeWithRules } from '../../utils/categorizer';
+import { CATEGORIES, SCHEDULE_C_MAP, categorizeWithRules } from '../../utils/categorizer';
 import {
   buildPL, predictRevenue, deriveTaxLiability,
   getTopExpenseCategories, getMonthOverMonthChange, centsToDisplay,
@@ -120,7 +120,13 @@ const TxnDetailDrawer = ({ txn, allCategories, onClose, onUpdate, onCreateRule }
             <div className="flex justify-between text-sm"><span className="text-[#9C8A7A] font-bold">Source</span><span className="font-black text-[#2C2511] capitalize">{txn.source || 'manual'}</span></div>
           </div>
           <div><label className={labelCls}>Description</label><p className="text-sm font-medium text-[#2C2511] bg-[#FAF8F3] rounded-xl px-3 py-2.5 break-words">{txn.description || '—'}</p></div>
-          <div><label className={labelCls}>Category</label><select value={cat} onChange={e => setCat(e.target.value)} className={inputCls}>{allCategories.map(c => <option key={c}>{c}</option>)}</select></div>
+          <div>
+            <label className={labelCls}>Category</label>
+            <select value={cat} onChange={e => setCat(e.target.value)} className={inputCls}>{allCategories.map(c => <option key={c}>{c}</option>)}</select>
+            {!isIncome && SCHEDULE_C_MAP[cat] && (
+              <p className="mt-1.5 text-[10px] font-bold text-[#5F6F65] bg-[#EEF2F0] rounded-lg px-2.5 py-1.5">{SCHEDULE_C_MAP[cat]}</p>
+            )}
+          </div>
           <div><label className={labelCls}>Notes</label><textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Add a note…" rows={3} className={`${inputCls} resize-none`} /></div>
         </div>
         <div className="p-6 border-t border-[#F2EFE9] space-y-2">
@@ -579,6 +585,9 @@ const BusinessHealthView = () => {
             {pageTxns.map(txn => {
               const isIncome = txn.amount > 0, isChecked = selectedTxns.has(txn.id);
               const needsReceipt = !isIncome && Math.abs(txn.amount) > 7500;
+              const isMemberDraw = txn.category === 'Transfer' && txn.amount < 0;
+              const isCapitalAsset = txn.category === 'Equipment' && Math.abs(txn.amount) > 250000;
+              const schedCLine = !isIncome ? SCHEDULE_C_MAP[txn.category] : null;
               return (
                 <div key={txn.id} className={`grid grid-cols-[28px_1fr_130px_120px_90px] gap-2 px-5 py-3 border-b border-[#F5F2EF] last:border-0 hover:bg-[#FAF8F3] cursor-pointer ${isChecked?'bg-[#5F6F65]/5':''}`} onClick={() => setDetailTxn(txn)}>
                   <div onClick={e => e.stopPropagation()}><input type="checkbox" checked={isChecked} onChange={e => { const next=new Set(selectedTxns); e.target.checked?next.add(txn.id):next.delete(txn.id); setSelectedTxns(next); }} className="accent-[#5F6F65]" /></div>
@@ -587,6 +596,16 @@ const BusinessHealthView = () => {
                       <div className="text-sm font-bold text-[#2C2511] truncate">{txn.description||'—'}</div>
                       {needsReceipt && <Receipt size={12} className="shrink-0 text-amber-500" title="Receipt required (IRS: expenses > $75)" />}
                     </div>
+                    {isMemberDraw && (
+                      <span className="inline-flex mt-0.5 px-2 py-0.5 rounded-full text-[10px] font-black bg-[#F2EFE9] text-[#8A7A6A] border border-[#E0DAD3]">
+                        Member Draw — Non-Deductible
+                      </span>
+                    )}
+                    {isCapitalAsset && (
+                      <span className="inline-flex mt-0.5 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-[#D4A373] border border-amber-200">
+                        Capital Asset / §179
+                      </span>
+                    )}
                     {txn.notes&&<div className="text-xs text-[#9C8A7A] truncate mt-0.5">{txn.notes}</div>}
                   </div>
                   <div className="text-sm text-[#9C8A7A] font-medium self-center">{txn.date}</div>
@@ -595,6 +614,9 @@ const BusinessHealthView = () => {
                       {allCategories.map(c => <option key={c}>{c}</option>)}
                     </select>
                     {txn.categoryOverride && <div className="w-1 h-1 rounded-full bg-[#D4A373] inline-block ml-1 align-middle" title="Manually set" />}
+                    {schedCLine && (
+                      <div className="text-[9px] text-[#B0A090] truncate mt-0.5 max-w-[110px]" title={schedCLine}>{schedCLine}</div>
+                    )}
                   </div>
                   <div className={`text-sm font-black self-center text-right ${isIncome?'text-[#5F6F65]':'text-[#C4847A]'}`}>{isIncome?'+':'-'}{centsToDisplay(Math.abs(txn.amount))}</div>
                 </div>

@@ -19,6 +19,26 @@ export const CATEGORIES = [
   'Other',
 ];
 
+// Schedule C line mapping — used for CPA exports and transaction badges
+export const SCHEDULE_C_MAP = {
+  'Income':        'Line 1 — Gross Receipts',
+  'Marketing':     'Line 8 — Advertising',
+  'Contractors':   'Line 11 — Contract Labor',
+  'Equipment':     'Line 13 — Depreciation / Sec. 179',
+  'Insurance':     'Line 15 — Insurance',
+  'Studio / Rent': 'Line 20b — Rent / Lease',
+  'Taxes':         'Line 23 — Taxes & Licenses',
+  'Travel':        'Line 24a — Travel',
+  'Meals':         'Line 24b — Meals (50% deductible)',
+  'Software':      'Line 27a — Other Expenses (Software)',
+  'Education':     'Line 27a — Other Expenses (Education)',
+  'Other':         'Line 27a — Other Expenses',
+  'Transfer':      'Non-Deductible — Transfer',
+  'Interest':      'Non-Deductible — Interest',
+  'Refund':        'Non-Deductible — Refund',
+  'Tax Refund':    'Non-Deductible — Tax Refund',
+};
+
 // Keywords that indicate a positive-amount transaction is NOT actual business income.
 // Checked before the 'Income' fallback; first match wins.
 const DEPOSIT_EXCLUSION_RULES = [
