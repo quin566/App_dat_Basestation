@@ -5,6 +5,7 @@ import QuarterlyTracker from './QuarterlyTracker';
 import {
   Calculator, Car, Home, Package, TrendingDown,
   ChevronDown, ChevronUp, Info, ExternalLink,
+  Download, AlertTriangle, Users,
 } from 'lucide-react';
 
 // --- Info Tooltip with Source Link ---
@@ -168,6 +169,74 @@ const TaxPlannerView = () => {
   const homeOfficeDeduction = Math.min(sqft, 300) * 5;
   const totalAdditionalDeductions = mileageDeduction + homeOfficeDeduction;
 
+  // ── 1099-NEC Monitor ─────────────────────────────────────────────────────────
+  const currentYear = new Date().getFullYear().toString();
+  const contractorTotals = useMemo(() => {
+    const totals = {};
+    for (const txn of (state.transactions || [])) {
+      if (txn.amount >= 0) continue;
+      if (txn.category !== 'Contractors') continue;
+      if (!(txn.date || '').startsWith(currentYear)) continue;
+      const key = (txn.description || 'Unknown')
+        .split(/\s+/).slice(0, 4).join(' ')
+        .replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'Unknown';
+      totals[key] = (totals[key] || 0) + Math.abs(txn.amount);
+    }
+    return Object.entries(totals)
+      .map(([name, total]) => ({ name, total }))
+      .filter(v => v.total > 60000) // $600 threshold in cents
+      .sort((a, b) => b.total - a.total);
+  }, [state.transactions, currentYear]);
+
+  // ── CPA Tax Export ────────────────────────────────────────────────────────────
+  const handleTaxExport = useCallback(() => {
+    const txns = state.transactions || [];
+    const ytdTxns = txns.filter(t => (t.date || '').startsWith(currentYear));
+
+    const grouped = {};
+    for (const txn of ytdTxns) {
+      const cat = txn.category || 'Other';
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(txn);
+    }
+
+    const lines = [
+      `"YTD Tax Export — ${currentYear}"`,
+      `"Generated: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}"`,
+      '',
+      'Category,Date,Description,Amount',
+    ];
+
+    const categoryOrder = ['Income', 'Equipment', 'Software', 'Marketing', 'Travel',
+      'Contractors', 'Insurance', 'Studio / Rent', 'Education', 'Meals', 'Taxes',
+      'Transfer', 'Refund', 'Interest', 'Tax Refund', 'Other'];
+
+    const sortedCategories = [
+      ...categoryOrder.filter(c => grouped[c]),
+      ...Object.keys(grouped).filter(c => !categoryOrder.includes(c)).sort(),
+    ];
+
+    for (const cat of sortedCategories) {
+      const catTxns = (grouped[cat] || []).sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+      const subtotal = catTxns.reduce((s, t) => s + t.amount, 0);
+      for (const t of catTxns) {
+        lines.push(`"${cat}","${t.date || ''}","${(t.description || '').replace(/"/g, '""')}",${(t.amount / 100).toFixed(2)}`);
+      }
+      lines.push(`"${cat} — SUBTOTAL","","",${(subtotal / 100).toFixed(2)}`);
+      lines.push('');
+    }
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tax-export-${currentYear}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [state.transactions, currentYear]);
+
   return (
     <div className="p-10 max-w-7xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <header className="mb-2">
@@ -231,12 +300,20 @@ const TaxPlannerView = () => {
           <DeductionRow label="Estimated Total Tax" value={formatCurrency(finances.totalTax)} />
           <DeductionRow label="Take-Home Pay" value={formatCurrency(finances.takehome)} accent />
         </div>
-        <button
-          onClick={save}
-          className="mt-6 px-6 py-3 bg-[#5F6F65] text-white font-bold rounded-xl text-sm hover:bg-[#4A6657] transition-colors active:scale-95"
-        >
-          Save Numbers
-        </button>
+        <div className="mt-6 flex items-center gap-3 flex-wrap">
+          <button
+            onClick={save}
+            className="px-6 py-3 bg-[#5F6F65] text-white font-bold rounded-xl text-sm hover:bg-[#4A6657] transition-colors active:scale-95"
+          >
+            Save Numbers
+          </button>
+          <button
+            onClick={handleTaxExport}
+            className="flex items-center gap-2 px-6 py-3 border border-[#5F6F65] text-[#5F6F65] font-bold rounded-xl text-sm hover:bg-[#EEF2F0] transition-colors active:scale-95"
+          >
+            <Download size={15} /> Tax Export (CSV)
+          </button>
+        </div>
       </div>
 
       {/* Write-off Calculators */}
@@ -286,6 +363,47 @@ const TaxPlannerView = () => {
       {/* ROI Analyzer */}
       <div data-tour="roi-analyzer">
         <ROIAnalyzer marginalRate={finances.marginalRate} />
+      </div>
+
+      {/* 1099-NEC Monitor */}
+      <div>
+        <h3 className="text-lg font-black mb-5 flex items-center gap-3">
+          <div className="w-1.5 h-5 bg-[#C4847A] rounded-full" />
+          1099-NEC Monitor
+          <span className="text-xs font-bold text-[#9C8A7A] normal-case ml-1">{currentYear} YTD</span>
+        </h3>
+        {contractorTotals.length === 0 ? (
+          <div className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm flex items-center gap-4 text-[#9C8A7A]">
+            <Users size={20} className="opacity-40 shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-[#2C2511]">No 1099 filings required yet</p>
+              <p className="text-xs mt-0.5">Contractors will appear here once cumulative payments exceed $600 in {currentYear}.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-3xl border border-[#E8E4E1] shadow-sm overflow-hidden">
+            <div className="px-6 py-4 bg-amber-50 border-b border-amber-200 flex items-center gap-3">
+              <AlertTriangle size={16} className="text-amber-600 shrink-0" />
+              <p className="text-sm font-bold text-amber-800">
+                {contractorTotals.length} contractor{contractorTotals.length > 1 ? 's' : ''} require{contractorTotals.length === 1 ? 's' : ''} a 1099-NEC — due January 31
+              </p>
+            </div>
+            <div className="divide-y divide-[#F5F2EF]">
+              {contractorTotals.map(({ name, total }) => (
+                <div key={name} className="flex items-center justify-between px-6 py-4">
+                  <div>
+                    <p className="text-sm font-bold text-[#2C2511]">{name}</p>
+                    <p className="text-[11px] text-[#9C8A7A] mt-0.5">Collect W-9 · File via IRS FIRE or Track1099</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-black text-[#C4847A]">{formatCurrency(total / 100)}</p>
+                    <p className="text-[10px] text-[#9C8A7A] uppercase tracking-wider mt-0.5">YTD Paid</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Quarterly Tracker */}

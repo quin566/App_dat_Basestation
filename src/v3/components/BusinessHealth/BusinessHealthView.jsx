@@ -8,7 +8,7 @@ import {
   BarChart2, Tag, AlertCircle, Wallet, Plus, X,
   ArrowLeft, ArrowRight, Download, Zap,
   Eye, EyeOff, Trash2, Edit3, Check, Target, Calendar,
-  Filter, SortAsc, SortDesc, BookOpen,
+  Filter, SortAsc, SortDesc, BookOpen, Receipt,
 } from 'lucide-react';
 import { useAppState } from '../../contexts/StateContext';
 import MetricCard from '../Dashboard/MetricCard';
@@ -578,10 +578,17 @@ const BusinessHealthView = () => {
             </div>
             {pageTxns.map(txn => {
               const isIncome = txn.amount > 0, isChecked = selectedTxns.has(txn.id);
+              const needsReceipt = !isIncome && Math.abs(txn.amount) > 7500;
               return (
                 <div key={txn.id} className={`grid grid-cols-[28px_1fr_130px_120px_90px] gap-2 px-5 py-3 border-b border-[#F5F2EF] last:border-0 hover:bg-[#FAF8F3] cursor-pointer ${isChecked?'bg-[#5F6F65]/5':''}`} onClick={() => setDetailTxn(txn)}>
                   <div onClick={e => e.stopPropagation()}><input type="checkbox" checked={isChecked} onChange={e => { const next=new Set(selectedTxns); e.target.checked?next.add(txn.id):next.delete(txn.id); setSelectedTxns(next); }} className="accent-[#5F6F65]" /></div>
-                  <div><div className="text-sm font-bold text-[#2C2511] truncate">{txn.description||'—'}</div>{txn.notes&&<div className="text-xs text-[#9C8A7A] truncate mt-0.5">{txn.notes}</div>}</div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="text-sm font-bold text-[#2C2511] truncate">{txn.description||'—'}</div>
+                      {needsReceipt && <Receipt size={12} className="shrink-0 text-amber-500" title="Receipt required (IRS: expenses > $75)" />}
+                    </div>
+                    {txn.notes&&<div className="text-xs text-[#9C8A7A] truncate mt-0.5">{txn.notes}</div>}
+                  </div>
                   <div className="text-sm text-[#9C8A7A] font-medium self-center">{txn.date}</div>
                   <div className="self-center" onClick={e => e.stopPropagation()}>
                     <select value={txn.category||'Other'} onChange={e => handleCategoryOverride(txn.id, e.target.value)} className="text-xs font-bold bg-transparent border-0 text-[#5F6F65] focus:outline-none cursor-pointer hover:underline truncate max-w-[110px]">
