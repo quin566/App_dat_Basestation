@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppState } from '../../contexts/StateContext';
-import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download, Compass, Link, AlertCircle, MessageSquare } from 'lucide-react';
+import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download, Compass, Link, AlertCircle, MessageSquare, Bot } from 'lucide-react';
 
 const SettingsView = () => {
   const { state, updateState, setRunTour } = useAppState();
@@ -16,6 +16,7 @@ const SettingsView = () => {
   const [stripePubKey, setStripePubKey] = useState(state.stripePublishableKey || '');
   const [stripeTestStatus, setStripeTestStatus] = useState('idle'); // idle | testing | ok | error
   const [stripeTestError, setStripeTestError] = useState('');
+  const [geminiKey, setGeminiKey] = useState(state.geminiKey || '');
   const [smsSid, setSmsSid] = useState(state.smsSettings?.accountSid || '');
   const [smsToken, setSmsToken] = useState(state.smsSettings?.authToken || '');
   const [smsFrom, setSmsFrom] = useState(state.smsSettings?.fromNumber || '');
@@ -58,6 +59,7 @@ const SettingsView = () => {
       stripeSecretKey: stripeKey.trim(),
       stripePublishableKey: stripePubKey.trim(),
       smsSettings: { accountSid: smsSid.trim(), authToken: smsToken.trim(), fromNumber: smsFrom.trim() },
+      geminiKey: geminiKey.trim(),
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
@@ -298,6 +300,34 @@ const SettingsView = () => {
         </div>
         <p className="text-[10px] text-[#9C8A7A] font-medium italic">
           Credentials are stored locally in your app data folder and never transmitted.
+        </p>
+      </section>
+
+      {/* AI Advisor */}
+      <section className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm space-y-5">
+        <h3 className="text-lg font-black flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#F2EFE9] flex items-center justify-center text-[#5F6F65]"><Bot size={18} /></div>
+          AI Advisor
+        </h3>
+        <p className="text-xs text-[#9C8A7A] leading-relaxed">
+          Powers the <strong>Virtual CPA Advisor</strong> in the Tax Planner. Uses <strong>Google Gemini Flash</strong> — free up to 1,500 questions/day.
+          Get your free API key at <strong>aistudio.google.com</strong> → Get API Key.
+        </p>
+        <div>
+          <label className="text-xs font-black uppercase tracking-wider text-[#8A7A6A] block mb-2">Gemini API Key</label>
+          <div className="relative">
+            <Key size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9C8A7A]" />
+            <input
+              type="password"
+              value={geminiKey}
+              onChange={e => setGeminiKey(e.target.value)}
+              placeholder="AIza..."
+              className="w-full pl-11 pr-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
+            />
+          </div>
+        </div>
+        <p className="text-[10px] text-[#9C8A7A] font-medium italic">
+          Stored locally. Never transmitted to any server other than Google's API.
         </p>
       </section>
 

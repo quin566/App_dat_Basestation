@@ -3,6 +3,7 @@ import { useAppState } from '../../contexts/StateContext';
 import { calculateTaxes, formatCurrency } from '../../utils/taxEngine';
 import { SCHEDULE_C_MAP } from '../../utils/categorizer';
 import QuarterlyTracker from './QuarterlyTracker';
+import CpaAdvisor from './CpaAdvisor';
 import {
   Calculator, Car, Home, Package, TrendingDown,
   ChevronDown, ChevronUp, Info, ExternalLink,
@@ -414,6 +415,11 @@ const TaxPlannerView = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* CPA Advisor */}
+      <div>
+        <CpaAdvisor gross={gross} expenses={expenses} finances={finances} />
       </div>
 
       {/* Quarterly Tracker */}
