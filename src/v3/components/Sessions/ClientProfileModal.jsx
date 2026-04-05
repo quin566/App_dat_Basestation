@@ -1,11 +1,138 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, Upload } from 'lucide-react';
+import { X, Trash2, Upload, Sparkles, Loader2, AlertCircle, Camera, Clock, MapPin, List } from 'lucide-react';
 import { useAppState } from '../../contexts/StateContext';
 import InspirationBoard from './InspirationBoard';
 import SmsLogPanel from './SmsLogPanel';
+import { streamGemini } from '../../utils/geminiApi';
 
-const TABS = ['Overview', 'Inspiration', 'Emails', 'Documents', 'SMS Log', 'Notes'];
+const TABS = ['Overview', 'AI Prep Brief', 'Inspiration', 'Emails', 'Documents', 'SMS Log', 'Notes'];
+
+// --- AI Prep Brief Panel ---
+const AiPrepBrief = ({ client, apiKey }) => {
+  const [brief, setBrief] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [generated, setGenerated] = useState(false);
+
+  const handleGenerate = async () => {
+    if (loading) return;
+    setLoading(true);
+    setError('');
+    setBrief('');
+    setGenerated(false);
+
+    const shootDate = client.shootDate
+      ? new Date(client.shootDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+      : 'Not set';
+    const shootType = client.shootType || 'General';
+    const locationName = client.location?.name || 'Location TBD';
+    const locationAddress = client.location?.address || '';
+    const shootTime = client.shootTime || 'Time not set';
+    const duration = client.duration || 'Duration not set';
+    const notes = client.notes || 'No special notes';
+
+    const systemText = `You are a professional wedding and portrait photographer assistant. You create practical, detailed pre-shoot prep briefs.`;
+
+    const userText = `Generate a pre-shoot prep brief for this session:
+
+- Client: ${client.name || 'Unknown'}
+- Shoot Type: ${shootType}
+- Date: ${shootDate}
+- Time: ${shootTime}
+- Duration: ${duration}
+- Location: ${locationName}${locationAddress ? ` (${locationAddress})` : ''}
+- Notes: ${notes}
+
+Provide a prep brief with these sections:
+1. 🎯 Shot List (8-12 must-get shots specific to this shoot type and client)
+2. 📦 Gear Checklist (camera bodies, lenses, lighting, accessories relevant to this shoot)
+3. ⏰ Golden Hour & Timing Tips (ideal lighting windows based on time of year and shoot time)
+4. 📍 Location Tips (arrival time, scouting advice, potential challenges, parking/logistics)
+5. 🎨 Style & Mood Prompts (2-3 posing or mood direction suggestions)
+
+Be specific and actionable. Format with clear headers and bullet points.`;
+
+    await streamGemini({
+      apiKey,
+      model: 'gemini-2.5-flash',
+      systemText,
+      userText,
+      generationConfig: { maxOutputTokens: 900 },
+      onChunk: (text) => setBrief(prev => prev + text),
+      onDone: () => { setLoading(false); setGenerated(true); },
+      onError: (err) => { setError(err.message); setLoading(false); },
+    });
+  };
+
+  const sections = brief.split(/\n(?=\d+\.|[🎯📦⏰📍🎨])/).filter(Boolean);
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-start justify-between">
+        <div>
+          <h3 className="font-black text-[#2C2511] text-base flex items-center gap-2">
+            <Sparkles size={16} className="text-[#5F6F65]" />
+            AI Prep Brief
+          </h3>
+          <p className="text-xs text-[#9C8A7A] mt-1 font-medium">
+            Shot list, gear checklist, and timing tips for {client.name || 'this session'}.
+          </p>
+        </div>
+        <span className="text-[10px] font-bold text-[#5F6F65] bg-[#EEF2F0] px-2 py-1 rounded-full">gemini-2.5-flash</span>
+      </div>
+
+      {/* Client summary pill */}
+      <div className="flex flex-wrap gap-2">
+        {client.shootType && (
+          <span className="flex items-center gap-1.5 text-xs font-bold text-[#5F6F65] bg-[#EEF2F0] px-3 py-1.5 rounded-full">
+            <Camera size={11} /> {client.shootType}
+          </span>
+        )}
+        {client.shootDate && (
+          <span className="flex items-center gap-1.5 text-xs font-bold text-[#8A7A6A] bg-[#F2EFE9] px-3 py-1.5 rounded-full">
+            <Clock size={11} /> {new Date(client.shootDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}{client.shootTime ? ` · ${client.shootTime}` : ''}
+          </span>
+        )}
+        {client.location?.name && (
+          <span className="flex items-center gap-1.5 text-xs font-bold text-[#8A7A6A] bg-[#F2EFE9] px-3 py-1.5 rounded-full">
+            <MapPin size={11} /> {client.location.name}
+          </span>
+        )}
+      </div>
+
+      <button
+        onClick={handleGenerate}
+        disabled={loading}
+        className="flex items-center gap-2 px-5 py-3 bg-[#5F6F65] hover:bg-[#4A6657] text-white rounded-xl text-sm font-black transition-all disabled:opacity-60 disabled:cursor-not-allowed w-full justify-center"
+      >
+        {loading ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
+        {loading ? 'Generating brief…' : generated ? 'Regenerate Brief' : 'Generate Prep Brief'}
+      </button>
+
+      {error && (
+        <div className="flex items-start gap-2 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3 text-xs font-bold text-rose-700">
+          <AlertCircle size={13} className="shrink-0 mt-0.5" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {brief && (
+        <div className="bg-[#FAF8F3] rounded-2xl border border-[#E8E4E1] p-5 space-y-4">
+          <pre className="text-sm text-[#332F2E] leading-relaxed whitespace-pre-wrap font-sans">{brief}</pre>
+        </div>
+      )}
+
+      {!brief && !loading && (
+        <div className="py-10 text-center">
+          <List size={32} className="text-[#D8D0C0] mx-auto mb-3" />
+          <p className="text-sm font-bold text-[#9C8A7A]">Click Generate to build your pre-shoot brief</p>
+          <p className="text-xs text-[#B0A090] mt-1">Shot list, gear, timing, and location tips — all in one place</p>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Field = ({ label, value, onChange, type = 'text', placeholder = '' }) => (
   <div>
@@ -22,6 +149,7 @@ const Field = ({ label, value, onChange, type = 'text', placeholder = '' }) => (
 
 const ClientProfileModal = ({ client, onClose }) => {
   const { state, updateState } = useAppState();
+  const apiKey = state.geminiKey || '';
   const [activeTab, setActiveTab] = useState('Overview');
   const [local, setLocal] = useState({ ...client });
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -221,6 +349,10 @@ const ClientProfileModal = ({ client, onClose }) => {
                 </div>
               </div>
             </div>
+          )}
+
+          {activeTab === 'AI Prep Brief' && (
+            <AiPrepBrief client={local} apiKey={apiKey} />
           )}
 
           {activeTab === 'Inspiration' && (

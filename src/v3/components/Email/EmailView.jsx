@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAppState } from '../../contexts/StateContext';
-import { Mail, Plus, Send, Copy, Trash2, RefreshCw, FileEdit, Edit3, Inbox, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, Plus, Send, Copy, Trash2, RefreshCw, FileEdit, Edit3, Inbox, ChevronRight, CheckCircle2, AlertCircle, Sparkles, Loader2, X } from 'lucide-react';
 import { toast } from '../Toast';
+import { streamGemini } from '../../utils/geminiApi';
 
 // Extract {{Token}} placeholders from template text
 const extractTokens = (text) => {
@@ -15,6 +16,136 @@ const extractTokens = (text) => {
 // Replace {{Token}} with actual values
 const renderTemplate = (text, values) => {
   return text.replace(/\{\{(.*?)\}\}/g, (_, token) => values[token.trim()] || `[${token.trim()}]`);
+};
+
+// --- AI Draft Panel ---
+const AiDraftPanel = ({ onInsert, onClose, apiKey }) => {
+  const [prompt, setPrompt] = useState('');
+  const [draft, setDraft] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleGenerate = async () => {
+    if (!prompt.trim() || loading) return;
+    setLoading(true);
+    setError('');
+    setDraft('');
+
+    const systemText = `You are an expert email copywriter for a wedding and portrait photography business called "The Love Lens by Ariana." 
+Your emails are warm, professional, and personal. They feel like they're from a real human who cares deeply about their clients.
+When writing emails:
+- Use a warm, genuine tone — never corporate or stiff
+- Include {{ClientName}} and other relevant {{Token}} placeholders for personalization
+- Write a complete email with a Subject line and full Body
+- Format your response EXACTLY like this:
+SUBJECT: [subject line here]
+
+BODY:
+[full email body here]
+
+- Keep body text between 80–180 words unless the user asks for longer
+- Sign off naturally (e.g. "Warmly, Ariana" or "With love, Ariana")`;
+
+    await streamGemini({
+      apiKey,
+      model: 'gemini-2.5-flash',
+      systemText,
+      userText: prompt.trim(),
+      generationConfig: { maxOutputTokens: 600 },
+      onChunk: (text) => setDraft(prev => prev + text),
+      onDone: () => setLoading(false),
+      onError: (err) => {
+        setError(err.message);
+        setLoading(false);
+      },
+    });
+  };
+
+  // Parse subject + body from draft
+  const parsed = useMemo(() => {
+    const subjectMatch = draft.match(/SUBJECT:\s*(.+)/i);
+    const bodyMatch = draft.match(/BODY:\s*([\s\S]+)/i);
+    return {
+      subject: subjectMatch?.[1]?.trim() || '',
+      body: bodyMatch?.[1]?.trim() || '',
+    };
+  }, [draft]);
+
+  return (
+    <div className="bg-gradient-to-br from-[#EEF2F0] to-[#F2EFE9] rounded-2xl border border-[#5F6F65]/20 p-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-lg bg-[#5F6F65] flex items-center justify-center">
+            <Sparkles size={13} className="text-white" />
+          </div>
+          <span className="text-sm font-black text-[#2C2511]">AI Email Drafter</span>
+          <span className="text-[10px] font-bold text-[#9C8A7A] bg-white/60 px-2 py-0.5 rounded-full">gemini-2.5-flash</span>
+        </div>
+        <button onClick={onClose} className="text-[#9C8A7A] hover:text-[#5F6F65] transition-colors">
+          <X size={16} />
+        </button>
+      </div>
+
+      <div>
+        <label className="text-[10px] font-black uppercase tracking-wider text-[#8A7A6A] block mb-1.5">Describe your email</label>
+        <textarea
+          value={prompt}
+          onChange={e => setPrompt(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
+          placeholder="e.g. Gallery delivery email for a wedding couple, excited tone, mention their sneak peek is included..."
+          rows={3}
+          className="w-full px-4 py-3 bg-white border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30 resize-none leading-relaxed"
+        />
+      </div>
+
+      <button
+        onClick={handleGenerate}
+        disabled={!prompt.trim() || loading}
+        className="flex items-center gap-2 px-4 py-2.5 bg-[#5F6F65] hover:bg-[#4A6657] text-white rounded-xl text-xs font-black transition disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loading ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
+        {loading ? 'Drafting…' : 'Generate Draft'}
+        <span className="opacity-60 font-normal">⌘↵</span>
+      </button>
+
+      {error && (
+        <div className="flex items-start gap-2 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3 text-xs font-bold text-rose-700">
+          <AlertCircle size={13} className="shrink-0 mt-0.5" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {draft && (
+        <div className="space-y-3">
+          <div className="bg-white rounded-xl border border-[#E8E4E1] p-4 space-y-3">
+            {parsed.subject && (
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A] mb-1">Subject</p>
+                <p className="text-sm font-bold text-[#2C2511]">{parsed.subject}</p>
+              </div>
+            )}
+            {parsed.body && (
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A] mb-1">Body</p>
+                <pre className="text-sm text-[#332F2E] leading-relaxed whitespace-pre-wrap font-sans">{parsed.body}</pre>
+              </div>
+            )}
+            {!parsed.subject && !parsed.body && (
+              <pre className="text-sm text-[#332F2E] leading-relaxed whitespace-pre-wrap font-sans">{draft}</pre>
+            )}
+          </div>
+          {(parsed.subject || parsed.body) && (
+            <button
+              onClick={() => onInsert({ subject: parsed.subject, body: parsed.body || draft })}
+              className="w-full py-2.5 bg-[#5F6F65] hover:bg-[#4A6657] text-white rounded-xl text-xs font-black transition"
+            >
+              Use This Draft →
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
 };
 
 // --- Email Preview ---
@@ -52,11 +183,13 @@ const EmailPreview = ({ subject, body, onCopy, onSend, isSending, copyFlash }) =
 const EmailView = () => {
   const { state, updateState } = useAppState();
   const templates = state.emailTemplates || [];
+  const apiKey = state.geminiKey || '';
 
   const [selectedId, setSelectedId] = useState('');
   const [tokenValues, setTokenValues] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: '', subject: '', body: '' });
+  const [showAiDraft, setShowAiDraft] = useState(false);
   const [inboxTab, setInboxTab] = useState(false);
   const [inboxEmails, setInboxEmails] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -90,6 +223,7 @@ const EmailView = () => {
     updateState({ emailTemplates: updated });
     if (isNew) setSelectedId(updated[updated.length - 1].id);
     setEditMode(false);
+    setShowAiDraft(false);
     toast(isNew ? 'Template created' : 'Template updated');
   }, [editForm, selectedId, templates, updateState]);
 
@@ -139,6 +273,12 @@ const EmailView = () => {
     finally { setIsFetching(false); }
   }, [state.emailSettings]);
 
+  const handleAiInsert = useCallback(({ subject, body }) => {
+    setEditForm(f => ({ ...f, subject: subject || f.subject, body: body || f.body }));
+    setShowAiDraft(false);
+    toast('Draft inserted — review and save');
+  }, []);
+
   return (
     <div className="p-10 max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
       <header>
@@ -156,14 +296,14 @@ const EmailView = () => {
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-black uppercase tracking-wider text-[#8A7A6A]">Templates</h3>
               <div className="flex gap-2">
-                <button onClick={() => { setSelectedId(''); setEditMode(true); }} className="p-1.5 rounded-lg text-[#9C8A7A] hover:text-[#5F6F65] hover:bg-[#F2EFE9] transition" title="New Template"><Plus size={15} /></button>
+                <button onClick={() => { setSelectedId(''); setEditMode(true); setShowAiDraft(false); }} className="p-1.5 rounded-lg text-[#9C8A7A] hover:text-[#5F6F65] hover:bg-[#F2EFE9] transition" title="New Template"><Plus size={15} /></button>
                 {selectedId && <button onClick={() => setEditMode(v => !v)} className={`p-1.5 rounded-lg transition ${editMode ? 'text-[#5F6F65] bg-[#EEF2F0]' : 'text-[#9C8A7A] hover:text-[#5F6F65] hover:bg-[#F2EFE9]'}`} title="Edit Template"><Edit3 size={15} /></button>}
                 {selectedId && <button onClick={handleDeleteTemplate} className="p-1.5 rounded-lg text-[#9C8A7A] hover:text-rose-500 hover:bg-rose-50 transition" title="Delete Template"><Trash2 size={15} /></button>}
               </div>
             </div>
             <div className="space-y-1">
               {templates.map(t => (
-                <button key={t.id} onClick={() => { setSelectedId(t.id); setEditMode(false); }}
+                <button key={t.id} onClick={() => { setSelectedId(t.id); setEditMode(false); setShowAiDraft(false); }}
                   className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-between transition-all ${
                     selectedId === t.id ? 'bg-[#EEF2F0] text-[#5F6F65]' : 'text-[#8A7A6A] hover:bg-[#F2EFE9]'
                   }`}
@@ -203,7 +343,28 @@ const EmailView = () => {
         <div className="lg:col-span-2 space-y-5">
           {editMode ? (
             <div className="bg-white rounded-2xl border border-[#E8E4E1] p-6 space-y-4">
-              <h3 className="font-black flex items-center gap-2 text-[#2C2511]"><FileEdit size={16} className="text-[#5F6F65]" /> {selectedId ? 'Edit Template' : 'New Template'}</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="font-black flex items-center gap-2 text-[#2C2511]"><FileEdit size={16} className="text-[#5F6F65]" /> {selectedId ? 'Edit Template' : 'New Template'}</h3>
+                <button
+                  onClick={() => setShowAiDraft(v => !v)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    showAiDraft ? 'bg-[#5F6F65] text-white' : 'bg-gradient-to-r from-[#EEF2F0] to-[#F2EFE9] text-[#5F6F65] hover:from-[#D8E4DC] hover:to-[#E8E4E1]'
+                  }`}
+                >
+                  <Sparkles size={13} />
+                  {showAiDraft ? 'Hide AI Draft' : 'AI Draft'}
+                </button>
+              </div>
+
+              {/* AI Draft Panel */}
+              {showAiDraft && (
+                <AiDraftPanel
+                  apiKey={apiKey}
+                  onInsert={handleAiInsert}
+                  onClose={() => setShowAiDraft(false)}
+                />
+              )}
+
               <div>
                 <label className="text-[10px] font-black uppercase tracking-wider text-[#8A7A6A] block mb-1.5">Template Name</label>
                 <input value={editForm.name} onChange={e => setEditForm(f => ({...f, name: e.target.value}))} placeholder="e.g. Gallery Delivery"
@@ -211,7 +372,7 @@ const EmailView = () => {
                 />
               </div>
               <div>
-                <label className="text-[10px] font-black uppercase tracking-wider text-[#8A7A6A] block mb-1.5">Subject Line <span className="normal-case font-normal">(use {'{{Token}}'} for variables)</span></label>
+                <label className="text-[10px] font-black uppercase tracking-wider text-[#8A7A6A] block mb-1.5">Subject Line <span className="normal-case font-normal">(use {`{{Token}}`} for variables)</span></label>
                 <input value={editForm.subject} onChange={e => setEditForm(f => ({...f, subject: e.target.value}))} placeholder="e.g. Your Gallery is Live! {{ClientName}}"
                   className="w-full px-4 py-3 bg-[#FAF8F3] border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
                 />
@@ -224,7 +385,7 @@ const EmailView = () => {
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={handleSaveTemplate} className="flex-1 py-3 bg-[#5F6F65] hover:bg-[#4A6657] text-white rounded-xl font-bold text-sm transition">Save Template</button>
-                <button onClick={() => setEditMode(false)} className="px-5 py-3 bg-[#F2EFE9] hover:bg-[#E8E4E1] text-[#5F6F65] rounded-xl font-bold text-sm transition">Cancel</button>
+                <button onClick={() => { setEditMode(false); setShowAiDraft(false); }} className="px-5 py-3 bg-[#F2EFE9] hover:bg-[#E8E4E1] text-[#5F6F65] rounded-xl font-bold text-sm transition">Cancel</button>
               </div>
             </div>
           ) : (

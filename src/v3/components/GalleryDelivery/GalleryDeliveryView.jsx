@@ -17,6 +17,7 @@ const COLUMNS = [
 const EMPTY_FORM = {
   name: '', shootDate: '', dueDate: '', sneakPeekNeeded: false,
   sneakPeekDueDate: '', sneakPeekDelivered: false, photoDataUrl: '', notes: '',
+  status: 'shot',
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────────
@@ -285,6 +286,31 @@ const EditModal = ({ initial, isNew, onSave, onDelete, onClose }) => {
             </div>
           </div>
 
+          {/* Status Stage Selector */}
+          <div>
+            <label className="text-[10px] font-black uppercase tracking-widest text-[#9C8A7A] block mb-2">Stage</label>
+            <div className="flex gap-2">
+              {COLUMNS.map(col => {
+                const isActive = (form.status || 'shot') === col.id;
+                return (
+                  <button
+                    key={col.id}
+                    type="button"
+                    onClick={() => set('status', col.id)}
+                    className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-[11px] font-black border transition-all flex-1 justify-center"
+                    style={isActive
+                      ? { background: col.bg, color: col.color, border: `1.5px solid ${col.color}`, boxShadow: `0 0 0 3px ${col.bg}` }
+                      : { background: '#F8F6F3', color: '#B0A090', border: '1px solid #E8E4E1' }
+                    }
+                  >
+                    <col.icon size={12} />
+                    {col.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-[10px] font-black uppercase tracking-widest text-[#9C8A7A] block mb-1.5">Shoot Date</label>
@@ -444,7 +470,7 @@ const GalleryDeliveryView = () => {
   // ── CRUD ───────────────────────────────────────────────────────────────────────
   const saveItem = useCallback((formData) => {
     if (editingItem === 'new') {
-      const newItem = { ...formData, id: crypto.randomUUID(), status: 'shot', createdAt: new Date().toISOString() };
+      const newItem = { id: crypto.randomUUID(), createdAt: new Date().toISOString(), ...formData, status: formData.status || 'shot' };
       updateState({ galleryDeliveries: [...items, newItem] });
       toast('Client added to gallery delivery');
     } else {
@@ -650,7 +676,7 @@ const GalleryDeliveryView = () => {
 
       {/* List View */}
       {viewMode === 'list' && (
-        <div className="bg-white rounded-2xl border border-[#E8E4E1] overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#E8E4E1] overflow-visible">
           <div className="flex items-center gap-4 px-5 py-3 bg-[#FDFCFB] border-b border-[#E8E4E1] text-[9px] font-black uppercase tracking-widest text-[#9C8A7A]">
             <div className="w-9 flex-shrink-0" />
             <button onClick={() => toggleSort('name')} className="flex-1 min-w-0 flex items-center gap-1 hover:text-[#5F6F65] transition-colors cursor-pointer">

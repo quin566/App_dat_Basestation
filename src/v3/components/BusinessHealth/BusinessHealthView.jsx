@@ -9,6 +9,7 @@ import {
   ArrowLeft, ArrowRight, Download, Zap,
   Eye, EyeOff, Trash2, Edit3, Check, Target, Calendar,
   Filter, SortAsc, SortDesc, BookOpen, Receipt,
+  Sparkles, Loader2, ChevronDown, ChevronUp,
 } from 'lucide-react';
 import { useAppState } from '../../contexts/StateContext';
 import MetricCard from '../Dashboard/MetricCard';
@@ -18,6 +19,7 @@ import {
   getTopExpenseCategories, getMonthOverMonthChange, centsToDisplay,
   getTopMerchants, getProfitMargin, getRunway, exportCSV,
 } from '../../utils/financialEngine';
+import { streamGemini } from '../../utils/geminiApi';
 
 // ─── Palette / shared styles ─────────────────────────────────────────────────
 const CHART_COLORS = ['#5F6F65', '#D4A373', '#7A8C82', '#C4847A', '#9FAB6D', '#B5956A', '#8B9E94', '#E8C49A'];
@@ -95,11 +97,40 @@ const ManualTxnModal = ({ allCategories, onSave, onClose }) => {
 };
 
 // ─── Transaction Detail Drawer ────────────────────────────────────────────────
-const TxnDetailDrawer = ({ txn, allCategories, onClose, onUpdate, onCreateRule }) => {
+const TxnDetailDrawer = ({ txn, allCategories, onClose, onUpdate, onCreateRule, apiKey }) => {
   const [cat, setCat]     = useState(txn.category || 'Other');
   const [notes, setNotes] = useState(txn.notes || '');
+  const [aiExplain, setAiExplain] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError]   = useState('');
   const isDirty = cat !== (txn.category || 'Other') || notes !== (txn.notes || '');
   const isIncome = txn.amount > 0;
+
+  const handleExplain = async () => {
+    if (aiLoading) return;
+    setAiLoading(true);
+    setAiExplain('');
+    setAiError('');
+    const schedCLine = SCHEDULE_C_MAP[cat] || '';
+    const amountDollars = (Math.abs(txn.amount) / 100).toFixed(2);
+    const userText = `I'm a sole proprietor photographer. I just categorized a $${amountDollars} transaction (${isIncome ? 'income' : 'expense'}) as "${cat}".
+Description: "${txn.description || 'No description'}"
+${schedCLine ? `Schedule C line: ${schedCLine}` : ''}
+
+In 2-3 sentences: what does this category mean for my taxes, is this deductible, any IRS rules I should know, and should I keep a receipt?`;
+
+    await streamGemini({
+      apiKey,
+      model: 'gemini-2.5-flash',
+      systemText: 'You are a concise tax assistant for a sole proprietor photography business. Answer in plain English, 2-3 sentences max.',
+      userText,
+      generationConfig: { maxOutputTokens: 200 },
+      onChunk: (text) => setAiExplain(prev => prev + text),
+      onDone: () => setAiLoading(false),
+      onError: (err) => { setAiError(err.message); setAiLoading(false); },
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-40 flex" onClick={onClose}>
       <div className="flex-1" />
@@ -122,9 +153,30 @@ const TxnDetailDrawer = ({ txn, allCategories, onClose, onUpdate, onCreateRule }
           <div><label className={labelCls}>Description</label><p className="text-sm font-medium text-[#2C2511] bg-[#FAF8F3] rounded-xl px-3 py-2.5 break-words">{txn.description || '—'}</p></div>
           <div>
             <label className={labelCls}>Category</label>
-            <select value={cat} onChange={e => setCat(e.target.value)} className={inputCls}>{allCategories.map(c => <option key={c}>{c}</option>)}</select>
+            <select value={cat} onChange={e => { setCat(e.target.value); setAiExplain(''); }} className={inputCls}>{allCategories.map(c => <option key={c}>{c}</option>)}</select>
             {!isIncome && SCHEDULE_C_MAP[cat] && (
               <p className="mt-1.5 text-[10px] font-bold text-[#5F6F65] bg-[#EEF2F0] rounded-lg px-2.5 py-1.5">{SCHEDULE_C_MAP[cat]}</p>
+            )}
+
+            {/* AI Explainer */}
+            {!isIncome && (
+              <div className="mt-2">
+                <button
+                  onClick={handleExplain}
+                  disabled={aiLoading}
+                  className="flex items-center gap-1.5 text-[11px] font-black text-[#5F6F65] hover:text-[#4A6657] transition disabled:opacity-50"
+                >
+                  {aiLoading ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                  {aiLoading ? 'Explaining…' : 'What does this mean for my taxes?'}
+                  <span className="text-[9px] text-[#9C8A7A] font-normal">gemini-3.1-flash-lite</span>
+                </button>
+                {aiError && <p className="mt-1.5 text-[10px] text-rose-600 font-bold">{aiError}</p>}
+                {aiExplain && (
+                  <div className="mt-2 bg-[#EEF2F0] rounded-xl px-3 py-2.5">
+                    <p className="text-xs text-[#2C2511] leading-relaxed font-medium">{aiExplain}</p>
+                  </div>
+                )}
+              </div>
             )}
           </div>
           <div><label className={labelCls}>Notes</label><textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Add a note…" rows={3} className={`${inputCls} resize-none`} /></div>
@@ -196,6 +248,11 @@ const BusinessHealthView = () => {
   const [showTaxDetail, setShowTaxDetail] = useState(false);
   const [newIgnored, setNewIgnored]     = useState('');
   const [newCustomCat, setNewCustomCat] = useState('');
+  const [aiSnapshot, setAiSnapshot]     = useState('');
+  const [aiSnapshotLoading, setAiSnapshotLoading] = useState(false);
+  const [aiSnapshotError, setAiSnapshotError]     = useState('');
+  const [aiSnapshotOpen, setAiSnapshotOpen]       = useState(false);
+  const apiKey = state.geminiKey || '';
 
   // ── Derived data
   const transactions  = useMemo(() => state.transactions  || [], [state.transactions]);
@@ -237,13 +294,11 @@ const BusinessHealthView = () => {
   const PAGE_SIZE = 50;
   const filteredTxns = useMemo(() => {
     const q = txnFilter.search.toLowerCase();
-    const ignored = (finSettings.ignoredMerchants || []).map(m => m.toLowerCase());
     const { from, to } = dateRange;
     const minC = txnFilter.minAmount ? parseFloat(txnFilter.minAmount) * 100 : null;
     const maxC = txnFilter.maxAmount ? parseFloat(txnFilter.maxAmount) * 100 : null;
     return [...transactions]
       .filter(t => {
-        if (ignored.some(m => (t.description || '').toLowerCase().includes(m))) return false;
         if (txnFilter.category !== 'all' && t.category !== txnFilter.category) return false;
         if (txnFilter.source   !== 'all' && t.source   !== txnFilter.source)   return false;
         if (q && !(t.description || '').toLowerCase().includes(q)) return false;
@@ -261,7 +316,7 @@ const BusinessHealthView = () => {
         else if (txnFilter.sortBy === 'category')    cmp = (a.category || '').localeCompare(b.category || '');
         return txnFilter.sortDir === 'desc' ? -cmp : cmp;
       });
-  }, [transactions, txnFilter, finSettings, dateRange]);
+  }, [transactions, txnFilter, dateRange]);
 
   const totalPages = Math.max(1, Math.ceil(filteredTxns.length / PAGE_SIZE));
   const pageTxns   = filteredTxns.slice(txnPage * PAGE_SIZE, (txnPage + 1) * PAGE_SIZE);
@@ -401,9 +456,110 @@ const BusinessHealthView = () => {
   const uncategorizedCount = transactions.filter(t => t.category === 'Other' && t.amount < 0).length;
 
   // ══════════════════════════════════════════════════════════════════════════
+  const handleAiSnapshot = async () => {
+    if (aiSnapshotLoading) return;
+    setAiSnapshotLoading(true);
+    setAiSnapshotError('');
+    setAiSnapshot('');
+    setAiSnapshotOpen(true);
+
+    const fmt = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
+    const income  = pl.ytd.grossIncome  / 100;
+    const expense = pl.ytd.totalExpenses / 100;
+    const net     = pl.ytd.netProfit    / 100;
+    const margin  = profitMargin;
+    const runwayMo = runway.months;
+    const taxDue  = taxSnap.totalTax || 0;
+    const quarterly = taxSnap.quarterlyEstimate || 0;
+    const yoy = mom;
+    const year  = new Date().getFullYear();
+
+    const userText = `Provide a plain-English business health summary for my photography business (${year} YTD):
+
+- YTD Revenue: ${fmt(income)}
+- YTD Expenses: ${fmt(expense)}
+- Net Profit: ${fmt(net)}
+- Profit Margin: ${margin.toFixed(1)}%
+- Revenue MoM change: ${yoy.incomeChange > 0 ? '+' : ''}${yoy.incomeChange.toFixed(1)}%
+- Expense MoM change: ${yoy.expenseChange > 0 ? '+' : ''}${yoy.expenseChange.toFixed(1)}%
+- Cash Runway: ${runwayMo === null ? 'unknown' : runwayMo + ' months'}
+- Estimated Tax Due: ${fmt(taxDue)} (~${fmt(quarterly)} quarterly)
+
+Write 3-4 sentences in plain English summarizing: (1) business performance trend, (2) margin / cash health, (3) one specific financial action to take. Be direct, specific, and actionable — no fluff.`;
+
+    await streamGemini({
+      apiKey,
+      model: 'gemini-2.5-flash',
+      systemText: 'You are a direct, practical business advisor for a sole proprietor photography business. Summarize financial health in plain English. No bullet points — narrative sentences only.',
+      userText,
+      generationConfig: { maxOutputTokens: 250 },
+      onChunk: (text) => setAiSnapshot(prev => prev + text),
+      onDone: () => setAiSnapshotLoading(false),
+      onError: (err) => { setAiSnapshotError(err.message); setAiSnapshotLoading(false); },
+    });
+  };
+
+  // ══════════════════════════════════════════════════════════════════════════
   const renderOverview = () => (
     <div className="space-y-6">
-      {/* Metrics */}
+      {/* AI Business Snapshot */}
+      <div className={`rounded-2xl border overflow-hidden transition-all ${
+        aiSnapshotOpen ? 'border-[#5F6F65]/30 bg-gradient-to-br from-[#EEF2F0] to-[#F2EFE9]' : 'border-[#E8E4E1] bg-white'
+      }`}>
+        <button
+          onClick={() => {
+            if (!aiSnapshotOpen && !aiSnapshot && !aiSnapshotLoading) handleAiSnapshot();
+            else setAiSnapshotOpen(v => !v);
+          }}
+          className="w-full flex items-center justify-between px-5 py-4 text-left"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-[#5F6F65] flex items-center justify-center shrink-0">
+              <Sparkles size={14} className="text-white" />
+            </div>
+            <div>
+              <span className="text-sm font-black text-[#2C2511]">AI Business Snapshot</span>
+              <span className="ml-2 text-[10px] font-bold text-[#5F6F65] bg-[#DDECD8] px-2 py-0.5 rounded-full">gemini-2.5-flash</span>
+            </div>
+            {!aiSnapshotOpen && !aiSnapshot && (
+              <span className="text-xs text-[#9C8A7A] font-medium ml-1">— plain-English summary of your financials</span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {aiSnapshot && !aiSnapshotLoading && (
+              <button
+                onClick={(e) => { e.stopPropagation(); handleAiSnapshot(); }}
+                className="text-[10px] font-black text-[#5F6F65] hover:text-[#4A6657] px-2 py-1 bg-white/60 rounded-lg transition"
+              >
+                Refresh
+              </button>
+            )}
+            {aiSnapshotLoading
+              ? <Loader2 size={15} className="animate-spin text-[#5F6F65]" />
+              : aiSnapshotOpen
+                ? <ChevronUp size={16} className="text-[#9C8A7A]" />
+                : <ChevronDown size={16} className="text-[#9C8A7A]" />
+            }
+          </div>
+        </button>
+
+        {aiSnapshotOpen && (
+          <div className="px-5 pb-5">
+            {aiSnapshotError && (
+              <div className="flex items-start gap-2 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3 text-xs font-bold text-rose-700">
+                <AlertCircle size={13} className="shrink-0 mt-0.5" />
+                <span>{aiSnapshotError}</span>
+              </div>
+            )}
+            {aiSnapshot
+              ? <p className="text-sm text-[#2C2511] leading-relaxed font-medium">{aiSnapshot}</p>
+              : aiSnapshotLoading
+                ? <div className="flex items-center gap-2 text-sm text-[#9C8A7A] font-medium"><Loader2 size={14} className="animate-spin" />Analyzing your financials…</div>
+                : null
+            }
+          </div>
+        )}
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <MetricCard title="YTD Business Income" value={pl.ytd.grossIncome / 100} icon={DollarSign} accent="sage" subtext={`${mom.incomeChange > 0?'+':''}${mom.incomeChange.toFixed(1)}% vs prior month`} />
         <MetricCard title="YTD Expenses"   value={pl.ytd.totalExpenses / 100} icon={Tag}        accent="amber"   subtext={`${mom.expenseChange > 0?'+':''}${mom.expenseChange.toFixed(1)}% vs prior month`} />
@@ -866,7 +1022,7 @@ const BusinessHealthView = () => {
       {section==='settings'     && renderSettings()}
 
       {showManual && <ManualTxnModal allCategories={allCategories} onSave={txn => { updateState(prev => ({ ...prev, transactions: [txn, ...(prev.transactions||[])] })); setShowManual(false); }} onClose={() => setShowManual(false)} />}
-      {detailTxn  && <TxnDetailDrawer txn={detailTxn} allCategories={allCategories} onClose={() => setDetailTxn(null)} onUpdate={handleTxnUpdate} onCreateRule={({ pattern, category }) => { setRuleModalInit({ pattern, category }); setShowRuleModal(true); setDetailTxn(null); }} />}
+      {detailTxn  && <TxnDetailDrawer txn={detailTxn} allCategories={allCategories} apiKey={apiKey} onClose={() => setDetailTxn(null)} onUpdate={handleTxnUpdate} onCreateRule={({ pattern, category }) => { setRuleModalInit({ pattern, category }); setShowRuleModal(true); setDetailTxn(null); }} />}
       {showRuleModal && <RuleModal initial={ruleModalInit} allCategories={allCategories} onSave={handleSaveRule} onClose={() => { setShowRuleModal(false); setRuleModalInit(null); }} />}
     </div>
   );
