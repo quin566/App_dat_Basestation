@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppState } from '../../contexts/StateContext';
-import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download, Compass, Link, AlertCircle, MessageSquare, Bot } from 'lucide-react';
+import { Settings, User, Mail, Key, Save, CheckCircle2, RefreshCw, Download, Compass, Link, AlertCircle, MessageSquare, Bot, Image, Clock, AlertTriangle } from 'lucide-react';
 
 const SettingsView = () => {
   const { state, updateState, setRunTour } = useAppState();
@@ -20,6 +20,8 @@ const SettingsView = () => {
   const [smsSid, setSmsSid] = useState(state.smsSettings?.accountSid || '');
   const [smsToken, setSmsToken] = useState(state.smsSettings?.authToken || '');
   const [smsFrom, setSmsFrom] = useState(state.smsSettings?.fromNumber || '');
+  const [dueSoonDays, setDueSoonDays] = useState(state.gallerySettings?.dueSoonDays ?? 5);
+  const [urgentDays, setUrgentDays] = useState(state.gallerySettings?.urgentDays ?? 2);
 
   useEffect(() => {
     window.electronAPI?.onUpdateStatus?.((status) => setUpdateStatus(status));
@@ -60,6 +62,7 @@ const SettingsView = () => {
       stripePublishableKey: stripePubKey.trim(),
       smsSettings: { accountSid: smsSid.trim(), authToken: smsToken.trim(), fromNumber: smsFrom.trim() },
       geminiKey: geminiKey.trim(),
+      gallerySettings: { dueSoonDays: Number(dueSoonDays) || 5, urgentDays: Number(urgentDays) || 2 },
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
@@ -126,6 +129,44 @@ const SettingsView = () => {
           <p className="text-[10px] text-[#9C8A7A] mt-2 font-medium italic">
             This target will update your Dashboard "Net Profit" progress card.
           </p>
+        </div>
+      </section>
+
+      {/* Gallery Delivery Notifications */}
+      <section className="bg-white rounded-3xl p-8 border border-[#E8E4E1] shadow-sm space-y-5">
+        <h3 className="text-lg font-black flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#F2EFE9] flex items-center justify-center text-[#5F6F65]"><Image size={18} /></div>
+          Gallery Delivery Notifications
+        </h3>
+        <p className="text-xs text-[#9C8A7A] leading-relaxed">
+          Control when gallery reminders appear on your Dashboard. "Due Soon" items show an amber warning; "Urgent" items show a red alert.
+          Both thresholds are measured in <strong>days before the due date</strong>.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-amber-50/60 border border-amber-200 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Clock size={14} className="text-amber-600" />
+              <label className="text-xs font-black uppercase tracking-wider text-amber-700">Due Soon Threshold</label>
+            </div>
+            <div className="flex items-center gap-3">
+              <input type="number" min={1} max={30} value={dueSoonDays} onChange={(e) => setDueSoonDays(e.target.value)}
+                className="w-20 px-3 py-2.5 bg-white border border-amber-200 rounded-xl text-center text-sm font-black text-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-400/30" />
+              <span className="text-sm font-bold text-amber-600">days before due</span>
+            </div>
+            <p className="text-[10px] text-amber-600/70 mt-2 font-medium">Items within this window appear as "Due Soon" on your dashboard.</p>
+          </div>
+          <div className="bg-rose-50/60 border border-rose-200 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle size={14} className="text-rose-600" />
+              <label className="text-xs font-black uppercase tracking-wider text-rose-700">Urgent Threshold</label>
+            </div>
+            <div className="flex items-center gap-3">
+              <input type="number" min={0} max={30} value={urgentDays} onChange={(e) => setUrgentDays(e.target.value)}
+                className="w-20 px-3 py-2.5 bg-white border border-rose-200 rounded-xl text-center text-sm font-black text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-400/30" />
+              <span className="text-sm font-bold text-rose-600">days before due</span>
+            </div>
+            <p className="text-[10px] text-rose-600/70 mt-2 font-medium">Items within this window escalate to "Urgent" with red alerts.</p>
+          </div>
         </div>
       </section>
 

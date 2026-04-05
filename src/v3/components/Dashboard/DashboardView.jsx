@@ -5,7 +5,7 @@ import MetricCard from './MetricCard';
 import {
   LayoutDashboard, Calculator, Zap, ShieldCheck, Users, CalendarDays,
   Clock, ArrowRight, TrendingUp, FileText, Camera, CheckCircle2,
-  AlertTriangle, Info, Sparkles,
+  AlertTriangle, Info, Sparkles, Image,
 } from 'lucide-react';
 
 // ─── Revenue Bar Chart ─────────────────────────────────────────────────────────
@@ -219,6 +219,40 @@ const buildReminders = (state, finances) => {
       tab: 'compliance',
     });
   }
+  // 7. Gallery deliveries due soon / overdue
+  const galleryItems = state.galleryDeliveries || [];
+  const galSettings  = state.gallerySettings || { dueSoonDays: 5, urgentDays: 2 };
+  const dueSoonThreshold = galSettings.dueSoonDays ?? 5;
+  const urgentThreshold  = galSettings.urgentDays ?? 2;
+
+  const galleryDue = galleryItems
+    .filter(g => g.status !== 'delivered')
+    .map(g => {
+      const galDueDays   = g.dueDate ? Math.ceil((new Date(g.dueDate + 'T00:00:00') - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000) : Infinity;
+      const sneakDueDays = (g.sneakPeekNeeded && !g.sneakPeekDelivered && g.sneakPeekDueDate)
+        ? Math.ceil((new Date(g.sneakPeekDueDate + 'T00:00:00') - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000)
+        : Infinity;
+      return { ...g, mostUrgentDays: Math.min(galDueDays, sneakDueDays), isSneakPeek: sneakDueDays < galDueDays };
+    })
+    .filter(g => g.mostUrgentDays <= dueSoonThreshold)
+    .sort((a, b) => a.mostUrgentDays - b.mostUrgentDays);
+
+  galleryDue.forEach(g => {
+    const daysLeft = g.mostUrgentDays;
+    const what     = g.isSneakPeek ? 'Sneak peek' : 'Gallery';
+    const dateStr  = g.isSneakPeek
+      ? new Date(g.sneakPeekDueDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      : new Date(g.dueDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const label    = daysLeft < 0 ? 'OVERDUE' : daysLeft === 0 ? 'Due today' : daysLeft === 1 ? 'Due tomorrow' : `${daysLeft} days`;
+
+    items.push({
+      urgency: daysLeft < 0 ? 'critical' : daysLeft <= urgentThreshold ? 'critical' : 'warning',
+      icon: Image,
+      title: `${what}: ${g.name}`,
+      desc: `${label} · ${dateStr}`,
+      tab: 'gallery',
+    });
+  });
 
   const order = { critical: 0, warning: 1, info: 2, success: 3 };
   return items.sort((a, b) => (order[a.urgency] ?? 4) - (order[b.urgency] ?? 4));

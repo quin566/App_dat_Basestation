@@ -65,6 +65,10 @@ export const defaultState = {
   },
   emailTemplates: [],
   galleryDeliveries: [],
+  gallerySettings: {
+    dueSoonDays: 5,
+    urgentDays: 2,
+  },
   emailSettings: { address: '', appPassword: '' },
   geminiKey: '',
   stripeSecretKey: '',
@@ -114,6 +118,9 @@ export const mergeState = (stored) => {
 
   // Ensure galleryDeliveries is always an array
   if (!Array.isArray(merged.galleryDeliveries)) merged.galleryDeliveries = [];
+
+  // Backfill gallerySettings
+  merged.gallerySettings = { ...defaultState.gallerySettings, ...(stored.gallerySettings || {}) };
 
   return merged;
 };
