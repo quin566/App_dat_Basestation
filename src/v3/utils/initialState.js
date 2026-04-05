@@ -64,6 +64,7 @@ export const defaultState = {
     fromNumber: '',
   },
   emailTemplates: [],
+  galleryDeliveries: [],
   emailSettings: { address: '', appPassword: '' },
   geminiKey: '',
   stripeSecretKey: '',
@@ -110,6 +111,9 @@ export const mergeState = (stored) => {
 
   // Ensure emailTemplates is always an array
   if (!Array.isArray(merged.emailTemplates)) merged.emailTemplates = [];
+
+  // Ensure galleryDeliveries is always an array
+  if (!Array.isArray(merged.galleryDeliveries)) merged.galleryDeliveries = [];
 
   return merged;
 };

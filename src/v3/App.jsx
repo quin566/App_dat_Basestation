@@ -1,5 +1,5 @@
 import React from 'react'
-import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera, BarChart2, CalendarDays, MapPin } from 'lucide-react'
+import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera, BarChart2, CalendarDays, MapPin, Image } from 'lucide-react'
 import { StateProvider, useAppState } from './contexts/StateContext'
 import GuidedTour from './components/GuidedTour'
 import { ToastContainer } from './components/Toast'
@@ -63,12 +63,14 @@ import PackageCalculatorView from './components/PackageCalculator/PackageCalcula
 import BusinessHealthView from './components/BusinessHealth/BusinessHealthView'
 import SessionsView from './components/Sessions/SessionsView'
 import LocationsView from './components/Locations/LocationsView'
+import GalleryDeliveryView from './components/GalleryDelivery/GalleryDeliveryView'
 
 const NAV_ITEMS = [
   { id: 'dashboard',  label: 'Dashboard',    icon: LayoutDashboard, built: true },
   { id: 'sessions',   label: 'Sessions',     icon: CalendarDays,    built: true },
   { id: 'locations',  label: 'Locations',    icon: MapPin,          built: true },
   { id: 'taxes',      label: 'Tax Planner',  icon: Calculator,      built: true },
+  { id: 'gallery',    label: 'Gallery Delivery', icon: Image,        built: true },
   { id: 'packages',   label: 'Packages',     icon: Camera,          built: true },
   { id: 'health',     label: 'Business Health', icon: BarChart2,    built: true },
   { id: 'compliance', label: 'Compliance',   icon: ShieldCheck,     built: true },
@@ -95,6 +97,7 @@ function AppContent() {
       case 'sessions':   return <SessionsView />;
       case 'locations':  return <LocationsView />;
       case 'taxes':      return <TaxPlannerView />;
+      case 'gallery':    return <GalleryDeliveryView />;
       case 'packages':   return <PackageCalculatorView />;
       case 'health':     return <BusinessHealthView />;
       case 'compliance': return <ComplianceView />;
