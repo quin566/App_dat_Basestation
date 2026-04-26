@@ -895,8 +895,7 @@ export default function ShootBuilderView() {
           </div>
         )}
       </div>
-    </div>{/* end settings accordion */}
-    </div>{/* end max-w-2xl */}
+    </div>
 
       {/* ── Reference Guides — own wider section ──────────────────── */}
       <div className="max-w-3xl mx-auto space-y-4">
