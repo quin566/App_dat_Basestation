@@ -347,7 +347,7 @@ function TreeRow({ node, isChild, onToggle, parentEnabled }) {
 // ── Main View ────────────────────────────────────────────────────────────────
 
 export default function ShootBuilderView() {
-  const { state, setState } = useAppState();
+  const { state, updateState } = useAppState();
   const settings = state.shootFolderSettings || {};
   const folderTree = settings.folderTree || DEFAULT_SHOOT_FOLDER_TREE;
   const parentFolderPath = settings.parentFolderPath || '';
@@ -374,8 +374,8 @@ export default function ShootBuilderView() {
   );
 
   const updateSettings = useCallback((patch) => {
-    setState({ shootFolderSettings: { ...settings, ...patch } });
-  }, [settings, setState]);
+    updateState({ shootFolderSettings: { ...settings, ...patch } });
+  }, [settings, updateState]);
 
   const handleToggleNode = useCallback((nodeId, enabled) => {
     updateSettings({ folderTree: toggleTreeNode(folderTree, nodeId, enabled) });
