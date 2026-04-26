@@ -186,7 +186,7 @@ const EmailView = () => {
   const apiKey = state.geminiKey || '';
 
   const [selectedId, setSelectedId] = useState('');
-  const [tokenValues, setTokenValues] = useState({});
+  const [tokenValues, setTokenValues] = useState({}); // { [templateId]: { [token]: value } }
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: '', subject: '', body: '' });
   const [showAiDraft, setShowAiDraft] = useState(false);
@@ -201,10 +201,9 @@ const EmailView = () => {
   const selectedTemplate = useMemo(() => templates.find(t => t.id === selectedId), [templates, selectedId]);
   const tokens = useMemo(() => selectedTemplate ? extractTokens(selectedTemplate.subject + '\n' + selectedTemplate.body) : [], [selectedTemplate]);
 
-  const previewSubject = selectedTemplate ? renderTemplate(selectedTemplate.subject, tokenValues) : '';
-  const previewBody = selectedTemplate ? renderTemplate(selectedTemplate.body, tokenValues) : '';
-
-  useEffect(() => { setTokenValues({}); }, [selectedId]);
+  const currentTokenValues = (selectedId && tokenValues[selectedId]) || {};
+  const previewSubject = selectedTemplate ? renderTemplate(selectedTemplate.subject, currentTokenValues) : '';
+  const previewBody = selectedTemplate ? renderTemplate(selectedTemplate.body, currentTokenValues) : '';
 
   useEffect(() => {
     if (editMode && selectedTemplate) {
@@ -325,11 +324,24 @@ const EmailView = () => {
           {/* Token inputs */}
           {selectedTemplate && !editMode && tokens.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-sm font-black uppercase tracking-wider text-[#8A7A6A]">Fill In Details</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-black uppercase tracking-wider text-[#8A7A6A]">Fill In Details</h3>
+                {Object.values(currentTokenValues).some(v => v) && (
+                  <button
+                    onClick={() => setTokenValues(v => ({ ...v, [selectedId]: {} }))}
+                    className="flex items-center gap-1 text-[10px] font-bold text-[#9C8A7A] hover:text-rose-500 transition-colors"
+                  >
+                    <X size={11} />
+                    Clear
+                  </button>
+                )}
+              </div>
               {tokens.map(token => (
                 <div key={token}>
                   <label className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A] block mb-1">{token}</label>
-                  <input value={tokenValues[token] || ''} onChange={e => setTokenValues(v => ({...v, [token]: e.target.value}))}
+                  <input
+                    value={currentTokenValues[token] || ''}
+                    onChange={e => setTokenValues(v => ({ ...v, [selectedId]: { ...v[selectedId], [token]: e.target.value } }))}
                     placeholder={`Value for ${token}...`}
                     className="w-full px-3 py-2.5 bg-white border border-[#E8E4E1] rounded-xl text-sm font-medium text-[#2C2511] focus:outline-none focus:ring-2 focus:ring-[#5F6F65]/30"
                   />
