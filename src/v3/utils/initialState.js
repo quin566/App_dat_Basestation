@@ -104,6 +104,8 @@ export const defaultState = {
     autoOpen: true,
     folderTree: DEFAULT_SHOOT_FOLDER_TREE,
   },
+  emailSelectedTemplateId: '',
+  emailTokenValues: {},
 };
 
 export const mergeState = (stored) => {
@@ -134,6 +136,10 @@ export const mergeState = (stored) => {
   // Backfill financialSettings
   merged.financialSettings = { ...defaultState.financialSettings, ...(stored.financialSettings || {}) };
   if (!Array.isArray(merged.categoryRules)) merged.categoryRules = [];
+
+  // Backfill email UI persistence
+  if (!merged.emailSelectedTemplateId) merged.emailSelectedTemplateId = '';
+  if (!merged.emailTokenValues || typeof merged.emailTokenValues !== 'object') merged.emailTokenValues = {};
 
   // Backfill shootFolderSettings
   merged.shootFolderSettings = {

@@ -185,8 +185,13 @@ const EmailView = () => {
   const templates = state.emailTemplates || [];
   const apiKey = state.geminiKey || '';
 
-  const [selectedId, setSelectedId] = useState('');
-  const [tokenValues, setTokenValues] = useState({}); // { [templateId]: { [token]: value } }
+  const selectedId = state.emailSelectedTemplateId || '';
+  const setSelectedId = (id) => updateState({ emailSelectedTemplateId: id });
+  const tokenValues = state.emailTokenValues || {};
+  const setTokenValues = (updater) => {
+    const next = typeof updater === 'function' ? updater(tokenValues) : updater;
+    updateState({ emailTokenValues: next });
+  };
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: '', subject: '', body: '' });
   const [showAiDraft, setShowAiDraft] = useState(false);
