@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import {
   FolderPlus, FolderOpen, ChevronDown, ChevronRight, Check, RotateCcw,
   Folder, FileText, Settings2, AlertTriangle, CheckCircle2, Copy,
+  BookOpen, ClipboardList,
 } from 'lucide-react';
 import { useAppState } from '../../contexts/StateContext';
 import { toast } from '../Toast';
@@ -358,6 +359,8 @@ export default function ShootBuilderView() {
   const [shootType, setShootType] = useState('');
   const [shootDate, setShootDate] = useState(today);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [readmeOpen, setReadmeOpen] = useState(false);
+  const [checklistOpen, setChecklistOpen] = useState(false);
   const [status, setStatus] = useState('idle'); // idle | creating | success | duplicate | error
   const [createdPath, setCreatedPath] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -720,6 +723,63 @@ export default function ShootBuilderView() {
                     ))}
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* ── Reference Guides ──────────────────────────────────── */}
+            <div className="space-y-2 pt-2 border-t border-[#F2EFE9]">
+              <p className="text-xs font-bold text-[#9C8A7A] uppercase tracking-wider pt-2">Reference Guides</p>
+
+              {/* Lightroom Workflow */}
+              <div className="border border-[#E8E4E1] rounded-2xl overflow-hidden">
+                <button
+                  onClick={() => setReadmeOpen(v => !v)}
+                  className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-[#FDFCFB] transition-colors cursor-pointer"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-[#F0F6F2] flex items-center justify-center shrink-0">
+                      <BookOpen size={13} className="text-[#5F6F65]" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-bold text-[#2C2511]">Lightroom Classic Workflow</p>
+                      <p className="text-[10px] text-[#9C8A7A]">Step-by-step import, edit, export &amp; backup guide</p>
+                    </div>
+                  </span>
+                  {readmeOpen
+                    ? <ChevronDown size={14} className="text-[#9C8A7A] shrink-0" />
+                    : <ChevronRight size={14} className="text-[#9C8A7A] shrink-0" />}
+                </button>
+                {readmeOpen && (
+                  <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-4 py-4">
+                    <pre className="text-[11px] leading-relaxed text-[#4A3F35] font-mono whitespace-pre-wrap break-words max-h-96 overflow-y-auto scrollbar-thin">{README_CONTENT}</pre>
+                  </div>
+                )}
+              </div>
+
+              {/* Shoot Checklist */}
+              <div className="border border-[#E8E4E1] rounded-2xl overflow-hidden">
+                <button
+                  onClick={() => setChecklistOpen(v => !v)}
+                  className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-[#FDFCFB] transition-colors cursor-pointer"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-[#FFF8F0] flex items-center justify-center shrink-0">
+                      <ClipboardList size={13} className="text-[#D4A373]" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-bold text-[#2C2511]">Shoot Checklist</p>
+                      <p className="text-[10px] text-[#9C8A7A]">SD card, import, edit, export &amp; delivery checkboxes</p>
+                    </div>
+                  </span>
+                  {checklistOpen
+                    ? <ChevronDown size={14} className="text-[#9C8A7A] shrink-0" />
+                    : <ChevronRight size={14} className="text-[#9C8A7A] shrink-0" />}
+                </button>
+                {checklistOpen && (
+                  <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-4 py-4">
+                    <pre className="text-[11px] leading-relaxed text-[#4A3F35] font-mono whitespace-pre-wrap break-words max-h-96 overflow-y-auto scrollbar-thin">{CHECKLIST_CONTENT}</pre>
+                  </div>
+                )}
               </div>
             </div>
 
