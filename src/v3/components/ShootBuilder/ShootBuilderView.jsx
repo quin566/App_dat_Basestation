@@ -382,20 +382,20 @@ function TreeRow({ node, isChild, onToggle, parentEnabled }) {
 
 function WorkflowDisplay() {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {WORKFLOW_STEPS.map((s, i) => {
         if (s.type === 'warning') {
           return (
-            <div key={i} className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3">
-              <AlertTriangle size={15} className="text-amber-500 shrink-0 mt-0.5" />
+            <div key={i} className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex gap-4">
+              <AlertTriangle size={18} className="text-amber-500 shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-black text-amber-900">{s.title}</p>
-                {s.body && <p className="text-xs text-amber-700 mt-1 leading-relaxed">{s.body}</p>}
+                <p className="text-base font-black text-amber-900">{s.title}</p>
+                {s.body && <p className="text-sm text-amber-700 mt-1.5 leading-relaxed">{s.body}</p>}
                 {s.items && (
-                  <ol className="mt-2 space-y-1">
+                  <ol className="mt-3 space-y-1.5">
                     {s.items.map((item, j) => (
-                      <li key={j} className="flex items-start gap-2 text-xs text-amber-800">
-                        <span className="font-black text-amber-500 shrink-0 w-3">{j + 1}.</span>
+                      <li key={j} className="flex items-start gap-2.5 text-sm text-amber-800">
+                        <span className="font-black text-amber-500 shrink-0 w-4">{j + 1}.</span>
                         {item}
                       </li>
                     ))}
@@ -407,26 +407,26 @@ function WorkflowDisplay() {
         }
         if (s.type === 'important') {
           return (
-            <div key={i} className="flex gap-3 bg-[#F0F6F2] border border-[#C4D9CC] rounded-2xl p-4">
-              <div className="w-6 h-6 rounded-full bg-[#5F6F65] text-white text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">{s.step}</div>
+            <div key={i} className="flex gap-4 bg-[#F0F6F2] border border-[#C4D9CC] rounded-2xl p-5">
+              <div className="w-7 h-7 rounded-full bg-[#5F6F65] text-white text-xs font-black flex items-center justify-center shrink-0 mt-0.5">{s.step}</div>
               <div>
-                <p className="text-sm font-black text-[#2C4A38]">{s.title}</p>
-                {s.body && <p className="text-xs text-[#3D6A50] mt-1 leading-relaxed font-medium">{s.body}</p>}
+                <p className="text-base font-black text-[#2C4A38]">{s.title}</p>
+                {s.body && <p className="text-sm text-[#3D6A50] mt-1.5 leading-relaxed font-medium">{s.body}</p>}
               </div>
             </div>
           );
         }
         return (
-          <div key={i} className="flex gap-3">
-            <div className="w-6 h-6 rounded-full bg-[#F4F1EE] border border-[#E0D8D0] text-[#9C8A7A] text-[10px] font-black flex items-center justify-center shrink-0 mt-1">{s.step}</div>
-            <div className="flex-1 pb-3 border-b border-[#F2EFE9] last:border-0">
-              <p className="text-sm font-bold text-[#2C2511]">{s.title}</p>
-              {s.body && <p className="text-xs text-[#6A5A4A] mt-1 leading-relaxed">{s.body}</p>}
+          <div key={i} className="flex gap-4">
+            <div className="w-7 h-7 rounded-full bg-[#F4F1EE] border border-[#E0D8D0] text-[#9C8A7A] text-xs font-black flex items-center justify-center shrink-0 mt-0.5">{s.step}</div>
+            <div className="flex-1 pb-4 border-b border-[#F2EFE9] last:border-0">
+              <p className="text-base font-bold text-[#2C2511]">{s.title}</p>
+              {s.body && <p className="text-sm text-[#6A5A4A] mt-1.5 leading-relaxed">{s.body}</p>}
               {s.items && (
-                <ul className="mt-2 space-y-1">
+                <ul className="mt-2.5 space-y-1.5">
                   {s.items.map((item, j) => (
-                    <li key={j} className="flex items-start gap-2 text-xs text-[#6A5A4A]">
-                      <Circle size={4} className="text-[#9C8A7A] shrink-0 mt-1.5 fill-[#9C8A7A]" />
+                    <li key={j} className="flex items-start gap-2.5 text-sm text-[#6A5A4A]">
+                      <Circle size={5} className="text-[#9C8A7A] shrink-0 mt-1.5 fill-[#9C8A7A]" />
                       {item}
                     </li>
                   ))}
@@ -455,13 +455,13 @@ function ChecklistDisplay() {
       {/* Progress bar */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-[#9C8A7A]">{totalChecked} / {totalItems} complete</span>
+          <span className="text-sm font-bold text-[#9C8A7A]">{totalChecked} / {totalItems} complete</span>
           {totalChecked > 0 && (
             <button
               onClick={() => setChecked({})}
-              className="flex items-center gap-1 text-[10px] font-bold text-[#C8C0B8] hover:text-rose-400 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-bold text-[#C8C0B8] hover:text-rose-400 transition-colors cursor-pointer"
             >
-              <RotateCcw size={9} />Reset all
+              <RotateCcw size={11} />Reset all
             </button>
           )}
         </div>
@@ -480,10 +480,10 @@ function ChecklistDisplay() {
         return (
           <div key={section.id}>
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A]">{section.title}</p>
+              <p className="text-xs font-black uppercase tracking-wider text-[#9C8A7A]">{section.title}</p>
               {sectionDone
-                ? <CheckCircle2 size={12} className="text-[#5F6F65]" />
-                : <span className="text-[9px] font-bold text-[#C8C0B8]">{sectionChecked}/{section.items.length}</span>}
+                ? <CheckCircle2 size={14} className="text-[#5F6F65]" />
+                : <span className="text-xs font-bold text-[#C8C0B8]">{sectionChecked}/{section.items.length}</span>}
             </div>
             <div className="space-y-1">
               {section.items.map((item, i) => {
@@ -493,12 +493,12 @@ function ChecklistDisplay() {
                   <button
                     key={key}
                     onClick={() => toggle(key)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#F8F6F3] transition-colors cursor-pointer group text-left"
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[#F4F1EE] transition-colors cursor-pointer group text-left"
                   >
-                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${done ? 'bg-[#5F6F65] border-[#5F6F65]' : 'border-[#D8D0C8] bg-white group-hover:border-[#5F6F65]/40'}`}>
-                      {done && <Check size={11} strokeWidth={3} className="text-white" />}
+                    <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${done ? 'bg-[#5F6F65] border-[#5F6F65]' : 'border-[#D8D0C8] bg-white group-hover:border-[#5F6F65]/40'}`}>
+                      {done && <Check size={13} strokeWidth={3} className="text-white" />}
                     </div>
-                    <span className={`text-sm transition-colors ${done ? 'line-through text-[#C8C0B8]' : 'text-[#2C2511]'}`}>{item}</span>
+                    <span className={`text-base leading-snug transition-colors ${done ? 'line-through text-[#C8C0B8]' : 'text-[#2C2511]'}`}>{item}</span>
                   </button>
                 );
               })}
@@ -612,7 +612,8 @@ export default function ShootBuilderView() {
   const noElectron = !isElectron();
 
   return (
-    <div className="p-8 max-w-2xl mx-auto space-y-6">
+    <div className="p-8 space-y-8">
+    <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-black text-[#2C2511] tracking-tight">Shoot Folder Builder</h1>
@@ -891,65 +892,70 @@ export default function ShootBuilderView() {
               </div>
             </div>
 
-            {/* ── Reference Guides ──────────────────────────────────── */}
-            <div className="space-y-2 pt-2 border-t border-[#F2EFE9]">
-              <p className="text-xs font-bold text-[#9C8A7A] uppercase tracking-wider pt-2">Reference Guides</p>
-
-              {/* Lightroom Workflow */}
-              <div className="border border-[#E8E4E1] rounded-2xl overflow-hidden">
-                <button
-                  onClick={() => setReadmeOpen(v => !v)}
-                  className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-[#FDFCFB] transition-colors cursor-pointer"
-                >
-                  <span className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-[#F0F6F2] flex items-center justify-center shrink-0">
-                      <BookOpen size={13} className="text-[#5F6F65]" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-bold text-[#2C2511]">Lightroom Classic Workflow</p>
-                      <p className="text-[10px] text-[#9C8A7A]">Step-by-step import, edit, export &amp; backup guide</p>
-                    </div>
-                  </span>
-                  {readmeOpen
-                    ? <ChevronDown size={14} className="text-[#9C8A7A] shrink-0" />
-                    : <ChevronRight size={14} className="text-[#9C8A7A] shrink-0" />}
-                </button>
-                {readmeOpen && (
-                  <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-4 py-4 max-h-[480px] overflow-y-auto">
-                    <WorkflowDisplay />
-                  </div>
-                )}
-              </div>
-
-              {/* Shoot Checklist */}
-              <div className="border border-[#E8E4E1] rounded-2xl overflow-hidden">
-                <button
-                  onClick={() => setChecklistOpen(v => !v)}
-                  className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-[#FDFCFB] transition-colors cursor-pointer"
-                >
-                  <span className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-[#FFF8F0] flex items-center justify-center shrink-0">
-                      <ClipboardList size={13} className="text-[#D4A373]" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-bold text-[#2C2511]">Shoot Checklist</p>
-                      <p className="text-[10px] text-[#9C8A7A]">SD card, import, edit, export &amp; delivery checkboxes</p>
-                    </div>
-                  </span>
-                  {checklistOpen
-                    ? <ChevronDown size={14} className="text-[#9C8A7A] shrink-0" />
-                    : <ChevronRight size={14} className="text-[#9C8A7A] shrink-0" />}
-                </button>
-                {checklistOpen && (
-                  <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-4 py-4 max-h-[520px] overflow-y-auto">
-                    <ChecklistDisplay />
-                  </div>
-                )}
-              </div>
-            </div>
-
           </div>
         )}
+      </div>
+    </div>{/* end settings accordion */}
+    </div>{/* end max-w-2xl */}
+
+      {/* ── Reference Guides — own wider section ──────────────────── */}
+      <div className="max-w-3xl mx-auto space-y-4">
+        <div>
+          <h2 className="text-lg font-black text-[#2C2511]">Reference Guides</h2>
+          <p className="text-sm text-[#9C8A7A] mt-0.5">Keep open while you work — tap any checklist item to mark it done.</p>
+        </div>
+
+        {/* Lightroom Workflow */}
+        <div className="bg-white border border-[#E8E4E1] rounded-3xl overflow-hidden">
+          <button
+            onClick={() => setReadmeOpen(v => !v)}
+            className="w-full flex items-center justify-between px-6 py-5 hover:bg-[#FDFCFB] transition-colors cursor-pointer"
+          >
+            <span className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#F0F6F2] flex items-center justify-center shrink-0">
+                <BookOpen size={16} className="text-[#5F6F65]" />
+              </div>
+              <div className="text-left">
+                <p className="text-base font-black text-[#2C2511]">Lightroom Classic Workflow</p>
+                <p className="text-xs text-[#9C8A7A] mt-0.5">Step-by-step import, edit, export &amp; backup guide</p>
+              </div>
+            </span>
+            {readmeOpen
+              ? <ChevronDown size={16} className="text-[#9C8A7A] shrink-0" />
+              : <ChevronRight size={16} className="text-[#9C8A7A] shrink-0" />}
+          </button>
+          {readmeOpen && (
+            <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-6 py-6">
+              <WorkflowDisplay />
+            </div>
+          )}
+        </div>
+
+        {/* Shoot Checklist */}
+        <div className="bg-white border border-[#E8E4E1] rounded-3xl overflow-hidden">
+          <button
+            onClick={() => setChecklistOpen(v => !v)}
+            className="w-full flex items-center justify-between px-6 py-5 hover:bg-[#FDFCFB] transition-colors cursor-pointer"
+          >
+            <span className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#FFF8F0] flex items-center justify-center shrink-0">
+                <ClipboardList size={16} className="text-[#D4A373]" />
+              </div>
+              <div className="text-left">
+                <p className="text-base font-black text-[#2C2511]">Shoot Checklist</p>
+                <p className="text-xs text-[#9C8A7A] mt-0.5">SD card, import, edit, export &amp; delivery — check off as you go</p>
+              </div>
+            </span>
+            {checklistOpen
+              ? <ChevronDown size={16} className="text-[#9C8A7A] shrink-0" />
+              : <ChevronRight size={16} className="text-[#9C8A7A] shrink-0" />}
+          </button>
+          {checklistOpen && (
+            <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-6 py-6">
+              <ChecklistDisplay />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
