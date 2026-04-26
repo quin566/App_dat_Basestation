@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import {
   FolderPlus, FolderOpen, ChevronDown, ChevronRight, Check, RotateCcw,
   Folder, FileText, Settings2, AlertTriangle, CheckCircle2, Copy,
-  BookOpen, ClipboardList,
+  BookOpen, ClipboardList, Circle,
 } from 'lucide-react';
 import { useAppState } from '../../contexts/StateContext';
 import { toast } from '../Toast';
@@ -202,6 +202,39 @@ BACKUP & DELIVERY
 [ ] SD card is safe to format
 `;
 
+// ── Structured guide data ────────────────────────────────────────────────────
+
+const WORKFLOW_STEPS = [
+  { type: 'warning', title: 'Safety Rule — Do Not Format the SD Card Yet', body: 'Never format the SD card until the shoot is fully backed up and delivered.', items: ['Back up the full SD card first', 'Import selected photos into Lightroom', 'Edit and export all finals', 'Back up the full shoot folder', 'Deliver the gallery', 'Only then format the SD card'] },
+  { step: 1,  title: 'Back Up the Full SD Card', body: 'Before opening Lightroom, copy the entire card to a safe location.', items: ['Insert SD card into the Mac', 'Open Finder → find the card in the sidebar', 'Copy the full DCIM folder to an external drive', 'Name the backup: ShootName_FULL_CARD_BACKUP', 'Do not delete anything from the card yet'] },
+  { step: 2,  title: 'Open Lightroom Classic', body: 'Open Lightroom Classic — not the cloud version of Lightroom.' },
+  { step: 3,  title: 'Create a New Catalog', items: ['File → New Catalog', 'Navigate into 01_Catalog inside this shoot folder', 'Name the catalog after the shoot (e.g. Ariana_Engagement_Catalog)', 'Click Create'] },
+  { step: 4,  title: 'Open the Import Window', items: ['Go to the Library section', 'Click Import (bottom-left)', 'Or: File → Import Photos And Video'] },
+  { step: 5,  title: 'Select the SD Card as Source', items: ['Left panel → Source → click the SD card', 'Wait for image previews to load'] },
+  { step: 6,  type: 'important', title: 'Choose COPY at the Top', body: 'Select COPY — not Add, not Move. This copies files off the card without removing them.' },
+  { step: 7,  title: 'Uncheck All, Then Select Keepers', items: ['Click Uncheck All', 'Check only sharp, in-focus, keeper photos', 'Leave test shots, blurry, and closed-eye photos unchecked'] },
+  { step: 8,  type: 'important', title: 'Set Destination to 02_RAW', body: 'Right panel → Destination → choose 02_RAW inside this shoot folder. This is the most important step.' },
+  { step: 9,  title: 'Click Import', body: 'Final check: Source = SD card · COPY selected · Destination = 02_RAW. Then click Import.' },
+  { step: 10, title: 'Second Cull Inside Lightroom', body: 'Review again after import. Delete or reject anything that is not actually good.' },
+  { step: 11, title: 'Edit the Photos', body: 'Go to the Develop section.', items: ['Apply preset', 'Fix white balance and exposure', 'Adjust contrast, highlights, shadows', 'Crop and straighten', 'Fix skin tones', 'Sync edits across similar photos'] },
+  { step: 12, title: 'Export Full Resolution', items: ['File → Export → Hard Drive', 'Folder: 03_Finals / Full Resolution', 'JPEG · sRGB · Quality 90–100 · Resize Off · Sharpening Standard'] },
+  { step: 13, title: 'Export Web Size', items: ['File → Export → Hard Drive', 'Folder: 03_Finals / Web Size', 'JPEG · sRGB · Quality 80–90 · Long Edge 2048–2500 px'] },
+  { step: 14, title: 'Prepare Delivery Folders', items: ['Sneak Peeks → 04_Delivery / Sneak Peeks', 'Final gallery → 04_Delivery / Final Gallery', 'Social crops → 04_Delivery / Social Media'] },
+  { step: 15, title: 'Back Up the Full Shoot Folder', body: 'Back up to an external drive and/or cloud before formatting the SD card.' },
+  { step: 16, title: 'Back Up the Lightroom Catalog', items: ['Lightroom Classic → Catalog Settings → Backups', 'Recommended: Once A Week When Exiting Lightroom', 'Click Back Up when prompted'] },
+  { step: 17, type: 'warning', title: 'Now Safe to Format the SD Card', body: 'Only format after every item in the shoot checklist is complete.' },
+];
+
+const CHECKLIST_SECTIONS = [
+  { id: 'setup',   title: 'Setup',              items: ['Shoot folder created', 'Folder name is correct', '01_Catalog folder exists', '02_RAW folder exists', '03_Finals folder exists', '04_Delivery folder exists (if needed)'] },
+  { id: 'sdcard',  title: 'SD Card Backup',     items: ['SD card inserted', 'Full SD card copied to backup location', 'Backup folder name includes shoot name', 'SD card has NOT been formatted'] },
+  { id: 'catalog', title: 'Lightroom Catalog',  items: ['Lightroom Classic opened', 'File → New Catalog clicked', 'Catalog saved inside 01_Catalog', 'Catalog name matches the shoot'] },
+  { id: 'import',  title: 'Import',             items: ['Import window opened', 'SD card selected on the left side', 'COPY selected at the top', 'Uncheck All clicked', 'Keeper photos checked', 'Destination set to 02_RAW', "Don't Import Suspected Duplicates = ON", 'Import clicked'] },
+  { id: 'editing', title: 'Editing',            items: ['Photos reviewed again after import', 'Bad photos removed or rejected', 'Edits completed', 'Final gallery reviewed'] },
+  { id: 'export',  title: 'Export',             items: ['Full-res JPGs → 03_Finals / Full Resolution', 'Web-size JPGs → 03_Finals / Web Size (if needed)', 'Sneak peeks → 04_Delivery / Sneak Peeks (if needed)', 'Final gallery → 04_Delivery / Final Gallery', 'Social files → 04_Delivery / Social Media (if needed)'] },
+  { id: 'backup',  title: 'Backup & Delivery',  items: ['Full shoot folder backed up', 'Lightroom catalog backed up', 'Client gallery delivered', 'Payment complete (if applicable)', 'SD card is safe to format'] },
+];
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function sanitizeFolderName(shootName, shootType, date) {
@@ -341,6 +374,138 @@ function TreeRow({ node, isChild, onToggle, parentEnabled }) {
       <span className={`text-sm font-medium ${node.enabled && !disabled ? 'text-[#2C2511]' : 'text-[#B0A090]'}`}>
         {node.name}
       </span>
+    </div>
+  );
+}
+
+// ── Workflow Display ──────────────────────────────────────────────────────────
+
+function WorkflowDisplay() {
+  return (
+    <div className="space-y-3">
+      {WORKFLOW_STEPS.map((s, i) => {
+        if (s.type === 'warning') {
+          return (
+            <div key={i} className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3">
+              <AlertTriangle size={15} className="text-amber-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-black text-amber-900">{s.title}</p>
+                {s.body && <p className="text-xs text-amber-700 mt-1 leading-relaxed">{s.body}</p>}
+                {s.items && (
+                  <ol className="mt-2 space-y-1">
+                    {s.items.map((item, j) => (
+                      <li key={j} className="flex items-start gap-2 text-xs text-amber-800">
+                        <span className="font-black text-amber-500 shrink-0 w-3">{j + 1}.</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </div>
+            </div>
+          );
+        }
+        if (s.type === 'important') {
+          return (
+            <div key={i} className="flex gap-3 bg-[#F0F6F2] border border-[#C4D9CC] rounded-2xl p-4">
+              <div className="w-6 h-6 rounded-full bg-[#5F6F65] text-white text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">{s.step}</div>
+              <div>
+                <p className="text-sm font-black text-[#2C4A38]">{s.title}</p>
+                {s.body && <p className="text-xs text-[#3D6A50] mt-1 leading-relaxed font-medium">{s.body}</p>}
+              </div>
+            </div>
+          );
+        }
+        return (
+          <div key={i} className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-[#F4F1EE] border border-[#E0D8D0] text-[#9C8A7A] text-[10px] font-black flex items-center justify-center shrink-0 mt-1">{s.step}</div>
+            <div className="flex-1 pb-3 border-b border-[#F2EFE9] last:border-0">
+              <p className="text-sm font-bold text-[#2C2511]">{s.title}</p>
+              {s.body && <p className="text-xs text-[#6A5A4A] mt-1 leading-relaxed">{s.body}</p>}
+              {s.items && (
+                <ul className="mt-2 space-y-1">
+                  {s.items.map((item, j) => (
+                    <li key={j} className="flex items-start gap-2 text-xs text-[#6A5A4A]">
+                      <Circle size={4} className="text-[#9C8A7A] shrink-0 mt-1.5 fill-[#9C8A7A]" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Checklist Display ─────────────────────────────────────────────────────────
+
+function ChecklistDisplay() {
+  const [checked, setChecked] = useState({});
+
+  const toggle = (key) => setChecked(prev => ({ ...prev, [key]: !prev[key] }));
+  const totalItems = CHECKLIST_SECTIONS.reduce((n, s) => n + s.items.length, 0);
+  const totalChecked = Object.values(checked).filter(Boolean).length;
+  const pct = Math.round((totalChecked / totalItems) * 100);
+
+  return (
+    <div className="space-y-4">
+      {/* Progress bar */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-[#9C8A7A]">{totalChecked} / {totalItems} complete</span>
+          {totalChecked > 0 && (
+            <button
+              onClick={() => setChecked({})}
+              className="flex items-center gap-1 text-[10px] font-bold text-[#C8C0B8] hover:text-rose-400 transition-colors cursor-pointer"
+            >
+              <RotateCcw size={9} />Reset all
+            </button>
+          )}
+        </div>
+        <div className="h-1.5 bg-[#F2EFE9] rounded-full overflow-hidden">
+          <div
+            className="h-full bg-[#5F6F65] rounded-full transition-all duration-300"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Sections */}
+      {CHECKLIST_SECTIONS.map(section => {
+        const sectionChecked = section.items.filter((_, i) => checked[`${section.id}-${i}`]).length;
+        const sectionDone = sectionChecked === section.items.length;
+        return (
+          <div key={section.id}>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[10px] font-black uppercase tracking-wider text-[#9C8A7A]">{section.title}</p>
+              {sectionDone
+                ? <CheckCircle2 size={12} className="text-[#5F6F65]" />
+                : <span className="text-[9px] font-bold text-[#C8C0B8]">{sectionChecked}/{section.items.length}</span>}
+            </div>
+            <div className="space-y-1">
+              {section.items.map((item, i) => {
+                const key = `${section.id}-${i}`;
+                const done = !!checked[key];
+                return (
+                  <button
+                    key={key}
+                    onClick={() => toggle(key)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#F8F6F3] transition-colors cursor-pointer group text-left"
+                  >
+                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all ${done ? 'bg-[#5F6F65] border-[#5F6F65]' : 'border-[#D8D0C8] bg-white group-hover:border-[#5F6F65]/40'}`}>
+                      {done && <Check size={11} strokeWidth={3} className="text-white" />}
+                    </div>
+                    <span className={`text-sm transition-colors ${done ? 'line-through text-[#C8C0B8]' : 'text-[#2C2511]'}`}>{item}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -750,8 +915,8 @@ export default function ShootBuilderView() {
                     : <ChevronRight size={14} className="text-[#9C8A7A] shrink-0" />}
                 </button>
                 {readmeOpen && (
-                  <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-4 py-4">
-                    <pre className="text-[11px] leading-relaxed text-[#4A3F35] font-mono whitespace-pre-wrap break-words max-h-96 overflow-y-auto scrollbar-thin">{README_CONTENT}</pre>
+                  <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-4 py-4 max-h-[480px] overflow-y-auto">
+                    <WorkflowDisplay />
                   </div>
                 )}
               </div>
@@ -776,8 +941,8 @@ export default function ShootBuilderView() {
                     : <ChevronRight size={14} className="text-[#9C8A7A] shrink-0" />}
                 </button>
                 {checklistOpen && (
-                  <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-4 py-4">
-                    <pre className="text-[11px] leading-relaxed text-[#4A3F35] font-mono whitespace-pre-wrap break-words max-h-96 overflow-y-auto scrollbar-thin">{CHECKLIST_CONTENT}</pre>
+                  <div className="border-t border-[#F2EFE9] bg-[#FDFCFB] px-4 py-4 max-h-[520px] overflow-y-auto">
+                    <ChecklistDisplay />
                   </div>
                 )}
               </div>
