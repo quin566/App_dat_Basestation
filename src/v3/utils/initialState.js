@@ -1,3 +1,20 @@
+export const DEFAULT_SHOOT_FOLDER_TREE = [
+  { id: 'catalog',          name: '01_Catalog',                    type: 'folder', enabled: true,  children: [] },
+  { id: 'raw',              name: '02_RAW',                        type: 'folder', enabled: true,  children: [] },
+  { id: 'finals',           name: '03_Finals',                     type: 'folder', enabled: true,  children: [
+    { id: 'finals-full',    name: 'Full Resolution',               type: 'folder', enabled: true,  children: [] },
+    { id: 'finals-web',     name: 'Web Size',                      type: 'folder', enabled: true,  children: [] },
+  ]},
+  { id: 'delivery',         name: '04_Delivery',                   type: 'folder', enabled: true,  children: [
+    { id: 'delivery-sneak', name: 'Sneak Peeks',                   type: 'folder', enabled: true,  children: [] },
+    { id: 'delivery-gallery', name: 'Final Gallery',               type: 'folder', enabled: true,  children: [] },
+    { id: 'delivery-social', name: 'Social Media',                 type: 'folder', enabled: true,  children: [] },
+  ]},
+  { id: 'backup',           name: '05_Backup',                     type: 'folder', enabled: true,  children: [] },
+  { id: 'readme',           name: 'README_Lightroom_Workflow.txt', type: 'file',   enabled: true,  children: [] },
+  { id: 'checklist',        name: 'Shoot_Checklist.txt',           type: 'file',   enabled: true,  children: [] },
+];
+
 export const emptyClient = {
   id: '',
   name: '',
@@ -82,6 +99,11 @@ export const defaultState = {
     ignoredMerchants: [],
     customCategories: [],
   },
+  shootFolderSettings: {
+    parentFolderPath: '',
+    autoOpen: true,
+    folderTree: DEFAULT_SHOOT_FOLDER_TREE,
+  },
 };
 
 export const mergeState = (stored) => {
@@ -112,6 +134,13 @@ export const mergeState = (stored) => {
   // Backfill financialSettings
   merged.financialSettings = { ...defaultState.financialSettings, ...(stored.financialSettings || {}) };
   if (!Array.isArray(merged.categoryRules)) merged.categoryRules = [];
+
+  // Backfill shootFolderSettings
+  merged.shootFolderSettings = {
+    ...defaultState.shootFolderSettings,
+    ...(stored.shootFolderSettings || {}),
+    folderTree: stored.shootFolderSettings?.folderTree || defaultState.shootFolderSettings.folderTree,
+  };
 
   // Ensure emailTemplates is always an array
   if (!Array.isArray(merged.emailTemplates)) merged.emailTemplates = [];

@@ -19,4 +19,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   clientReadFile:    (payload) => ipcRenderer.invoke('client-read-file', payload),
   clientDeleteFile:  (payload) => ipcRenderer.invoke('client-delete-file', payload),
   clientDeleteFolder:(payload) => ipcRenderer.invoke('client-delete-folder', payload),
+  shootChooseFolder: ()        => ipcRenderer.invoke('shoot-choose-folder'),
+  shootCheckExists:  (p)       => ipcRenderer.invoke('shoot-check-exists', p),
+  shootCreateFolder: (payload) => ipcRenderer.invoke('shoot-create-folder', payload),
+  shootOpenFolder:   (p)       => ipcRenderer.invoke('shoot-open-folder', p),
 });

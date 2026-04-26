@@ -354,6 +354,43 @@ ipcMain.handle('client-delete-folder', async (event, { clientId }) => {
   return { success: true };
 });
 
+// ── Shoot Folder Builder ──────────────────────────────────────────────────────
+
+ipcMain.handle('shoot-choose-folder', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ['openDirectory', 'createDirectory'],
+    title: 'Choose Default Parent Folder for Shoots',
+  });
+  return canceled || !filePaths.length ? null : filePaths[0];
+});
+
+ipcMain.handle('shoot-check-exists', async (_event, folderPath) => {
+  return fs.existsSync(folderPath);
+});
+
+ipcMain.handle('shoot-create-folder', async (_event, { folderPath, items }) => {
+  // items: Array<{ relativePath: string, type: 'folder'|'file', content?: string }>
+  try {
+    fs.mkdirSync(folderPath, { recursive: true });
+    for (const item of items) {
+      const fullPath = path.join(folderPath, item.relativePath);
+      if (item.type === 'folder') {
+        fs.mkdirSync(fullPath, { recursive: true });
+      } else {
+        fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+        fs.writeFileSync(fullPath, item.content || '', 'utf8');
+      }
+    }
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('shoot-open-folder', async (_event, folderPath) => {
+  await shell.openPath(folderPath);
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 const downloadPayload = async () => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera, BarChart2, CalendarDays, MapPin, Image } from 'lucide-react'
+import { LayoutDashboard, Calculator, ShieldCheck, Mail, Settings, Camera, BarChart2, CalendarDays, MapPin, Image, FolderPlus } from 'lucide-react'
 import { StateProvider, useAppState } from './contexts/StateContext'
 import GuidedTour from './components/GuidedTour'
 import { ToastContainer } from './components/Toast'
@@ -64,6 +64,7 @@ import BusinessHealthView from './components/BusinessHealth/BusinessHealthView'
 import SessionsView from './components/Sessions/SessionsView'
 import LocationsView from './components/Locations/LocationsView'
 import GalleryDeliveryView from './components/GalleryDelivery/GalleryDeliveryView'
+import ShootBuilderView from './components/ShootBuilder/ShootBuilderView'
 
 const NAV_ITEMS = [
   { id: 'dashboard',  label: 'Dashboard',    icon: LayoutDashboard, built: true },
@@ -75,6 +76,7 @@ const NAV_ITEMS = [
   { id: 'health',     label: 'Business Health', icon: BarChart2,    built: true },
   { id: 'compliance', label: 'Compliance',   icon: ShieldCheck,     built: true },
   { id: 'email',      label: 'Email Ops',    icon: Mail,            built: true },
+  { id: 'shoot-builder', label: 'Shoot Builder', icon: FolderPlus,  built: true },
 ];
 
 function AppContent() {
@@ -102,6 +104,7 @@ function AppContent() {
       case 'health':     return <BusinessHealthView />;
       case 'compliance': return <ComplianceView />;
       case 'email':      return <EmailView />;
+      case 'shoot-builder': return <ShootBuilderView />;
       case 'settings':   return <SettingsView />;
       default:
         return (
